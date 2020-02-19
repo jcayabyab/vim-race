@@ -1,0 +1,135 @@
+{
+  "_from": "vim-wasm",
+  "_id": "vim-wasm@0.0.13",
+  "_inBundle": false,
+  "_integrity": "sha512-2EkJ4OfMgvA/bURJeu43wqIQ4tpCJymst++Y4R/AKuQlnrvdI4hTpG2jf0yL5TrLt1ui12leLRghrwPOybyu8w==",
+  "_location": "/vim-wasm",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "vim-wasm",
+    "name": "vim-wasm",
+    "escapedName": "vim-wasm",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/",
+    "/react-vim-wasm"
+  ],
+  "_resolved": "https://registry.npmjs.org/vim-wasm/-/vim-wasm-0.0.13.tgz",
+  "_shasum": "450a83d1eea7def4d6cf8c863c502b5b771b08ea",
+  "_spec": "vim-wasm",
+  "_where": "/Users/jcayabyab/Coding/vim-racer",
+  "author": {
+    "name": "rhysd",
+    "email": "lin90162@yahoo.co.jp",
+    "url": "https://rhysd.github.io/"
+  },
+  "bugs": {
+    "url": "https://github.com/rhysd/vim.wasm/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Vim editor ported to WebAssembly",
+  "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/http-server": "^0.10.0",
+    "@types/karma": "^3.0.5",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.1",
+    "@types/puppeteer": "^2.0.0",
+    "@types/sinon": "^7.5.1",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
+    "chai": "^4.2.0",
+    "chokidar-cli": "^2.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-mocha": "^6.2.2",
+    "eslint-plugin-security": "^1.4.0",
+    "http-server": "^0.12.0",
+    "husky": "^3.1.0",
+    "img-diff-js": "^0.4.1",
+    "karma": "^4.4.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-sinon": "^1.0.5",
+    "mocha": "^6.2.2",
+    "npm-run-all": "^4.1.5",
+    "open": "^7.0.0",
+    "prettier": "^1.19.1",
+    "puppeteer": "^2.0.0",
+    "sinon": "^8.0.1",
+    "stylelint": "^12.0.1",
+    "stylelint-config-recommended": "^3.0.0",
+    "typescript": "^3.7.4",
+    "uglify-es": "^3.3.9"
+  },
+  "files": [
+    "vim.wasm",
+    "vim.data",
+    "vim.js",
+    "vimwasm.js",
+    "vimwasm.js.map",
+    "vimwasm.ts",
+    "vimwasm.d.ts",
+    "common.d.ts",
+    "small/vim.wasm",
+    "small/vim.data",
+    "small/vim.js"
+  ],
+  "homepage": "https://github.com/rhysd/vim.wasm#readme",
+  "husky": {
+    "hooks": {
+      "pre-push": "npm-run-all -p lint vtest:run"
+    }
+  },
+  "keywords": [
+    "Vim",
+    "editor",
+    "WebAssembly"
+  ],
+  "license": "Vim",
+  "main": "vimwasm.js",
+  "name": "vim-wasm",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhysd/vim.wasm.git"
+  },
+  "scripts": {
+    "build": "npm-run-all -p build:main build:worker vtest:build",
+    "build:main": "tsc -d -p tsconfig.main.json",
+    "build:worker": "tsc -p tsconfig.worker.json",
+    "eslint": "eslint --ignore-path .gitignore '*.ts' 'test/*.ts' 'vtest/*.ts'",
+    "fix": "npm-run-all -p fix:prettier fix:eslint",
+    "fix:eslint": "eslint --fix --ignore-path .gitignore '*.ts' 'test/*.ts' 'vtest/*.ts'",
+    "fix:prettier": "prettier --write --ignore-path .gitignore '**/*.ts'",
+    "karma": "karma start",
+    "lint": "npm-run-all -p stylelint eslint prettier",
+    "minify:common": "uglifyjs --output main.js main.js && uglifyjs --output vimwasm.js vimwasm.js",
+    "minify:normal": "uglifyjs --output vim.js vim.js",
+    "minify:small": "uglifyjs --output small/vim.js small/vim.js",
+    "prepublishOnly": "npm-run-all build minify:common",
+    "prettier": "prettier --check --ignore-path .gitignore '**/*.ts'",
+    "preversion": "cd .. && ./build.sh release-all",
+    "serve": "http-server -p 1234",
+    "stylelint": "stylelint style.css",
+    "test": "karma start --single-run",
+    "vtest": "npm-run-all vtest:build vtest:run",
+    "vtest:build": "tsc -p ./vtest",
+    "vtest:run": "node ./vtest/test.js",
+    "watch": "npm-run-all -p watch:main watch:worker",
+    "watch:main": "tsc -p tsconfig.main.json --watch",
+    "watch:worker": "tsc -p tsconfig.worker.json --watch"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-recommended"
+  },
+  "types": "./vimwasm.d.ts",
+  "version": "0.0.13"
+}
