@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import socketIOClient from "socket.io-client";
-import { useVim, Vim } from "react-vim-wasm";
-const ENDPOINT = "http://localhost:4001"
+import io from "socket.io-client";
+import { useVim } from "react-vim-wasm";
+import { handleKeyPress } from "./utils/client-scripts";
 
 function App() {
-  const [timeResponse, setTimeResponse] = useState("");
-
-  // only run at beginning to set socket
-  useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
-    socket.on("FromAPI", data => {
-      setTimeResponse(data);
-    });
-  }, [])
+  const [vimInitialized, setVimInitialized] = useState(false);
 
   const [canvasRef1, inputRef1, vim1] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -21,21 +13,61 @@ function App() {
 
   const [canvasRef2, inputRef2, vim2] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
+    // used to remove original event listener
+    onVimInit: () => {
+      setVimInitialized(true);
+    },
   });
 
-  if (inputRef2.current) {
-    inputRef2.current.addEventListener("keydown", (e) => {
-      // weird bug where event fires twice - set Handled 
-      // variable to fix
-      console.log(e.originalSource)
-      if (!e.Handled) {
-        console.log(e);
-        const new_e = new e.constructor(e.type, e);
-        inputRef1.current.dispatchEvent(new_e);
-      }
-      e.Handled = true;
-    });
-  }
+  // only run at beginning to set socket
+  useEffect(() => {
+    const socket = io("http://localhost:4001");
+    if (vim1) {
+      socket.on("opponent_keystroke", (event) => {
+        handleKeyPress(vim1.worker, event);
+      });
+    }
+    if (vim2) {
+      socket.on("my_keystroke", (event) => {
+        handleKeyPress(vim2.worker, event);
+      });
+    }
+    if (inputRef2.current && vim2) {
+      console.log(vim2.screen.input.elem === inputRef2.current);
+      console.log(vim2.screen.input.onKeydown);
+
+      vim2.screen.input.elem.removeEventListener(
+        "keydown",
+        vim2.screen.input.onKeydown,
+        { capture: true }
+      );
+
+      vim2.screen.input.elem.addEventListener("keydown", (e) => {
+        e.preventDefault();
+
+        const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
+        socket.emit("my_keystroke", {
+          key,
+          keyCode,
+          code,
+          ctrlKey,
+          shiftKey,
+          altKey,
+          metaKey,
+        });
+      });
+    }
+  }, [vim1, inputRef2, vim2]);
+
+  useEffect(() => {
+    if (vimInitialized) {
+      vim2.screen.input.elem.removeEventListener(
+        "keydown",
+        vim2.screen.input.onKeydown,
+        { capture: true }
+      );
+    }
+  }, [vim2, vimInitialized]);
 
   // old, sends by calling export and write
   const sendFile = async (fullpath, contents) => {
@@ -51,9 +83,6 @@ function App() {
 
   return (
     <div className="App">
-      <p>
-        It's <time dateTime={timeResponse}>{timeResponse}</time>
-      </p>
       <header className="App-header">
         <div>
           <canvas
@@ -64,7 +93,7 @@ function App() {
         </div>
         <button
           onClick={() => {
-            vim1.cmdline("export a");
+            console.log("help");
           }}
         >
           Export
@@ -74,7 +103,7 @@ function App() {
             ref={canvasRef2}
             onChange={(e) => console.log("hello")}
           ></canvas>
-          <input ref={inputRef2} onKeyDown={(e) => console.log(e)}></input>
+          <input ref={inputRef2}></input>
         </div>
       </header>
     </div>
