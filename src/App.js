@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { useVim } from "react-vim-wasm";
 import { handleKeyPress } from "./utils/client-scripts";
+import NameInput from "./components/NameInput";
 
 function App() {
   const [vimInitialized, setVimInitialized] = useState(false);
   const [msg, setMsg] = useState("Loading...");
+  const [gameId, setGameId] = useState(null);
   const [socket, setSocket] = useState(null);
-  const [playerId, setPlayerId] = useState(null);
+  const [username, setUsername] = useState(null);
 
   const [canvasRef1, inputRef1, vim1] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -30,28 +32,24 @@ function App() {
     if (!socket) {
       return;
     }
-    socket.on("welcome", ({ msg, playerId }) => {
+    socket.on("welcome", ({ msg }) => {
       setMsg(msg);
-      setPlayerId(playerId);
     });
   }, [socket]);
 
-  // only run at beginning to set socket
   useEffect(() => {
-    if (vim1 && vim2 && playerId) {
+    if (vim1 && vim2 && username && gameId) {
       socket.on("keystroke", (data) => {
-        console.log(data.playerId);
-        if (data.playerId === playerId) {
+        console.log(data.username);
+        if (data.username === username) {
           handleKeyPress(vim2.worker, data.event);
         } else {
           handleKeyPress(vim1.worker, data.event);
         }
       });
     }
-    if (inputRef2.current && vim2 && playerId) {
-      console.log(vim2.screen.input.elem === inputRef2.current);
-      console.log(vim2.screen.input.onKeydown);
-
+    if (inputRef2.current && vim2 && username && gameId) {
+      console.log(gameId);
       vim2.screen.input.elem.removeEventListener(
         "keydown",
         vim2.screen.input.onKeydown,
@@ -72,11 +70,12 @@ function App() {
             altKey,
             metaKey,
           },
-          playerId,
+          username,
+          gameId,
         });
       });
     }
-  }, [vim1, inputRef2, vim2, playerId, socket]);
+  }, [vim1, inputRef2, vim2, socket, username, gameId]);
 
   useEffect(() => {
     if (vimInitialized) {
@@ -87,6 +86,15 @@ function App() {
       );
     }
   }, [vim2, vimInitialized]);
+
+  const onNameClick = (name) => {
+    setUsername(name);
+    socket.on("start", (data) => {
+      console.log(data);
+      setGameId(data.gameId);
+    });
+    socket.emit("request match", { username: name });
+  };
 
   // old, sends by calling export and write
   const sendFile = async (fullpath, contents) => {
@@ -103,6 +111,7 @@ function App() {
   return (
     <div className="App">
       <div>{msg}</div>
+      <NameInput onNameClick={onNameClick}></NameInput>
       <header className="App-header">
         <div>
           <canvas

@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from "react";
 
-import React from 'react'
+export default function NameInput({ onNameClick }) {
+  const [name, setName] = useState("");
 
-export default function NameInput() {
   return (
     <div>
-      
+      <label>Username</label>
+      <input value={name} onChange={(e) => setName(e.target.value)}></input>
+      <button onClick={() => onNameClick(name)}>Start game</button>
     </div>
-  )
+  );
 }
-
