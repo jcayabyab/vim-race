@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
 import io from "socket.io-client";
 import { useVim } from "react-vim-wasm";
 import { handleKeyPress } from "./utils/client-scripts";
 
 function App() {
   const [vimInitialized, setVimInitialized] = useState(false);
+  const [msg, setMsg] = useState("Loading...");
+  const [socket, setSocket] = useState(null);
+  const [playerId, setPlayerId] = useState(null);
 
   const [canvasRef1, inputRef1, vim1] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -19,20 +21,34 @@ function App() {
     },
   });
 
+  useEffect(() => {
+    const socket = io("http://192.168.0.24:4001");
+    setSocket(socket);
+  }, [setSocket]);
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    socket.on("welcome", ({ msg, playerId }) => {
+      setMsg(msg);
+      setPlayerId(playerId);
+    });
+  }, [socket]);
+
   // only run at beginning to set socket
   useEffect(() => {
-    const socket = io("http://localhost:4001");
-    if (vim1) {
-      socket.on("opponent_keystroke", (event) => {
-        handleKeyPress(vim1.worker, event);
+    if (vim1 && vim2 && playerId) {
+      socket.on("keystroke", (data) => {
+        console.log(data.playerId);
+        if (data.playerId === playerId) {
+          handleKeyPress(vim2.worker, data.event);
+        } else {
+          handleKeyPress(vim1.worker, data.event);
+        }
       });
     }
-    if (vim2) {
-      socket.on("my_keystroke", (event) => {
-        handleKeyPress(vim2.worker, event);
-      });
-    }
-    if (inputRef2.current && vim2) {
+    if (inputRef2.current && vim2 && playerId) {
       console.log(vim2.screen.input.elem === inputRef2.current);
       console.log(vim2.screen.input.onKeydown);
 
@@ -46,18 +62,21 @@ function App() {
         e.preventDefault();
 
         const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
-        socket.emit("my_keystroke", {
-          key,
-          keyCode,
-          code,
-          ctrlKey,
-          shiftKey,
-          altKey,
-          metaKey,
+        socket.emit("keystroke", {
+          event: {
+            key,
+            keyCode,
+            code,
+            ctrlKey,
+            shiftKey,
+            altKey,
+            metaKey,
+          },
+          playerId,
         });
       });
     }
-  }, [vim1, inputRef2, vim2]);
+  }, [vim1, inputRef2, vim2, playerId, socket]);
 
   useEffect(() => {
     if (vimInitialized) {
@@ -83,6 +102,7 @@ function App() {
 
   return (
     <div className="App">
+      <div>{msg}</div>
       <header className="App-header">
         <div>
           <canvas
