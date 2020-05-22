@@ -66,7 +66,7 @@ class GameHandler {
   onKeystroke(data) {
     // responds to keystroke from any player
     // emits to all players
-    // this.debug("Player " + data.username + " keystroke");
+    this.debug("Player " + data.username + " keystroke");
     this.io.in(this.gameId).emit("keystroke", data);
   }
 
