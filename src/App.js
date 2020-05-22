@@ -6,7 +6,6 @@ import NameInput from "./components/NameInput";
 
 function App() {
   const [vimInitialized, setVimInitialized] = useState(false);
-  const [msg, setMsg] = useState("Loading...");
   const [gameId, setGameId] = useState(null);
   const [socket, setSocket] = useState(null);
   const [username, setUsername] = useState(null);
@@ -32,9 +31,6 @@ function App() {
     if (!socket) {
       return;
     }
-    socket.on("welcome", ({ msg }) => {
-      setMsg(msg);
-    });
   }, [socket]);
 
   useEffect(() => {
@@ -93,6 +89,9 @@ function App() {
       console.log(data);
       setGameId(data.gameId);
     });
+    socket.on("finish", data => {
+      console.log(data);
+    })
     socket.emit("request match", { username: name });
   };
 
@@ -110,7 +109,6 @@ function App() {
 
   return (
     <div className="App">
-      <div>{msg}</div>
       <NameInput onNameClick={onNameClick}></NameInput>
       <header className="App-header">
         <div>
