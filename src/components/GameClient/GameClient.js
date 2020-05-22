@@ -42,7 +42,9 @@ export default function GameClient({ username }) {
         );
       });
       socket.on("finish", (data) => {
-        console.log({ finish: data });
+        if (data.winner === username) {
+          alert("You, " + username + ", have won!");
+        }
         setClientState(STATES.IDLE);
       });
 
