@@ -7,7 +7,7 @@ export default function NameInput({ onNameClick }) {
     <div>
       <label>Username</label>
       <input value={name} onChange={(e) => setName(e.target.value)}></input>
-      <button onClick={() => onNameClick(name)}>Start game</button>
+      <button onClick={() => onNameClick(name)}>Set username</button>
     </div>
   );
 }

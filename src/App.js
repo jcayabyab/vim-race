@@ -20,6 +20,7 @@ function App() {
   return (
     <div className="App">
       <NameInput onNameClick={(value) => setUsername(value)}></NameInput>
+      <div>{username && "Current username: " + username}</div>
       <GameClient username={username}></GameClient>
     </div>
   );

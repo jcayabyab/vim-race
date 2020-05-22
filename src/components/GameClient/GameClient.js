@@ -61,12 +61,11 @@ export default function GameClient({ username }) {
   const handleSearch = () => {
     if (username) {
       socket.emit("request match", { username });
+      setClientState(STATES.SEARCHING);
     } else {
       console.log("username not established");
     }
   };
-
-  console.log(opponentName);
 
   switch (clientState) {
     case STATES.IDLE:
