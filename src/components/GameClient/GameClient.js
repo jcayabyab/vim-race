@@ -35,7 +35,6 @@ export default function GameClient({ username }) {
   useEffect(() => {
     if (socket && !socketInitialized && username) {
       socket.on("start", (data) => {
-        console.log(data.player1, username, data.player1 === username);
         setClientState(STATES.PLAYING);
         // set based on your own username
         setOpponentName(
