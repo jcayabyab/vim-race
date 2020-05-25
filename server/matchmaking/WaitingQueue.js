@@ -1,6 +1,6 @@
 class WaitingQueue {
   constructor(showDebug = false) {
-    // Map sorts
+    // Map sorts by order of insertion
     this.queue = new Map();
     this.showDebug = showDebug;
   }
