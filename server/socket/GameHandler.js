@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
+const StringGenerator = require("./StringGenerator");
 
 class GameHandler {
   constructor(io, player1, player2, socket1, socket2, showDebug = false) {
@@ -9,18 +10,18 @@ class GameHandler {
     this.socket2 = socket2;
     this.io = io;
     this.showDebug = showDebug;
+    this.generator = new StringGenerator();
 
-    // create initial and goal strings
-    // need to call API in the future
-    this.startText = "hello universe";
-    this.goalText = "hello world";
+    const { start, goal } = this.generator.generateGame();
+
+    this.startText = start;
+    this.goalText = goal;
 
     // bind these - passed as callback functions
     this.onP1Disconnect = this.onP1Disconnect.bind(this);
     this.onP2Disconnect = this.onP2Disconnect.bind(this);
     this.onKeystroke = this.onKeystroke.bind(this);
-    this.onP1Submission = this.onP1Submission.bind(this);
-    this.onP2Submission = this.onP2Submission.bind(this);
+    this.onSubmission = this.onSubmission.bind(this);
 
     if (showDebug) {
       console.log("GameHandler class in debug mode");
@@ -94,16 +95,6 @@ class GameHandler {
     }
   }
 
-  // abstract to function to ensure correctly removed when game is finished
-  onP1Submission(data) {
-    this.onSubmission({ username: this.gameInfo.player1, ...data });
-  }
-
-  // abstract to function to ensure correctly removed when game is finished
-  onP2Submission(data) {
-    this.onSubmission({ username: this.gameInfo.player2, ...data });
-  }
-
   addListeners() {
     const {
       socket1,
@@ -111,8 +102,7 @@ class GameHandler {
       onKeystroke,
       onP1Disconnect,
       onP2Disconnect,
-      onP1Submission,
-      onP2Submission,
+      onSubmission,
     } = this;
 
     socket1.on(GameHandler.commands.KEYSTROKE, onKeystroke);
@@ -121,8 +111,8 @@ class GameHandler {
     socket1.on(GameHandler.commands.DISCONNECT, onP1Disconnect);
     socket2.on(GameHandler.commands.DISCONNECT, onP2Disconnect);
 
-    socket1.on(GameHandler.commands.VALIDATE, onP1Submission);
-    socket2.on(GameHandler.commands.VALIDATE, onP2Submission);
+    socket1.on(GameHandler.commands.VALIDATE, onSubmission);
+    socket2.on(GameHandler.commands.VALIDATE, onSubmission);
   }
 
   removeListeners() {
@@ -132,8 +122,7 @@ class GameHandler {
       onKeystroke,
       onP1Disconnect,
       onP2Disconnect,
-      onP1Submission,
-      onP2Submission,
+      onSubmission
     } = this;
 
     socket1.off(GameHandler.commands.KEYSTROKE, onKeystroke);
@@ -142,8 +131,8 @@ class GameHandler {
     socket1.off(GameHandler.commands.DISCONNECT, onP1Disconnect);
     socket2.off(GameHandler.commands.DISCONNECT, onP2Disconnect);
 
-    socket1.off(GameHandler.commands.VALIDATE, onP1Submission);
-    socket2.off(GameHandler.commands.VALIDATE, onP2Submission);
+    socket1.off(GameHandler.commands.VALIDATE, onSubmission);
+    socket2.off(GameHandler.commands.VALIDATE, onSubmission);
   }
 
   start() {
