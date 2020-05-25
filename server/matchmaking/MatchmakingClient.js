@@ -1,4 +1,4 @@
-const GameHandler = require("./GameHandler");
+const GameHandler = require("../game/GameHandler");
 const WaitingQueue = require("./WaitingQueue");
 
 class MatchmakingClient {

@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const MatchmakingClient = require("./socket/MatchmakingClient");
+const MatchmakingClient = require("./matchmaking/MatchmakingClient");
 
 const port = process.env.PORT || 4001;
 const index = require("./routes/index");
