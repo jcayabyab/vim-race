@@ -10,10 +10,17 @@ class GameHandler {
     this.io = io;
     this.showDebug = showDebug;
 
+    // create initial and goal strings
+    // need to call API in the future
+    this.startText = "hello universe";
+    this.goalText = "hello world";
+
     // bind these - passed as callback functions
     this.onP1Disconnect = this.onP1Disconnect.bind(this);
     this.onP2Disconnect = this.onP2Disconnect.bind(this);
     this.onKeystroke = this.onKeystroke.bind(this);
+    this.onP1Submission = this.onP1Submission.bind(this);
+    this.onP2Submission = this.onP2Submission.bind(this);
 
     if (showDebug) {
       console.log("GameHandler class in debug mode");
@@ -71,20 +78,72 @@ class GameHandler {
     this.io.in(this.gameInfo.gameId).emit(GameHandler.commands.KEYSTROKE, data);
   }
 
-  addListeners() {
-    this.socket1.on(GameHandler.commands.KEYSTROKE, this.onKeystroke);
-    this.socket2.on(GameHandler.commands.KEYSTROKE, this.onKeystroke);
+  onSubmission(data) {
+    this.debug(data.username + " submitted: " + data.submission);
+    if (data.submission.trim() === this.goalText.trim()) {
+      this.finish(data.username);
+    } else {
+      let socketId = this.socket1.id;
+      if (data.username === this.gameInfo.player2) {
+        socketId = this.socket2.id;
+      }
+      // send bad submission back to them
+      this.io
+        .to(socketId)
+        .emit(GameHandler.commands.FAIL, { submission: data.submission });
+    }
+  }
 
-    this.socket1.on(GameHandler.commands.DISCONNECT, this.onP1Disconnect);
-    this.socket2.on(GameHandler.commands.DISCONNECT, this.onP2Disconnect);
+  // abstract to function to ensure correctly removed when game is finished
+  onP1Submission(data) {
+    this.onSubmission({ username: this.gameInfo.player1, ...data });
+  }
+
+  // abstract to function to ensure correctly removed when game is finished
+  onP2Submission(data) {
+    this.onSubmission({ username: this.gameInfo.player2, ...data });
+  }
+
+  addListeners() {
+    const {
+      socket1,
+      socket2,
+      onKeystroke,
+      onP1Disconnect,
+      onP2Disconnect,
+      onP1Submission,
+      onP2Submission,
+    } = this;
+
+    socket1.on(GameHandler.commands.KEYSTROKE, onKeystroke);
+    socket2.on(GameHandler.commands.KEYSTROKE, onKeystroke);
+
+    socket1.on(GameHandler.commands.DISCONNECT, onP1Disconnect);
+    socket2.on(GameHandler.commands.DISCONNECT, onP2Disconnect);
+
+    socket1.on(GameHandler.commands.VALIDATE, onP1Submission);
+    socket2.on(GameHandler.commands.VALIDATE, onP2Submission);
   }
 
   removeListeners() {
-    this.socket1.off(GameHandler.commands.KEYSTROKE, this.onKeystroke);
-    this.socket2.off(GameHandler.commands.KEYSTROKE, this.onKeystroke);
+    const {
+      socket1,
+      socket2,
+      onKeystroke,
+      onP1Disconnect,
+      onP2Disconnect,
+      onP1Submission,
+      onP2Submission,
+    } = this;
 
-    this.socket1.off(GameHandler.commands.DISCONNECT, this.onP1Disconnect);
-    this.socket2.off(GameHandler.commands.DISCONNECT, this.onP2Disconnect);
+    socket1.off(GameHandler.commands.KEYSTROKE, onKeystroke);
+    socket2.off(GameHandler.commands.KEYSTROKE, onKeystroke);
+
+    socket1.off(GameHandler.commands.DISCONNECT, onP1Disconnect);
+    socket2.off(GameHandler.commands.DISCONNECT, onP2Disconnect);
+
+    socket1.off(GameHandler.commands.VALIDATE, onP1Submission);
+    socket2.off(GameHandler.commands.VALIDATE, onP2Submission);
   }
 
   start() {
@@ -101,6 +160,8 @@ class GameHandler {
       player1: player1,
       player2: player2,
       gameId: gameId,
+      startText: this.startText,
+      goalText: this.goalText,
     });
   }
 
@@ -135,6 +196,8 @@ GameHandler.commands = {
   FINISH: "finish",
   KEYSTROKE: "keystroke",
   DISCONNECT: "disconnect",
+  VALIDATE: "validate",
+  FAIL: "fail",
 };
 
 module.exports = GameHandler;

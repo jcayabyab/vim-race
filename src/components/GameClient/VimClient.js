@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 
-export default function VimClient({ username, socket, isEditable }) {
+export default function VimClient({
+  username,
+  socket,
+  isEditable,
+  startText,
+  goalText,
+}) {
   // maybe move vim logic inside of here
   // we would need to initialize this when it's rendered,
   // then setup event listeners, then setup socket
@@ -10,17 +16,67 @@ export default function VimClient({ username, socket, isEditable }) {
   // double check event listener along with isEditable
   const [listenerEnabled, setListenerEnabled] = useState(false);
 
+  const validateSubmission = async (_, contents) => {
+    // only send validate if your own client
+    if (isEditable) {
+      // convert arraybuffer back into string
+      const ab2str = (buf) => {
+        return String.fromCharCode.apply(null, new Uint8Array(buf));
+      };
+
+      // trim to remove whitespace added at beginning
+      socket.emit("validate", { submission: ab2str(contents).trim() });
+    }
+  };
+
+  const writeToTerminal = useCallback(async (str) => {
+    const str2ab = (str) => {
+      const buf = new ArrayBuffer(str.length + 1);
+      const bufView = new Uint8Array(buf);
+      let i;
+      for (i = 0; i < str.length; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      // add eol
+      bufView[i] = "\n".charCodeAt(0);
+      return buf;
+    };
+
+    // adds EOF
+    const buf = str2ab(str);
+
+    // Get shared buffer to write file contents from worker
+    const [bufId, buffer] = await vim.worker.requestSharedBuffer(
+      buf.byteLength
+    );
+
+    // write file contents
+    new Uint8Array(buffer).set(new Uint8Array(buf));
+
+    // notify worker to start processing the file contents
+    vim.worker.notifyOpenFileBufComplete("start", bufId);
+  });
+
   const [canvasRef, inputRef, vim] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     onVimInit: () => {
       setVimInitialized(true);
     },
+    onFileExport: validateSubmission,
   });
+
+  useEffect(() => {
+    if (vimInitialized && startText) {
+      // load into vim client on startup
+      // set timeout - screen needs to appear before writing to buffer
+      setTimeout(() => writeToTerminal(startText), 100);
+    }
+  }, [startText, vimInitialized, writeToTerminal]);
 
   // remove initial onKeyDown event listener
   useEffect(() => {
     // remove already existing event listener to
-    // intercept key presses
+    // intercept key pressesk
     if (vimInitialized && socket && username) {
       vim.screen.input.elem.removeEventListener(
         "keydown",
@@ -94,6 +150,9 @@ export default function VimClient({ username, socket, isEditable }) {
         },
         username,
       });
+
+      // client side validation
+      // vim.cmdline("export submission");
     };
 
     if (vimInitialized) {
@@ -121,6 +180,7 @@ export default function VimClient({ username, socket, isEditable }) {
     <div>
       <canvas ref={canvasRef}></canvas>
       <input value="" ref={inputRef}></input>
+      <button onClick={() => writeToTerminal(startText)}>Write start</button>
     </div>
   );
 }

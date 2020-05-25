@@ -21,6 +21,8 @@ const useSocket = (endpoint) => {
 export default function GameClient({ username }) {
   const [clientState, setClientState] = useState("IDLE");
   const [opponentName, setOpponentName] = useState(null);
+  const [startText, setStartText] = useState(null);
+  const [goalText, setGoalText] = useState(null);
   const [STATES] = useState({
     IDLE: "IDLE",
     SEARCHING: "SEARCHING",
@@ -40,12 +42,20 @@ export default function GameClient({ username }) {
         setOpponentName(
           data.player1 === username ? data.player2 : data.player1
         );
+        setStartText(data.startText);
+        setGoalText(data.goalText);
       });
       socket.on("finish", (data) => {
+        console.log(data.winner);
         if (data.winner === username) {
           alert("You, " + username + ", have won!");
+        } else {
+          alert("You, " + username + ", have lost!");
         }
         setClientState(STATES.IDLE);
+      });
+      socket.on("fail", (data) => {
+        console.log("Your bad submission: ", data.submission);
       });
 
       setSocketInitialized(true);
@@ -85,11 +95,15 @@ export default function GameClient({ username }) {
             socket={socket}
             isEditable={true}
             username={username}
+            startText={startText}
+            goalText={goalText}
           ></VimClient>
           <VimClient
             socket={socket}
             isEditable={false}
             username={opponentName}
+            startText={startText}
+            goalText={goalText}
           ></VimClient>
         </div>
       );

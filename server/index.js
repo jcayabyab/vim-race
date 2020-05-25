@@ -17,6 +17,7 @@ const matchmaker = new MatchmakingClient(io, true);
 io.on("connection", (socket) => {
   // username of player - variables on a per-socket basis
   let username = null;
+  let idle = true;
 
   socket.on("disconnect", () => {
     console.log("client disconnected: " + username);
@@ -29,15 +30,17 @@ io.on("connection", (socket) => {
 
   // data: { username: String }
   socket.on("request match", (data) => {
-    // prevent user from connecting multiple times
-    if (!username) {
+    if (idle) {
+      // prevent user from connecting multiple times
       username = data.username;
       console.log(data.username + " requested match");
       // matchmaking logic
       matchmaker.handleRequest(data.username, socket);
+      // need a way to check if user is searching or playing a game quickly
+      idle = false;
     }
     else {
-      console.log("user already connected as " + username);
+      console.log("user already connected as " + username)
     }
   });
 });
