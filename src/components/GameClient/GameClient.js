@@ -105,6 +105,8 @@ export default function GameClient({ username }) {
             startText={startText}
             goalText={goalText}
           ></VimClient>
+          <div>Goal:</div>
+          <div style={{ whiteSpace: "pre-wrap", fontFamily: "Consolas, monospace" }}>{goalText}</div>
         </div>
       );
     default:
