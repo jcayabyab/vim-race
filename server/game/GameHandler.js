@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
-const StringGenerator = require("./StringGenerator");
+const ProblemGenerator = require("../problem-generator/ProblemGenerator");
 
 class GameHandler {
   constructor(io, player1, player2, socket1, socket2, showDebug = false) {
@@ -10,9 +10,9 @@ class GameHandler {
     this.socket2 = socket2;
     this.io = io;
     this.showDebug = showDebug;
-    this.generator = new StringGenerator();
+    this.generator = new ProblemGenerator();
 
-    const { start, goal } = this.generator.generateGame();
+    const { start, goal } = this.generator.generateProblem();
 
     this.startText = start;
     this.goalText = goal;
@@ -75,7 +75,7 @@ class GameHandler {
   onKeystroke(data) {
     // responds to keystroke from any player
     // emits to all players
-    this.debug("Player " + data.username + " keystroke");
+    // this.debug("Player " + data.username + " keystroke");
     this.io.in(this.gameInfo.gameId).emit(GameHandler.commands.KEYSTROKE, data);
   }
 
