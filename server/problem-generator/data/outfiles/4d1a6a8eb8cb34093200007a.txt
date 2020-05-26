@@ -1,0 +1,1 @@
+This sentence will be put back in the proper order by the time you're done with it in Vim!

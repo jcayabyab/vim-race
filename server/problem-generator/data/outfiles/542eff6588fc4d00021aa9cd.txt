@@ -1,0 +1,7 @@
+import static org.Assert.assertEquals;
+
+C{
+	m(){
+		assertEquals("Meaning of life", "Meaning of life");
+	}
+}

@@ -1,0 +1,10 @@
+{
+\  "\n" : 'Return',
+\  "&"  : 'ampersand',
+\  "\'" : 'apostrophe',
+\  "^"  : 'asciicircum',
+\  "~"  : 'asciitilde',
+\  "*"  : 'asterisk',
+\  "@"  : 'at',
+\  "\\" : 'backslash',
+\}

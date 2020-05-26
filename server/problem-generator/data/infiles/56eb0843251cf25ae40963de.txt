@@ -1,0 +1,18 @@
+log(req, res, next) {
+    try {
+        let ratio = this.config.get("HEADER_LOG_FREQ", 0.05);
+        if (Math.random() < ratio) {
+            this.arrange_headers(req, res).then(this.write_log);
+        }
+        let safe_path = this.safe_graphite_path(req.path);
+        this.stats.increment("web.endpoint." + safe_path, 1, 0.05);
+        if (req.headers && req.headers["x-forwarded-proto"]) {
+            this.stats.increment("web.protocol." + req.headers["x-forwarded-proto"], 1, 0.05);
+        }
+    } catch (error) {
+        log.warning(error, "Failed to log headers");
+        res.status(500).send("its_not_you_its_me");
+    } finally {
+        next();
+    }
+}

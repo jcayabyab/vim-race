@@ -1,0 +1,2 @@
+UseVim'sspellcheckfeaturetosplitthissentenceintowordsusingspaces.
+ Vim: set spell:

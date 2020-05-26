@@ -1,0 +1,8 @@
+A challenge can hide secrets
+
+  M00 =
+  M01 =
+  M10 =
+  M11 =
+  M20 =
+  M21 = 0

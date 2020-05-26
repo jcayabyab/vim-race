@@ -1,0 +1,15 @@
+if (isTyp(YBD.Typ_GEBAEUDE, currentTyp)) {
+	immobilienItem.setGebaeudeNr(currentItem.getGebaeudeNr());
+}
+if (isTyp(YBD.Typ_OBJEKT, currentTyp)) {
+	immobilienItem.setObjektNr(currentItem.getObjektNr());
+}
+if (isTyp(YBD.Typ_ETAGE, currentTyp)) {
+	immobilienItem.setEtageNr(currentItem.getEtageNr());
+}
+if (isTyp(YBD.Typ_IMMOBILIE, currentTyp)) {
+	immobilienItem.setImmobilieNr(currentItem.getImmobilieNr());
+}
+if (isTyp(YBD.Typ_HAUS, currentTyp)) {
+	immobilienItem.setHausNr(currentItem.getHausNr());
+}

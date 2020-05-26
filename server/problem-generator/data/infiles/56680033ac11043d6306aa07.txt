@@ -1,0 +1,5 @@
+ def plugin
+    @plugin, @plugin_found_by = [Plugin.find_by_uid(@plugin_id), :uid] unless @plugin
+    @plugin, @plugin_found_by = [Plugin.find_by_aid(@plugin_id), :aid] unless @plugin
+    @plugin
+ end

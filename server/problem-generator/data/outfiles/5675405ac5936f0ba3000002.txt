@@ -1,0 +1,80 @@
+call {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Call;
+}
+real {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Real;
+}
+integer {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Integer;
+}
+write {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Write;
+}
+read {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Read;
+}
+while {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return While;
+}
+end {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return End;
+}
+do {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Do;
+}
+if {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return If;
+}
+then {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Then;
+}
+else {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Else;
+}
+program {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Program;
+}
+var {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Var;
+}
+begin {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Begin;
+}
+return {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Return;
+}
+include {
+	yylval.type = strdup("res");
+	yylval.value = strdup(yytext);
+	return Include;
+}

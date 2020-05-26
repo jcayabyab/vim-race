@@ -1,0 +1,28 @@
+# Cookbook Name:: foo
+# Recipe:: default
+#
+# Copyright 2015, Foo Inc.
+#
+# All rights reserved - Do Not Redistribute
+#
+
+directory "/opt/foo" do
+end
+
+remote_file "/tmp/foo.rpm" do
+  source "http://foo.inc/packages/foo.rpm"
+  action :create
+end
+
+rpm_package "/tmp/foo.rpm" do
+  action :install
+end
+
+service "foo" do
+  action :start
+end
+
+execute "bar my foo" do
+  command "foo < bar"
+  only_if { node["foo"] == "bar" }
+end

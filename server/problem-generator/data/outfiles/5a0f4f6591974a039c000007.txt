@@ -1,0 +1,13 @@
+FILE "Bandname_Albumname.mp3" MP3
+  TRACK 01 AUDIO
+    TITLE "La La La"
+    PERFORMER "Bandname"
+    INDEX 01 00:00:00
+  TRACK 02 AUDIO
+    TITLE "Bla Bla"
+    PERFORMER "Bandname"
+    INDEX 01 04:14:00
+  TRACK 03 AUDIO
+    TITLE "Cha Cha"
+    PERFORMER "Bandname"
+    INDEX 01 08:21:00

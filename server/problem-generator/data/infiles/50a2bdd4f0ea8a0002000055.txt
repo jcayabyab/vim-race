@@ -1,0 +1,45 @@
+President,Political Party,Dates in Office
+George Washington,,1789_97
+John Adams,Federalist,1797_1801
+Thomas Jefferson,Democratic-Republican,1801_9
+James Madison,Democratic-Republican,1809_17
+James Monroe,Democratic-Republican,1817_25
+John Quincy Adams,Democratic-Republican,1825_29
+Andrew Jackson,Democratic,1829_37
+Martin Van Buren,Democratic,1837_41
+William Henry Harrison,Whig,1841
+John Tyler,Whig,1841_45
+James Knox Polk,Democratic,1845_49
+Zachary Taylor,Whig,1849_50
+Millard Fillmore,Whig,1850_53
+Franklin Pierce,Democratic,1853_57
+James Buchanan,Democratic,1857_61
+Abraham Lincoln,Republican,1861_65
+Andrew Johnson,Democratic/National Union,1865_69
+Ulysses Simpson Grant,Republican,1869_77
+Rutherford Birchard Hayes,Republican,1877_81
+James Abram Garfield,Republican,1881
+Chester Alan Arthur,Republican,1881_85
+Grover Cleveland,Democratic,1885_89
+Benjamin Harrison,Republican,1889_93
+Grover Cleveland,Democratic,1893_97
+William McKinley,Republican,1897_1901
+Theodore Roosevelt,Republican,1901_9
+William Howard Taft,Republican,1909_13
+Woodrow Wilson,Democratic,1913_21
+Warren Gamaliel Harding,Republican,1921_23
+Calvin Coolidge,Republican,1923_29
+Herbert Clark Hoover,Republican,1929_33
+Franklin Delano Roosevelt,Democratic,1933_45
+Harry S. Truman,Democratic,1945_53
+Dwight David Eisenhower,Republican,1953_61
+John Fitzgerald Kennedy,Democratic,1961_63
+Lyndon Baines Johnson,Democratic,1963_69
+Richard Milhous Nixon,Republican,1969_74
+Gerald Rudolph Ford,Republican,1974_77
+Jimmy Carter,Democratic,1977_81
+Ronald Wilson Reagan,Republican,1981_89
+George Herbert Walker Bush,Republican,1989_93
+Bill Clinton,Democratic,1993_2001
+George Walker Bush,Republican,2001_9
+Barack Hussein Obama,Democratic,2009_

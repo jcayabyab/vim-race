@@ -1,0 +1,20 @@
++--------------------------+
+|                          || A nice header in a frame
++--------------------------+
+
+
+Emacs rules!Vim  
+
+
+A short lineSome longer text replacing it
+
++----------------+
+|                || Another header
++----------------+
+
+Several carriege returns on a lineO few  A
+
+B few more simple onesA
+two reduce the amountto 
+off specializing the solutionof 
+dust for this filej

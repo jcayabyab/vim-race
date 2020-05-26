@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote fetch="/home/matt/test-01" name="mirror" review="vimgolf.org"/>
+  <default remote="mymirror" revision="myandroid-1.2.3"/>
+  <project name="device/common"/>
+  <project name="device/generic/common" revision="11c092a6cbfcf6207f07a9a8e3398e747e7f5461"/>
+  <project groups="pdk" name="device/generic/arm64"/>
+  <project groups="pdk" name="platform/abi/cpp" path="abi/cpp"/>
+  <project name="platform/bootable/recovery" path="bootable/recovery"/>
+  <project name="platform/build" path="build">
+    <copyfile dest="Makefile" src="core/root.mk"/>
+  </project>
+  <project name="platform/external/bzip2" path="external/bzip2"/>
+  <project name="kernel/matt-3.18" path="kernel" upstream="myandroid-1.2.4"/>
+</manifest>

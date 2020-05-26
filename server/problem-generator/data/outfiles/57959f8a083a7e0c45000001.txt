@@ -1,0 +1,17 @@
+alpaca
+buffalo
+camel
+deer
+elk
+
+append
+buffer
+change
+delete
+edit
+file
+
+awk
+bc
+chmod
+date

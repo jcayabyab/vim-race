@@ -1,0 +1,44 @@
+import ch.xyz.Logger;
+
+public class LoggerImpl implements Logger {
+
+	private void log(LogLevel lvl, String str) {
+		/* Code */
+	}
+
+	@Override
+	public void emerge(String str) {
+		log(LogLevel.EMERGE, str);
+	}
+
+	@Override
+	public void alert(String str) {
+		log(LogLevel.ALERT, str);
+	}
+
+	@Override
+	public void critical(String str) {
+		log(LogLevel.CRITICAL, str);
+	}
+
+	@Override
+	public void warning(String str) {
+		log(LogLevel.WARNING, str);
+	}
+
+	@Override
+	public void notice(String str) {
+		log(LogLevel.NOTICE, str);
+	}
+
+	@Override
+	public void info(String str) {
+		log(LogLevel.INFO, str);
+	}
+
+	@Override
+	public void debug(String str) {
+		log(LogLevel.DEBUG, str);
+	}
+
+}

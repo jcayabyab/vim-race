@@ -1,0 +1,4 @@
+select * from service where user_id = '909' and service_id = (322);
+select * from discounts where user_id = '909';
+
+insert into discounts values (null, 0, 909, 2, 322, 'STI-0132580-2', '2015-11-01', '2018-10-01', 0, 136.8, null, now());

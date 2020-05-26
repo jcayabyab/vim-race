@@ -1,0 +1,5 @@
+ def device
+    @device, @device_found_by = [Device.find_by_uid(@device_id), :uid] unless @device
+    @device, @device_found_by = [Device.find_by_uid(@device_id), :uid] unless @device
+    @device
+ end

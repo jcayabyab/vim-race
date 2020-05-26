@@ -1,0 +1,38 @@
+c:
+  required: false
+
+h:
+  optional: true
+  choice:
+    - true
+    - false
+
+f:
+  required: true
+
+e:
+  optional: true
+  choice:
+    - b
+    - a
+
+g:
+  optional: false
+
+j:
+  required: true
+
+a:
+  required: true
+
+i:
+  required: false
+
+d:
+  required: false
+
+b:
+  optional: true
+  choice:
+    - 1
+    - 2

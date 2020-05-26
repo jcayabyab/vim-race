@@ -1,0 +1,9 @@
+# Set a.b
+b_a_b=123
+b_x_y_z=xyz.def
+b_tini=00.x
+# Change url to qa
+b_url=http://aabb.com/cache=true
+b_debug_java-options=-Xmx2g
+b_a_b_c_d_e=twenty
+

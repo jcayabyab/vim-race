@@ -1,0 +1,15 @@
+<H>  72,  Hex 48,  Octal 110
+<a>  97,  Hex 61,  Octal 141
+<p>  112,  Hex 70,  Octal 160
+<p>  112,  Hex 70,  Octal 160
+<y>  121,  Hex 79,  Octal 171
+< >  32,  Hex 20,  Octal 040
+<N>  78,  Hex 4e,  Octal 116
+<e>  101,  Hex 65,  Octal 145
+<w>  119,  Hex 77,  Octal 167
+< >  32,  Hex 20,  Octal 040
+<Y>  89,  Hex 59,  Octal 131
+<e>  101,  Hex 65,  Octal 145
+<a>  97,  Hex 61,  Octal 141
+<r>  114,  Hex 72,  Octal 162
+<!>  33,  Hex 21,  Octal 041

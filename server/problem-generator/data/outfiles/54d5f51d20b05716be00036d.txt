@@ -1,0 +1,15 @@
+alsa-utils
+apt-0.9.9.4
+cracklib
+flex
+gawk-3.1.5
+gawk-4.1.1
+libdrm
+lighttpd
+m4
+mklibs
+mktemp
+qemu
+screen-4.0.3
+tremor-20120314
+xmlto-0.0.26

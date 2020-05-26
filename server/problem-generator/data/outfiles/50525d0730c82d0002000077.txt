@@ -1,0 +1,13 @@
+Do  = C
+Sol = G
+Re  = D
+La  = A
+Mi  = E
+Ti  = B
+Fi  = F#
+Di  = C#
+Si  = G#
+Ri  = D#
+Li  = A#
+Fa  = F
+Do  = C

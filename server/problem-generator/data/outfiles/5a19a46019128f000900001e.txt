@@ -1,0 +1,16 @@
+7z                         1147480
+/bin/bash                  1029624
+/bin/busybox               1837008
+/bin/sh                    1029624
+/etc/ssh/ssh_config        1691
+/home/matt/bin/bash        1099016
+/usr/bin/7za               1147480
+/usr/bin/awk               1837008
+/usr/bin/amixer            52592
+/usr/games/cowsay          4421
+/usr/games/cowthink        4421
+/usr/lib/libzbar.so.0.2.0  234720
+/usr/sbin/addgroup         34472
+/usr/sbin/adduser          34472
+/usr/share/zoneinfo/CET    2102
+/tmp/ssh_config            1691

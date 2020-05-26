@@ -1,0 +1,21 @@
+Example for reference:
+
+:%s/\(some\)\@<=thing/one/g
+searches for all strings starting with some, then matching thing
+changes thing into one
+end result: something becomes someone
+
+:%s/\(some\)\@<!thing/one/g
+searches for all strings not starting with some, then matching thing
+changes thing into one
+end result: something is not changed, but everything changes to everyone
+
+:%s/some\(thing\)\@=/every/g
+searches for all strings ending with thing, then matching some
+changes some into every
+end result: something becomes everything
+
+:%s/some\(thing\)\@!/every/g
+searches for all strings not ending with thing, then matching some
+changes some into every
+end result: something is not changed, but someone becomes everyone

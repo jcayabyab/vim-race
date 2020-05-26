@@ -1,0 +1,64 @@
+
+@decorator1
+def bbbb(*args):
+    pass
+
+    # do nothing here
+    return
+
+
+def aaa(name=xxx, arg=yux):
+    pass
+
+    # do nothing here
+    return
+
+
+@decorator1
+@decorator2
+def cccc(xpto, llxs):
+    pass
+
+
+class MyAAABigClass(object):
+    """ MyBigClass """
+
+    @decorator1
+    @decorator2
+    def cccc(xpto, llxs):
+        pass
+
+    def aaa(name=xxx, arg=yux):
+        pass
+
+        # do nothing here
+        return
+
+    @decorator1
+    def bbbb(*args):
+        pass
+
+        # do nothing here
+        return
+
+
+class MyBBBBigClass(object):
+    """ MyBigClass """
+
+    @decorator1
+    @decorator2
+    def cccc(xpto, llxs):
+        pass
+
+    def aaa(name=xxx, arg=yux):
+        pass
+
+        # do nothing here
+        return
+
+    @decorator1
+    def bbbb(*args):
+        pass
+
+        # do nothing here
+        return

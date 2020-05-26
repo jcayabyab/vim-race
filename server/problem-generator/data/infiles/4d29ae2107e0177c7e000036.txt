@@ -1,0 +1,8 @@
+cows moo
+horses neigh
+ducks quack
+geese honk
+hens cluck
+chicks peep
+pigs oink
+sheep baa

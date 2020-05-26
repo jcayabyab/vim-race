@@ -1,0 +1,30 @@
+replacing each line of a block selection - 809 entries
+
+replace each line's ../assets/js with /javascripts
+switch variable - 1197 entries
+
+how fast can you switch two variable ?
+Numbering a List - 914 entries
+
+Pretty simple, number the list.
+Context Insensitive completion 1 - 304 entries
+
+Finish writing this simple Python HTTP server.
+Search and Replace 0 - 1442 entries
+
+Replace every instance of 'aaa' with 'xaaax'.
+Wrap the text of an email message to 79 characters - 351 entries
+
+You're replying to an email with silly long lines. Clean them up.
+Sort and add attributes - 754 entries
+
+Sort the states and add the attribute country to each record.
+Whitespace, empty lines and tabs - 1470 entries
+
+Convert tabs to spaces, strip empty lines and trailing whitespace.
+Simple text editing with Vim - 3405 entries
+
+Make the pairs of lines match up by making each second line same as first
+Reformat/Refactor a Golfer Class - 2803 entries
+
+A simple case of removing unneeded code and fixing broken indentation.

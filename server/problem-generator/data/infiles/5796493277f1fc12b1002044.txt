@@ -1,0 +1,6 @@
+# pound	< left angle bracket	$ dollar sign	+ plus sign
+% percent	> right angle bracket	! exclamation point	` backtick
+& ampersand	* asterisk	' single quotes	| pipe
+{ left bracket	? question mark	= equal sign
+} right bracket	/ forward slash	: colon	 
+  blank spaces	@ at sign

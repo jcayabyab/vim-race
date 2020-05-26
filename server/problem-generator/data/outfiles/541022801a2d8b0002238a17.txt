@@ -1,0 +1,21 @@
+IIIII,V
+IIII,IV
+VV,X
+VIV,IX
+XXXXX,L
+XXXX,XL
+
+III
+IV
+V
+VII
+IX
+X
+XVIII
+XXI
+XXXIX
+XL
+XLIV
+L
+LXIV
+ vim: set gdefault:

@@ -1,0 +1,15 @@
+# vim: set fenc=utf-8 expandtab virtualedit=block virtualedit?:
+# This could help: %s/\s\+$//
+
+Α	α	alpha     |    N	ν	nu
+Β	β	beta      |    Ξ	ξ	xi
+Γ	γ	gamma     |    Ο	ο	omicron
+Δ	δ	delta     |    Π	π	pi
+Ε	ε	epsilon   |    Ρ	ρ	rho
+Ζ	ζ	zeta      |    Σ	σ/ς	sigma
+Η	η	eta       |    Τ	τ	tau
+Θ	θ	theta     |    Υ	υ	upsilon
+Ι	ι	iota      |    Φ	φ	phi
+Κ	κ	kappa     |    Χ	χ	chi
+Λ	λ	lambda    |    Ψ	ψ	psi
+Μ	μ	mu        |    Ω	ω	omega

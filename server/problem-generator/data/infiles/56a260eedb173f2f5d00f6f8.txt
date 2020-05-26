@@ -1,0 +1,5 @@
+lines[1][1] = 'hello'
+lines[2][0] = 'world'
+lines[3][1] = 'whats'
+lines[10][2] = 'going'
+lines[12][1] = 'on'

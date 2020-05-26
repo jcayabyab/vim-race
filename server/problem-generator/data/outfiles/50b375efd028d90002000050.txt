@@ -1,0 +1,9 @@
+  h g f e d c b a
+1 R N B K Q B N R
+2 P P P . P P P P
+3 . . . . . . . .
+4 . . . P . . . .
+5 . . . . . . . .
+6 . . . . . . . .
+7 p p p p p p p p
+8 r n b k q b n r

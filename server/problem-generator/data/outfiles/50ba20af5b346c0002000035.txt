@@ -1,0 +1,13 @@
+class Pointless:
+    def lotsa_arguments(self, first, second, third, fourth, fifth, sixth,
+                        seventh, eighth, ninth, tenth, eleventh, twelfth,
+                        thirteenth, fourteenth, sixteenth, seventeenth,
+                        eighteenth, nineteenth, twentieth, twenty_first,
+                        twenty_second, twenty_third):
+        "Doesn't even use all those arguments. What a waste."
+        pass
+
+
+# File-specific indent settings!
+# More VimGolf challenges need modelines.
+# vim: set sw=4 et ft=python:

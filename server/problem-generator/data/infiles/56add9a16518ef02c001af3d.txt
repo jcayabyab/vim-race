@@ -1,0 +1,17 @@
+# dmix Plugin + Soft Volume
+pcm.myconfig {
+    type plug
+    slave.pcm {
+        type softvol
+        control {
+            name "Master Playback Vim"
+            card 0
+        }
+        min_dB -19.0
+        max_dB 10.2
+        slave.pcm {
+            @func concat
+            strings [ "dmix:CARD=0,FORMAT=S16" ]
+        }
+    }
+}

@@ -1,0 +1,18 @@
+#include <sock.h>
+if (recvfrom(s, (char*)&ms, sizeof(ms), 0, foo, bar) >= 0) //receive initial message frame
+{
+	f++;
+	if (f == snwseq) //if its the right sequence
+	{
+		if (sendto(s, (char*)&a, sizeof(a), 0, foo, bar) > 0) //Send ACK
+			log << "Send ACK " << snwseq << ".\n";
+		else
+			cout << "Error!" << endl;
+	}
+	else //wrong sequence
+	{
+		receive_packet_transfer(s, a, sa, f, slen, snwseq, num); //wait for correct packet
+	}
+}
+else
+	cout << "Error!" << endl;

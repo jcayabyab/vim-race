@@ -1,0 +1,12 @@
+typedef enum {
+   FORMAT_AUDIO_UNKNOWN = 0,
+   FORMAT_AUDIO_VORBIS  = 1,
+   FORMAT_AUDIO_PCM_U8  = 2,
+   FORMAT_AUDIO_PCM_S16LE = 3,
+   FORMAT_AUDIO_PCM_S24LE = 4,
+   FORMAT_AUDIO_ADPCM_MS = 5, /*!< Microsoft ADPCM */
+   FORMAT_AUDIO_AAC = 6,      /*!< Detected but not supported */
+   FORMAT_AUDIO_OPUS = 7,     /*!< Xiph Opus */
+   FORMAT_AUDIO_NONE = 0x10
+} FMT_audio_type;
+/* --- */

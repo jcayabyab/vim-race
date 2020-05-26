@@ -1,0 +1,1 @@
+$ VimGold new challlenge

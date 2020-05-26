@@ -1,0 +1,9 @@
+define(function(require) {
+    var $ = require('jquery');
+    var _ = require('underscore');
+    var json = require('json');
+    var benchmark = require('benchmark');
+    var coffee = require('coffee');
+    var beans = require('beans');
+    var hello = require('hello');
+});

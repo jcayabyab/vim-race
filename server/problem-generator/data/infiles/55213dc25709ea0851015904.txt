@@ -1,0 +1,22 @@
+" Humm... :so%
+
+" Custom McCarthy 91 function
+" M(n) = { n          if n > 97
+"        { M(M(n+1))  if n <= 97
+function! Mc98(n)
+  if a:n > 97
+    return a:n
+  else
+    return Mc98(Mc98(a:n + 1))
+  endif
+endfunction
+
+function! Mc98Line()
+  let l = getline('.')
+  call setline('.', Mc98(l))
+endfunction
+
+" Humm...
+"command! -range Mc98Cmd <line1>,<line2>call Mc98Line()
+nmap M ciw<C-R>=Mc98(<C-R>")<CR><Esc>
+"0put=range(1,120)

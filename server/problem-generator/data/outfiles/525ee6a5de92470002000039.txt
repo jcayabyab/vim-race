@@ -1,0 +1,2 @@
+Use Vim's spell check feature to split this sentence into words using spaces.
+ Vim: set spell:

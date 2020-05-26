@@ -1,0 +1,4 @@
+Item name            Quantity
+Eggs                        2
+Cucumber                   20
+Watermelons                 1

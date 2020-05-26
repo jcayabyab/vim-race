@@ -1,0 +1,13 @@
+dartacan: /etc/hosts
+dartacan: /etc/httpd/conf/httpd.conf
+dartacan: /opt/scripts/list_vhosts
+mozart: /etc/resolv.conf
+mozart: /usr/bin/vim
+mozart: /usr/bin/awesome
+mozart: ~/.gem/ruby/2.1.0/bin/vimgolf
+gullit: /bin/bash
+gullit: /etc/hosts
+gullit: /usr/bin/xorg
+gullit: /usr/bin/xeyes
+gullit: /usr/bin/X
+gullit: /

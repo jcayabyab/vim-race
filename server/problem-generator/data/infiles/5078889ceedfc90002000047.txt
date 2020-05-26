@@ -1,0 +1,5 @@
+class PythonToRuby:
+  def add(x, y):
+    x + y
+
+  n = add(1 + 1)

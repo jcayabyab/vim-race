@@ -1,0 +1,7 @@
+.hero {
+  background-color: pink;
+}
+
+header {
+  border-bottom: 2px solid #26BBB3;
+}

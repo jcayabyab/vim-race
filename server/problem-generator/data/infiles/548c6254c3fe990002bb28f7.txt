@@ -1,0 +1,27 @@
+
+  ||          ||   Score
+  ||          ||   -----
+  ||   NN     ||     n/a
+  ||    NN    ||
+  ||          ||   Level
+  ||          ||   -----
+  ||          ||       1
+  ||          ||
+  ||          ||   Lines
+  ||          ||   -----
+  ||          ||       0
+  ||          ||
+  ||          ||
+  ||          ||
+  ||          ||
+  ||          ||
+  ==============
+
+# Your pieces:
+let @a='rAj.j.l.2kh'
+let @b='rBl.j.j.2kh'
+let @m='rMj.l.j.2kh'
+let @n='rNl.j.l.k2h'
+let @o='ROOhj.kh'
+let @t='rTj.h.2l.kh'
+let @w='rWj.j.j.3k'

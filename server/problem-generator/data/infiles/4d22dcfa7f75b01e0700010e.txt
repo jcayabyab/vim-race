@@ -1,0 +1,7 @@
+package com.vimgolf.challenge;
+
+public class Person {
+	private String firstName;
+	private String surname;
+	private Integer age;
+}

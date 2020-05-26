@@ -1,0 +1,20 @@
+cleora.baugh:
+    group_id: 1
+    full_name: Cleora Baugh
+    mail: cleora.baugh@example.com
+hedy.van-gossard:
+    group_id: 2
+    full_name: Hedy van Gossard
+    mail: hedy.van-gossard@example.com
+bryce.steeves:
+    group_id: 2
+    full_name: Bryce Steeves
+    mail: bryce.steeves@example.com
+rodger.van-harland:
+    group_id: 3
+    full_name: Rodger van Harland
+    mail: rodger.van-harland@example.com
+jami.waid:
+    group_id: 3
+    full_name: Jami Waid
+    mail: jami.waid@example.com

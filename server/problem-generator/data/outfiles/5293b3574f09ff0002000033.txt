@@ -1,0 +1,11 @@
+
+Date,Start Time,End Time,Journey/Action,Charge,Credit,Balance,Note
+23-Nov-2013,12:16-12:38,"Bermondsey to West Hampstead [London Underground]"
+23-Nov-2013,09:38-10:02,"West Hampstead [London Underground] to Bermondsey"
+20-Nov-2013,23:14-23:43,"Kennington to West Hampstead [London Underground]"
+20-Nov-2013,20:53,"Bus journey, route 159"
+20-Nov-2013,20:27-20:50,"Warwick Avenue to Lambeth North"
+20-Nov-2013,17:57-18:19,"West Hampstead [London Underground] to Paddington (Bakerloo, Circle/District and H&C)"
+18-Nov-2013,17:37-17:48,"Kensal Rise to West Hampstead [London Overground]"
+18-Nov-2013,17:31,"Bus journey, route 6"
+18-Nov-2013,16:16,"Bus journey, route 6"

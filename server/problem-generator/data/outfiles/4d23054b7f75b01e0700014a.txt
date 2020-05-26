@@ -1,0 +1,17 @@
+VIM IS... MULTI PLATFORM				*design-multi-platform*
+
+Vim tries to help as many users on as many platforms as possible.
+- Support many kinds of terminals.  The minimal demands are cursor positioning
+  and clear-screen.  Commands should only use key strokes that most keyboards
+  have.  Support all the keys on the keyboard for mapping.
+- Support many platforms.  A condition is that there is someone willing to do
+  Vim development on that platform, and it doesn't mean messing up the code.
+- Support many compilers and libraries.  Not everybody is able or allowed to
+  install another compiler or GUI library.
+- People switch from one platform to another, and from GUI to terminal
+  version.  Features should be present in all versions, or at least in as many
+  as possible with a reasonable effort.  Try to avoid that users must switch
+  between platforms to accomplish their work efficiently.
+- That a feature is not possible on some platforms, or only possible on one
+  platform, does not mean it cannot be implemented.  [This intentionally
+  contradicts the previous item, these two must be balanced.]

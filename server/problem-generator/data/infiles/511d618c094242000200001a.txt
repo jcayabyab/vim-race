@@ -1,0 +1,28 @@
+"S - function to sum two big numbers in reverse order
+fu! S(x,y)
+let t=0
+let s=''
+let na=strlen(a:x)
+let nb=strlen(a:y)
+if na<nb
+let m=nb
+let a=a:x . repeat('0',m - na)
+let b=a:y
+else
+let m=na
+let b=a:y . repeat('0',m - nb)
+let a=a:x
+en
+for i in range(0,m-1)
+let c=a[i]+b[i]+t
+let s.=c%10
+let t=c/10
+endfo
+if t>0
+let s.=t
+en
+retu s
+endf
+
+1
+2

@@ -1,0 +1,12 @@
+define(
+    [
+        'jquery',
+        'underscore',
+        'json',
+        'benchmark',
+        'coffee',
+        'beans',
+        'hello'
+    ],
+    function($, _, json, benchmark, coffee, beans, hello) {
+    });

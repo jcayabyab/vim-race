@@ -1,0 +1,9 @@
+set ai                                          " set auto-indenting on for programming
+syntax on                                       " turn syntax highlighting on by default
+set undolevels=100
+set backup backupdir=/tmp                       " swap files. (/tmp/file~)
+                                                " (see also 'set writebackup' and 'set backupskip')
+iab _file <C-R>%                                " filename (register %)
+autocmd! BufWritePost $MYVIMRC source $MYVIMRC  " auto-reload when ~/.vimrc is edited
+                                                " MYVIMRC is the platform-independent location
+                                                " of your .vimrc file

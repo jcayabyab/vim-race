@@ -1,0 +1,11 @@
+vim: set nrformats=alpha:
+jihgfedcba
+iihgfedcba
+hhhgfedcba
+ggggfedcba
+fffffedcba
+eeeeeedcba
+dddddddcba
+ccccccccba
+bbbbbbbbba
+aaaaaaaaaa

@@ -1,0 +1,17 @@
+Tic-Tac-Toe
+You are 'X', and it is your turn. Stop 'O' from winning, and complete the game.
+
+     \  |   |
+      X | O |
+       \|   |
+     -----------
+        |\  |
+        | X |
+        |  \|
+     -----------
+        |   |\
+        | O | X
+        |   |  \
+
+
+Bonus: Draw a diagonal line through your winning row of three X's.

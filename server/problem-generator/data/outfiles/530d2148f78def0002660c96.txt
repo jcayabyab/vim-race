@@ -1,0 +1,39 @@
+<?php
+class Example {
+
+	private $firstProperty;
+
+	public function getFirstProperty()
+	{
+		return $this->firstProperty;
+	}
+
+	public function setFirstProperty($value)
+	{
+		$this->firstProperty = $value;
+	}
+
+	private $secondItem;
+
+	public function getSecondItem()
+	{
+		return $this->secondItem;
+	}
+
+	public function setSecondItem($value)
+	{
+		$this->secondItem = $value;
+	}
+
+	private $lastAttribute;
+
+	public function getLastAttribute()
+	{
+		return $this->lastAttribute;
+	}
+
+	public function setLastAttribute($value)
+	{
+		$this->lastAttribute = $value;
+	}
+}

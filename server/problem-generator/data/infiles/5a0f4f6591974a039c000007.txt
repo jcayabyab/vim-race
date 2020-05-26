@@ -1,0 +1,19 @@
+FILE "FILENAME.MP3" MP3
+  TRACK 01 AUDIO
+    TITLE "Song1"
+    PERFORMER "Artist"
+    INDEX 01 0:00
+  TRACK 02 AUDIO
+    TITLE "Song2"
+    PERFORMER "Artist"
+    INDEX 01 00:00:00
+  TRACK 03 AUDIO
+    TITLE "Song3"
+    PERFORMER "Artist"
+    INDEX 01 00:00:00
+
+
+Bandname_Albumname.mp3
+1) 00:00 - la la la
+2) 04:14 - bla bla
+3) 08:21 - cha cha

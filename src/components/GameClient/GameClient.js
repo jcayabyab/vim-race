@@ -30,7 +30,7 @@ export default function GameClient({ username }) {
   });
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
-    "http://192.168.0.24:4001"
+    "http://184.64.21.125:4001"
   );
 
   // setup to listen for start and finish

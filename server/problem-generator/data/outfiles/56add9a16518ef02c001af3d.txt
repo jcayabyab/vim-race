@@ -1,0 +1,14 @@
+# dmix Plugin + Soft Volume
+pcm.myconfig {
+    type plug
+    slave.pcm {
+        type softvol
+        control {
+            name "Master Playback Volume"
+            card 0
+        }
+        min_dB -20.0
+        max_dB 10.0
+        slave.pcm "dmix:CARD=0,FORMAT=S16"
+    }
+}

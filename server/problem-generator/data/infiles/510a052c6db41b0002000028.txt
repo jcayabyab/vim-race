@@ -1,0 +1,50 @@
+Given two vectors \(\vec{x}\) and \(\vec{y}\) in \( \mathbb{R}^n \),
+their '''dot product''' or '''inner product''' is defined as the following:
+
+\[ \sum_{i=0}^{n} x_i \, y_i \]
+
+----
+
+Integration by parts is another way of writing the product rule of differentiation.
+For two functions \(f(x)\) and \(g(x)\), the following are equivalent:
+
+\[ \begin{align}
+\frac{\mathrm{d}}{\mathrm{d}x} \left( f(x) \, g(x) \right) &= f'(x) \, g(x) + f(x) \, g'(x) \\
+\int f(x) \, g'(x) \, \mathrm{d}x &= f(x) \, g(x) - \int f'(x) \, g(x) \, \mathrm{d}x
+\end{align} \]
+
+----
+
+Matrix multiplication is not commutative
+
+\(
+\begin{align}
+\begin{bmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+\end{bmatrix} \,
+\begin{bmatrix}
+    b_{11} & b_{12} \\
+    b_{21} & b_{22}
+\end{bmatrix} &\ne
+\begin{bmatrix}
+    b_{11} & b_{12} \\
+    b_{21} & b_{22}
+\end{bmatrix} \,
+\begin{bmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+\end{bmatrix} \\
+
+\begin{bmatrix}
+    a_{11} \, b_{11} + a_{12} \, b_{21} & a_{11} \, b_{12} + a_{12} \, b_{22} \\
+    a_{21} \, b_{11} + a_{22} \, b_{21} & a_{21} \, b_{12} + a_{22} \, b_{22}
+\end{bmatrix} &\ne
+\begin{bmatrix}
+    a_{11} \, b_{11} + a_{21} \, b_{12} & a_{12} \, b_{11} + a_{22} \, b_{12} \\
+    a_{11} \, b_{21} + a_{21} \, b_{22} & a_{12} \, b_{21} + a_{22} \, b_{22}
+\end{bmatrix}
+\begin{align}
+\)
+
+''Quod erat demonstrandum''.

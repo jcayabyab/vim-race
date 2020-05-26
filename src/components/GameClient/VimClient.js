@@ -66,6 +66,7 @@ export default function VimClient({ username, socket, isEditable, startText }) {
       // load into vim client on startup
       // set timeout - screen needs to appear before writing to buffer
       setTimeout(() => writeToTerminal(startText), 100);
+      console.log("initialized");
     }
   }, [startText, vimInitialized, writeToTerminal]);
 

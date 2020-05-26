@@ -1,0 +1,20 @@
++--------------------------+
+| A nice header in a frame |
++--------------------------+
+
+
+Vim   rules!
+
+
+Some longer text replacing it
+
++----------------+
+| Another header |
++----------------+
+
+A few   carriege returns on a line
+
+A few more simple ones
+to  reduce the amount
+of  specializing the solution
+just for this file

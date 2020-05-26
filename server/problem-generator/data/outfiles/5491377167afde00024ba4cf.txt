@@ -1,0 +1,17 @@
+switch (currentTyp) {
+	case YBD.Typ_GEBAEUDE:
+		immobilienItem.setGebaeudeNr(currentItem.getGebaeudeNr());
+		break;
+	case YBD.Typ_OBJEKT:
+		immobilienItem.setObjektNr(currentItem.getObjektNr());
+		break;
+	case YBD.Typ_ETAGE:
+		immobilienItem.setEtageNr(currentItem.getEtageNr());
+		break;
+	case YBD.Typ_IMMOBILIE:
+		immobilienItem.setImmobilieNr(currentItem.getImmobilieNr());
+		break;
+	case YBD.Typ_HAUS:
+		immobilienItem.setHausNr(currentItem.getHausNr());
+		break;
+}

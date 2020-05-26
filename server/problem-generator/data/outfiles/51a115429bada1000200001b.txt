@@ -1,0 +1,23 @@
+function AlbumCtrl($scope, $http) {
+    $scope.url = 'http://onehungrymind.com/angular-album/images.json';
+    $scope.images = [];
+    $scope.imageCategories = [];
+    $scope.currentImage = {};
+
+    function handleImagesLoaded(data, status) {
+        $scope.images = data;
+        $scope.currentImage = _.first($scope.images);
+        $scope.imageCategories = _.uniq(_.pluck($scope.images, 'category'));
+    }
+
+    $scope.fetch = function () {
+        $http.get($scope.url).success($scope.handleImagesLoaded);
+    }
+
+    $scope.setCurrentImage = function (image) {
+        $scope.currentImage = image;
+    };
+
+    $scope.fetch();
+}
+

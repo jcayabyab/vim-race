@@ -1,0 +1,44 @@
+import ch.xyz.Logger;
+
+public class LoggerImpl implements Logger {
+
+	private void log(LogLevel lvl, String str) {
+		/* Code */
+	}
+
+	@Override
+	public void emerge(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void alert(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void critical(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void warning(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notice(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void info(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void debug(String str) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+}

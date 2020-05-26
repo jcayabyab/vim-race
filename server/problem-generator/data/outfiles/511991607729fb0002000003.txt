@@ -1,0 +1,7 @@
+function foo(parameters) {
+    var hello = parameters.hello;
+    var world = parameters.world;
+    var how = parameters.how;
+    var are = parameters.are;
+    var you = parameters.you;
+}

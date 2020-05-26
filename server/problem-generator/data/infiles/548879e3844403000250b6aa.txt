@@ -1,0 +1,10 @@
+{
+  "name"  :  "y64zqe0UKLO2w",
+  "id": "Le mal vient à cheval et le bonheur à pied.",
+  "proverb" : "fr",
+  "lang":"http:\/\/foo.com\/good\/id=",
+    "rating": 4.5,
+  "link" : "",
+    "status": {"success":true},
+  "description": "Happiness and misfortune"
+}

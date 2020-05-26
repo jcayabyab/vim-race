@@ -1,0 +1,26 @@
+class SongEntry
+{
+public:
+    SongEntry
+        (
+        QString mSinger = QString(),
+        QString mSongName = QString(),
+        QString mGender = QString(),
+        QString mSongLang = QString(),
+        int mSongLength = 0,
+        QString mSongPath = QString(),
+        QString mNotes = QString()
+        );
+
+private:
+    int mId;
+    QString mSinger;
+    QString mSongName;
+    QString mGender;
+    QString mSongLang;
+    int mSongLength; // in seconds
+    QString mSongPath;
+    QString mNotes;
+};
+
+===========================================================

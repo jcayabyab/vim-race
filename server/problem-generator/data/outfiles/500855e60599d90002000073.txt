@@ -1,0 +1,25 @@
+My cursor happens to be on this line
+
+## Here is my unordered list
+   1. item 1
+      + it has some sub-items
+         - sometimes it has sub-sub-items
+      - i list some information about it
+   2. here is another item
+   3. and another
+      - with some random sub-item
+      - maybe with something in **bold** to make asterisks suck
+   4. woohoo I'm listing stuff like mad
+   5. I'm a mad pandoc'ing fool
+      - long-live **John MacFarlane**!
+      + reasons why pandoc is awesome
+         - there's just too many list
+         - but i'll put some more sub-sub-items for example
+         - superfluous - and + to make matching them a pain
+   6. woo look at these sexy bullet points
+   7. you almost don't want to turn them into integers
+   8. but then you do because you know it's the right thing to do
+
+## Here's some other stuff in the file
+   * blah blah blah
+   * maybe I should go with #. but then it's not readable in txt format

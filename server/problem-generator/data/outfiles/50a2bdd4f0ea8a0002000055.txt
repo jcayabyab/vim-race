@@ -1,0 +1,45 @@
+President                   Political Party            Dates in Office
+Abraham Lincoln             Republican                 1861–65
+Andrew Jackson              Democratic                 1829–37
+Andrew Johnson              Democratic/National Union  1865–69
+Barack Hussein Obama        Democratic                 2009–
+Benjamin Harrison           Republican                 1889–93
+Bill Clinton                Democratic                 1993–2001
+Calvin Coolidge             Republican                 1923–29
+Chester Alan Arthur         Republican                 1881–85
+Dwight David Eisenhower     Republican                 1953–61
+Franklin Delano Roosevelt   Democratic                 1933–45
+Franklin Pierce             Democratic                 1853–57
+George Herbert Walker Bush  Republican                 1989–93
+George Walker Bush          Republican                 2001–9
+George Washington                                      1789–97
+Gerald Rudolph Ford         Republican                 1974–77
+Grover Cleveland            Democratic                 1885–89
+Grover Cleveland            Democratic                 1893–97
+Harry S. Truman             Democratic                 1945–53
+Herbert Clark Hoover        Republican                 1929–33
+James Abram Garfield        Republican                 1881
+James Buchanan              Democratic                 1857–61
+James Knox Polk             Democratic                 1845–49
+James Madison               Democratic-Republican      1809–17
+James Monroe                Democratic-Republican      1817–25
+Jimmy Carter                Democratic                 1977–81
+John Adams                  Federalist                 1797–1801
+John Fitzgerald Kennedy     Democratic                 1961–63
+John Quincy Adams           Democratic-Republican      1825–29
+John Tyler                  Whig                       1841–45
+Lyndon Baines Johnson       Democratic                 1963–69
+Martin Van Buren            Democratic                 1837–41
+Millard Fillmore            Whig                       1850–53
+Richard Milhous Nixon       Republican                 1969–74
+Ronald Wilson Reagan        Republican                 1981–89
+Rutherford Birchard Hayes   Republican                 1877–81
+Theodore Roosevelt          Republican                 1901–9
+Thomas Jefferson            Democratic-Republican      1801–9
+Ulysses Simpson Grant       Republican                 1869–77
+Warren Gamaliel Harding     Republican                 1921–23
+William Henry Harrison      Whig                       1841
+William Howard Taft         Republican                 1909–13
+William McKinley            Republican                 1897–1901
+Woodrow Wilson              Democratic                 1913–21
+Zachary Taylor              Whig                       1849–50
