@@ -5,7 +5,7 @@ const ProblemGenerator = require("../problem-generator/ProblemGenerator");
 class GameHandler {
   constructor(io, player1, player2, socket1, socket2, showDebug = false) {
     this.gameId = this.generateGameId();
-    this.gameInfo = new GameInfo(player1, player2, this.generateGameId());
+    this.gameInfo = new GameInfo(this.generateGameId(), player1, player2);
     this.socket1 = socket1;
     this.socket2 = socket2;
     this.io = io;
@@ -122,7 +122,7 @@ class GameHandler {
       onKeystroke,
       onP1Disconnect,
       onP2Disconnect,
-      onSubmission
+      onSubmission,
     } = this;
 
     socket1.off(GameHandler.commands.KEYSTROKE, onKeystroke);
