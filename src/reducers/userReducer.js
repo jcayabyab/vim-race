@@ -1,11 +1,11 @@
 import { FETCH_USER } from "../actions/types";
 
-const userReducer = (state = null, action) => {
+// false means user has not loaded yet
+const userReducer = (state = false, action) => {
   switch (action.type) {
     case FETCH_USER:
-      // false means that the user is not logged in
-      // different from null - null means loading
-      return action.user || false;
+      // null means user is not logged in
+      return action.user || null;
     default:
       return state;
   }
