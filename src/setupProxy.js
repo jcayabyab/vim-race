@@ -8,4 +8,11 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    "/auth",
+    createProxyMiddleware({
+      target: "http://localhost:4001",
+      changeOrigin: true,
+    })
+  );
 };
