@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import NameInput from "./components/NameInput";
-import GameClient from "./components/GameClient/GameClient";
+import React, { useState, useEffect, useCallback } from "react";
+import Navbar from "./components/NavBar/NavBar";
+import { fetchUser } from "./actions/userActions";
+import { useDispatch } from "react-redux";
 
-function App() {
+const App = (props) => {
   const [username, setUsername] = useState(null);
+  const dispatch = useDispatch();
+
+  const fetchUserOnLoad = useCallback(async () => {
+    dispatch(await fetchUser());
+  }, [dispatch]);
+
+  // TODO: check if user is already logged in using a cookie or ls or something
+  useEffect(() => {
+    fetchUserOnLoad();
+  }, [fetchUserOnLoad]);
 
   return (
     <div className="App">
-      <NameInput onNameClick={(value) => setUsername(value)}></NameInput>
-      <div>{username && "Current username: " + username}</div>
-      <GameClient username={username}></GameClient>
+      <Navbar></Navbar>
+      {props.children}
     </div>
   );
-}
+};
 
 export default App;

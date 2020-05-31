@@ -59,6 +59,12 @@ export default function NavBar() {
         return <div>...</div>;
       case false:
         return (
+          <ButtonWrapper>
+            <a href="/auth/google">:login</a>
+          </ButtonWrapper>
+        );
+      default:
+        return (
           <React.Fragment>
             <ButtonWrapper>
               <Link to="/play">:play</Link>
@@ -67,15 +73,9 @@ export default function NavBar() {
               <Link to="/settings">:settings</Link>
             </ButtonWrapper>
             <ButtonWrapper>
-              <div>:logout</div>
+              <a href="/api/logout">:logout</a>
             </ButtonWrapper>
           </React.Fragment>
-        );
-      default:
-        return (
-          <ButtonWrapper>
-            <div>:login</div>
-          </ButtonWrapper>
         );
     }
   };
