@@ -3,10 +3,11 @@ const knex = require("./knex");
 module.exports = {
   findUserByGoogleId: async (googleId) => {
     try {
-      return await knex("users")
+      const user = await knex("users")
         .select()
         .where({ google_id: googleId })
         .first();
+      console.log(user);
     } catch (error) {
       console.log(error);
       throw error;
@@ -26,7 +27,7 @@ module.exports = {
         { google_id: googleId, last_sign_in_time: new Date() },
         ["id", "email", "last_sign_in_time"]
       );
-      return newUser;
+      return newUser[0];
     } catch (error) {
       console.log(error);
       throw error;
