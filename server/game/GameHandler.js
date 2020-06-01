@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
-const ProblemGenerator = require("../problem-generator/ProblemGenerator");
+const problemGenerator = require("../problem-generator/ProblemGenerator");
 
 class GameHandler {
   constructor(io, player1, player2, socket1, socket2, showDebug = false) {
@@ -10,7 +10,7 @@ class GameHandler {
     this.socket2 = socket2;
     this.io = io;
     this.showDebug = showDebug;
-    this.generator = new ProblemGenerator();
+    this.generator = problemGenerator;
 
     const { start, goal } = this.generator.generateProblem();
 

@@ -8,7 +8,6 @@ class ProblemGenerator {
     this.problems = [];
 
     this.readProblemsFromFiles();
-    console.log(this.problems);
   }
 
   debug(msg) {
@@ -57,4 +56,6 @@ class ProblemGenerator {
   }
 }
 
-module.exports = ProblemGenerator;
+const problemGenerator = new ProblemGenerator();
+
+module.exports = problemGenerator;

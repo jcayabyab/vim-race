@@ -188,7 +188,7 @@ export default function VimClient({ username, socket, isEditable, startText }) {
   return (
     <div>
       <canvas ref={canvasRef}></canvas>
-      <input style={INPUT_STYLE} value="" ref={inputRef}></input>
+      <input style={INPUT_STYLE} value="" readOnly ref={inputRef}></input>
     </div>
   );
 }
