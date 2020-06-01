@@ -4,6 +4,7 @@ import App from "./App";
 import LoggedInRoute from "./components/utils/LoggedInRoute";
 import HomePage from "./components/HomePage/HomePage";
 import LandingPage from "./components/LandingPage/LandingPage";
+import PlayPage from "./components/PlayPage/PlayPage";
 import RedirectRoute from "./components/utils/RedirectRoute";
 import { useSelector } from "react-redux";
 
@@ -15,8 +16,14 @@ export const Routes = (props) => {
         <RedirectRoute exact condition={user} redirect="/home" path="/">
           <LandingPage></LandingPage>
         </RedirectRoute>
-        <LoggedInRoute exact path="/home" redirect="/">
+        <LoggedInRoute exact path="/home">
           <HomePage></HomePage>
+        </LoggedInRoute>
+        <LoggedInRoute exact path="/home">
+          <HomePage></HomePage>
+        </LoggedInRoute>
+        <LoggedInRoute exact path="/play">
+          <PlayPage></PlayPage>
         </LoggedInRoute>
       </Switch>
     </App>
