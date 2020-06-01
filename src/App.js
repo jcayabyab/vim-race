@@ -4,7 +4,6 @@ import { fetchUser } from "./actions/userActions";
 import { useDispatch } from "react-redux";
 
 const App = (props) => {
-  const [username, setUsername] = useState(null);
   const dispatch = useDispatch();
 
   const fetchUserOnLoad = useCallback(async () => {

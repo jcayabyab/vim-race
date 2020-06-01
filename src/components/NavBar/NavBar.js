@@ -55,9 +55,9 @@ export default function NavBar() {
 
   const renderNavbarButtons = () => {
     switch (user) {
-      case null:
-        return <div>...</div>;
       case false:
+        return <div>...</div>;
+      case null:
         return (
           <ButtonWrapper>
             <a href="/auth/google">:login</a>

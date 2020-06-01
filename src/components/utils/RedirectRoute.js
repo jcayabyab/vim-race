@@ -10,7 +10,7 @@ export default ({ children, condition, redirect, ...rest }) => {
           <Redirect
             to={{
               pathname: redirect,
-              state: { from: location }
+              state: { from: location },
             }}
           ></Redirect>
         ) : (
