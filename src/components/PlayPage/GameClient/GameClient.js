@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import VimClient from "./VimClient";
 import { useSelector } from "react-redux";
+import styled from "styled-components";
+
+const ClientComponent = styled.div`
+  
+`
 
 const useSocket = (endpoint) => {
   const [socket, setSocket] = useState(null);
@@ -23,7 +28,7 @@ export default function GameClient() {
   // change to username later
   const username = useSelector((state) => state.user.id);
   console.log(username);
-  const [clientState, setClientState] = useState("IDLE");
+  const [clientState, setClientState] = useState("PLAYING");
   const [opponentName, setOpponentName] = useState(null);
   const [startText, setStartText] = useState(null);
   const [goalText, setGoalText] = useState(null);
@@ -94,7 +99,7 @@ export default function GameClient() {
       return <div>Waiting for opponent...</div>;
     case STATES.PLAYING:
       return (
-        <div>
+        <ClientComponent>
           <VimClient
             socket={socket}
             isEditable={true}
@@ -108,6 +113,7 @@ export default function GameClient() {
             username={opponentName}
             startText={startText}
             goalText={goalText}
+            scale={0.7}
           ></VimClient>
           <div>Goal:</div>
           <div
@@ -118,7 +124,7 @@ export default function GameClient() {
           >
             {goalText}
           </div>
-        </div>
+        </ClientComponent>
       );
     default:
       return <div>{clientState}</div>;

@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
+import styled from "styled-components";
+import vimOptions from "./vimOptions";
 
-export default function VimClient({ username, socket, isEditable, startText }) {
+const VimCanvas = styled.canvas`
+  width: 600px;
+  height: 400px;
+`;
+
+export default function VimClient({
+  username,
+  socket,
+  isEditable,
+  startText,
+  scale = 1,
+}) {
   // maybe move vim logic inside of here
   // we would need to initialize this when it's rendered,
   // then setup event listeners, then setup socket
@@ -18,7 +31,10 @@ export default function VimClient({ username, socket, isEditable, startText }) {
         return String.fromCharCode.apply(null, new Uint8Array(buf));
       };
       // trim to remove whitespace added at beginning
-      socket.emit("validate", { username, submission: ab2str(contents).trim() });
+      socket.emit("validate", {
+        username,
+        submission: ab2str(contents).trim(),
+      });
     }
   };
 
@@ -28,6 +44,7 @@ export default function VimClient({ username, socket, isEditable, startText }) {
       setVimInitialized(true);
     },
     onFileExport: validateSubmission,
+    ...vimOptions,
   });
 
   const writeToTerminal = useCallback(
@@ -61,117 +78,117 @@ export default function VimClient({ username, socket, isEditable, startText }) {
     [vim]
   );
 
-  useEffect(() => {
-    if (vimInitialized && startText) {
-      // load into vim client on startup
-      // set timeout - screen needs to appear before writing to buffer
-      setTimeout(() => writeToTerminal(startText), 100);
-      console.log("initialized");
-    }
-  }, [startText, vimInitialized, writeToTerminal]);
+  // useEffect(() => {
+  //   if (vimInitialized && startText) {
+  //     // load into vim client on startup
+  //     // set timeout - screen needs to appear before writing to buffer
+  //     setTimeout(() => writeToTerminal(startText), 100);
+  //     console.log("initialized");
+  //   }
+  // }, [startText, vimInitialized, writeToTerminal]);
 
-  // remove initial onKeyDown event listener
-  useEffect(() => {
-    // remove already existing event listener to
-    // intercept key pressesk
-    if (vimInitialized && socket && username) {
-      vim.screen.input.elem.removeEventListener(
-        "keydown",
-        vim.screen.input.onKeydown,
-        { capture: true }
-      );
-    }
-  }, [vimInitialized, vim, socket, username]);
+  // // remove initial onKeyDown event listener
+  // useEffect(() => {
+  //   // remove already existing event listener to
+  //   // intercept key pressesk
+  //   if (vimInitialized && socket && username) {
+  //     vim.screen.input.elem.removeEventListener(
+  //       "keydown",
+  //       vim.screen.input.onKeydown,
+  //       { capture: true }
+  //     );
+  //   }
+  // }, [vimInitialized, vim, socket, username]);
 
-  // add socket logic
-  useEffect(() => {
-    // wrapper around notifyKeyEvent for sending and receiving events
-    // based from onkeyDown function inside of vimwasm.ts, but adapted
-    // to handle slimmed down event, i.e., removes preventDefault()
-    // and stopPropagation()
-    const handleEvent = (event) => {
-      let key = event.key;
-      const ctrl = event.ctrlKey;
-      const shift = event.shiftKey;
-      const alt = event.altKey;
-      const meta = event.metaKey;
+  // // add socket logic
+  // useEffect(() => {
+  //   // wrapper around notifyKeyEvent for sending and receiving events
+  //   // based from onkeyDown function inside of vimwasm.ts, but adapted
+  //   // to handle slimmed down event, i.e., removes preventDefault()
+  //   // and stopPropagation()
+  //   const handleEvent = (event) => {
+  //     let key = event.key;
+  //     const ctrl = event.ctrlKey;
+  //     const shift = event.shiftKey;
+  //     const alt = event.altKey;
+  //     const meta = event.metaKey;
 
-      if (key.length > 1) {
-        if (
-          key === "Unidentified" ||
-          (ctrl && key === "Control") ||
-          (shift && key === "Shift") ||
-          (alt && key === "Alt") ||
-          (meta && key === "Meta")
-        ) {
-          return;
-        }
-      }
+  // if (key.length > 1) {
+  //   if (
+  //     key === "Unidentified" ||
+  //     (ctrl && key === "Control") ||
+  //     (shift && key === "Shift") ||
+  //     (alt && key === "Alt") ||
+  //     (meta && key === "Meta")
+  //   ) {
+  //     return;
+  //   }
+  // }
 
-      // Note: Yen needs to be fixed to backslash
-      // Note: Also check event.code since Ctrl + yen is recognized as Ctrl + | due to Chrome bug.
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=871650
-      if (
-        key === "\u00A5" ||
-        (!shift && key === "|" && event.code === "IntlYen")
-      ) {
-        key = "\\";
-      }
+  // // Note: Yen needs to be fixed to backslash
+  // // Note: Also check event.code since Ctrl + yen is recognized as Ctrl + | due to Chrome bug.
+  // // https://bugs.chromium.org/p/chromium/issues/detail?id=871650
+  // if (
+  //   key === "\u00A5" ||
+  //   (!shift && key === "|" && event.code === "IntlYen")
+  // ) {
+  //   key = "\\";
+  // }
 
-      vim.worker.notifyKeyEvent(key, event.keyCode, ctrl, shift, alt, meta);
-    };
+  //   vim.worker.notifyKeyEvent(key, event.keyCode, ctrl, shift, alt, meta);
+  // };
 
-    if (vimInitialized && username && socket)
-      // add socket listener
-      socket.on("keystroke", (data) => {
-        if (data.username === username) {
-          handleEvent(data.event);
-        }
-      });
-  }, [vim, vimInitialized, socket, username]);
+  //   if (vimInitialized && username && socket)
+  //     // add socket listener
+  //     socket.on("keystroke", (data) => {
+  //       if (data.username === username) {
+  //         handleEvent(data.event);
+  //       }
+  //     });
+  // }, [vim, vimInitialized, socket, username]);
 
-  // handles isEditable logic - adds/removes event listener
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      e.preventDefault();
-      const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
-      socket.emit("keystroke", {
-        event: {
-          key,
-          keyCode,
-          code,
-          ctrlKey,
-          shiftKey,
-          altKey,
-          metaKey,
-        },
-        username,
-      });
+  // // handles isEditable logic - adds/removes event listener
+  // useEffect(() => {
+  //   const handleKeyDown = (e) => {
+  //     e.preventDefault();
+  //     const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
+  //     socket.emit("keystroke", {
+  //       event: {
+  //         key,
+  //         keyCode,
+  //         code,
+  //         ctrlKey,
+  //         shiftKey,
+  //         altKey,
+  //         metaKey,
+  //       },
+  //       username,
+  //     });
 
-      // client side validation
-      // vim.cmdline("export submission");
-    };
+  //   // client side validation
+  //   // vim.cmdline("export submission");
+  // };
 
-    if (vimInitialized) {
-      // in case editable logic needs to change in the future, e.g., on winner declaration
-      if (isEditable && !listenerEnabled) {
-        vim.screen.input.elem.addEventListener("keydown", handleKeyDown);
-        setListenerEnabled(true);
-      }
-      if (!isEditable && listenerEnabled) {
-        vim.screen.input.elem.removeEventListener("keydown", handleKeyDown);
-        setListenerEnabled(false);
-      }
-    }
-  }, [
-    isEditable,
-    listenerEnabled,
-    setListenerEnabled,
-    vim,
-    vimInitialized,
-    socket,
-    username,
-  ]);
+  //   if (vimInitialized) {
+  //     // in case editable logic needs to change in the future, e.g., on winner declaration
+  //     if (isEditable && !listenerEnabled) {
+  //       vim.screen.input.elem.addEventListener("keydown", handleKeyDown);
+  //       setListenerEnabled(true);
+  //     }
+  //     if (!isEditable && listenerEnabled) {
+  //       vim.screen.input.elem.removeEventListener("keydown", handleKeyDown);
+  //       setListenerEnabled(false);
+  //     }
+  //   }
+  // }, [
+  //   isEditable,
+  //   listenerEnabled,
+  //   setListenerEnabled,
+  //   vim,
+  //   vimInitialized,
+  //   socket,
+  //   username,
+  // ]);
 
   const INPUT_STYLE = {
     width: "1px",
@@ -187,7 +204,7 @@ export default function VimClient({ username, socket, isEditable, startText }) {
 
   return (
     <div>
-      <canvas ref={canvasRef}></canvas>
+      <VimCanvas scale={scale} ref={canvasRef}></VimCanvas>
       <input style={INPUT_STYLE} value="" readOnly ref={inputRef}></input>
     </div>
   );
