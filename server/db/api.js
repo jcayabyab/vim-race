@@ -14,7 +14,7 @@ module.exports = {
     }
   },
   findUserById: (userId) => {
-    return knex("users").select().where({ id: userId });
+    return knex("users").select().where({ id: userId }).first();
   },
   updateUserTimeById: (userId) => {
     return knex("users")

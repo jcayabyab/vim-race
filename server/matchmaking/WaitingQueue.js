@@ -11,11 +11,11 @@ class WaitingQueue {
     }
   }
 
-  addPlayer(username, socket) {
-    if (this.queue.get(username)) {
-      this.debug('Warning: User "' + username + '" already in waiting queue');
+  addPlayer(id, socket) {
+    if (this.queue.get(id)) {
+      this.debug('Warning: User with id "' + id + '" already in waiting queue');
     }
-    this.queue.set(username, socket);
+    this.queue.set(id, socket);
   }
 
   getNextPlayers() {
@@ -23,16 +23,20 @@ class WaitingQueue {
   }
 
   getNextPlayer() {
-    const [username, socket] = this.queue.entries().next().value;
+    const [id, socket] = this.queue.entries().next().value;
 
-    this.removePlayerFromQueue(username);
+    this.removePlayerFromQueue(id);
 
-    return [username, socket];
+    return [id, socket];
   }
 
-  removePlayerFromQueue(username) {
+  removePlayerFromQueue(id) {
     // if user not in queue, nothing happens
-    this.queue.delete(username);
+    this.queue.delete(id);
+  }
+
+  playerInQueue(id) {
+    return queue.has(id);
   }
 
   size() {

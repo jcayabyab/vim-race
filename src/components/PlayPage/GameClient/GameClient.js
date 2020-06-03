@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-import VimClient from "./VimClient";
+import LeftClient from "./LeftClient";
+import RightClient from "./RightClient";
 import { useSelector } from "react-redux";
+import STATES from "./states";
 import styled from "styled-components";
 
-const ClientComponent = styled.div`
-  
-`
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const useSocket = (endpoint) => {
   const [socket, setSocket] = useState(null);
@@ -26,17 +29,13 @@ const useSocket = (endpoint) => {
 
 export default function GameClient() {
   // change to username later
-  const username = useSelector((state) => state.user.id);
-  console.log(username);
-  const [clientState, setClientState] = useState("PLAYING");
-  const [opponentName, setOpponentName] = useState(null);
+  const user = useSelector((state) => state.user);
+  const [clientState, setClientState] = useState(STATES.IDLE);
+  const [opponent, setOpponent] = useState(null);
   const [startText, setStartText] = useState(null);
   const [goalText, setGoalText] = useState(null);
-  const [STATES] = useState({
-    IDLE: "IDLE",
-    SEARCHING: "SEARCHING",
-    PLAYING: "PLAYING",
-  });
+  const [userInitialized, setUserInitialized] = useState(false);
+  const [opponentInitialized, setOpponentInitialized] = useState(false);
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     "http://184.64.21.125:4001"
@@ -44,89 +43,73 @@ export default function GameClient() {
 
   // setup to listen for start and finish
   useEffect(() => {
-    if (socket && !socketInitialized && username) {
-      socket.on("start", (data) => {
-        setClientState(STATES.PLAYING);
+    if (socket && !socketInitialized && user) {
+      socket.on("match found", (data) => {
+        setClientState(STATES.LOADING);
         // set based on your own username
-        setOpponentName(
-          data.player1 === username ? data.player2 : data.player1
-        );
+        setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
         setStartText(data.startText);
         setGoalText(data.goalText);
       });
       socket.on("finish", (data) => {
-        console.log(data.winner);
-        if (data.winner === username) {
-          alert("You, " + username + ", have won!");
+        console.log(data.winnerId);
+        if (data.winnerId === user.id) {
+          alert("You, " + (user.username || "player") + ", have won!");
         } else {
-          alert("You, " + username + ", have lost!");
+          alert("You, " + (user.username || "player") + ", have lost!");
         }
         setClientState(STATES.IDLE);
       });
       socket.on("fail", (data) => {
         console.log("Your bad submission: ", data.submission);
       });
+      socket.on("start", () => {
+        console.log("start");
+        setClientState(STATES.PLAYING);
+      });
 
       setSocketInitialized(true);
     }
-  }, [
-    STATES,
-    socket,
-    socketInitialized,
-    setSocketInitialized,
-    setOpponentName,
-    username,
-  ]);
+  }, [socket, socketInitialized, setSocketInitialized, setOpponent, user]);
+
+  useEffect(() => {
+    if (userInitialized && opponentInitialized) {
+      socket.emit("loaded", { id: user.id });
+    }
+  }, [socket, userInitialized, opponentInitialized]);
 
   const handleSearch = () => {
-    if (username) {
-      socket.emit("request match", { username });
+    console.log(user);
+    if (user) {
+      socket.emit("request match", { id: user.id });
       setClientState(STATES.SEARCHING);
     } else {
       console.log("username not established");
     }
   };
 
-  switch (clientState) {
-    case STATES.IDLE:
-      return (
-        <div>
-          <div>Idle</div>
-          {username && <button onClick={handleSearch}>Search for game</button>}
-        </div>
-      );
-    case STATES.SEARCHING:
-      return <div>Waiting for opponent...</div>;
-    case STATES.PLAYING:
-      return (
-        <ClientComponent>
-          <VimClient
+  return (
+    <Wrapper>
+      {socketInitialized && (
+        <React.Fragment>
+          <LeftClient
             socket={socket}
-            isEditable={true}
-            username={username}
+            user={user}
             startText={startText}
             goalText={goalText}
-          ></VimClient>
-          <VimClient
+            gameState={clientState}
+            handleClientInit={() => setUserInitialized(true)}
+          ></LeftClient>
+          <RightClient
             socket={socket}
-            isEditable={false}
-            username={opponentName}
+            opponent={opponent}
             startText={startText}
-            goalText={goalText}
-            scale={0.7}
-          ></VimClient>
-          <div>Goal:</div>
-          <div
-            style={{
-              whiteSpace: "pre-wrap",
-              fontFamily: "Consolas, monospace",
-            }}
-          >
-            {goalText}
-          </div>
-        </ClientComponent>
-      );
-    default:
-      return <div>{clientState}</div>;
-  }
+            gameState={clientState}
+            handleSearch={handleSearch}
+            handleClientInit={() => setOpponentInitialized(true)}
+          ></RightClient>
+        </React.Fragment>
+      )}
+    </Wrapper>
+  );
 }

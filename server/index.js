@@ -52,14 +52,14 @@ io.on("connection", (socket) => {
   socket.on("request match", (data) => {
     if (idle) {
       // prevent user from connecting multiple times
-      username = data.username;
+      const id = data.id;
       console.log(data.username + " requested match");
       // matchmaking logic
-      matchmaker.handleRequest(data.username, socket);
+      matchmaker.handleRequest(id, socket);
       // need a way to check if user is searching or playing a game quickly
       idle = false;
     } else {
-      console.log("user already connected as " + username);
+      console.log("user already connected as " + id);
     }
   });
 });

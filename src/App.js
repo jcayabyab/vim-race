@@ -2,6 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "./components/NavBar/NavBar";
 import { fetchUser } from "./actions/userActions";
 import { useDispatch } from "react-redux";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -16,9 +23,9 @@ const App = (props) => {
   }, [fetchUserOnLoad]);
 
   return (
-    <div className="App">
+    <div>
       <Navbar></Navbar>
-      {props.children}
+      <Wrapper>{props.children}</Wrapper>
     </div>
   );
 };

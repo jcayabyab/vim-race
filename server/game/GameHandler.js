@@ -11,6 +11,8 @@ class GameHandler {
     this.io = io;
     this.showDebug = showDebug;
     this.generator = problemGenerator;
+    this.player1Loaded = false;
+    this.player2Loaded = false;
 
     const { start, goal } = this.generator.generateProblem();
 
@@ -22,6 +24,7 @@ class GameHandler {
     this.onP2Disconnect = this.onP2Disconnect.bind(this);
     this.onKeystroke = this.onKeystroke.bind(this);
     this.onSubmission = this.onSubmission.bind(this);
+    this.onLoad = this.onLoad.bind(this);
 
     if (showDebug) {
       console.log("GameHandler class in debug mode");
@@ -54,9 +57,9 @@ class GameHandler {
     const { player1, player2, gameId } = this.gameInfo;
 
     this.debug(
-      "Player " + disconnectedPlayer + " disconnected from game " + gameId
+      "Player " + disconnectedPlayer.id + " disconnected from game " + gameId
     );
-    const gameWinner = disconnectedPlayer == player1 ? player2 : player1;
+    const gameWinner = disconnectedPlayer === player1 ? player2 : player1;
     this.finish(gameWinner);
   }
 
@@ -80,18 +83,37 @@ class GameHandler {
   }
 
   onSubmission(data) {
-    this.debug(data.username + " submitted: " + data.submission);
+    this.debug(data.id + " submitted: " + data.submission);
     if (data.submission.trim() === this.goalText.trim()) {
-      this.finish(data.username);
+      this.finish(data.id);
     } else {
       let socketId = this.socket1.id;
-      if (data.username === this.gameInfo.player2) {
+      if (data.id === this.gameInfo.player2.id) {
         socketId = this.socket2.id;
       }
       // send bad submission back to them
       this.io
         .to(socketId)
         .emit(GameHandler.commands.FAIL, { submission: data.submission });
+    }
+  }
+
+  // data: {id}
+  onLoad(data) {
+    const { player1, player2, gameId } = this.gameInfo;
+    this.debug(data.id + " loaded");
+    console.log(data.id, player1);
+    if (data.id === player1.id) {
+      this.player1Loaded = true;
+    }
+    if (data.id === player2.id) {
+      this.player2Loaded = true;
+    }
+    console.log(this.player1Loaded, this.player2Loaded);
+    if (this.player1Loaded && this.player2Loaded) {
+      console.log("ready to go");
+      // emit start to all users in game
+      this.io.to(gameId).emit(GameHandler.commands.START);
     }
   }
 
@@ -103,6 +125,7 @@ class GameHandler {
       onP1Disconnect,
       onP2Disconnect,
       onSubmission,
+      onLoad,
     } = this;
 
     socket1.on(GameHandler.commands.KEYSTROKE, onKeystroke);
@@ -113,6 +136,9 @@ class GameHandler {
 
     socket1.on(GameHandler.commands.VALIDATE, onSubmission);
     socket2.on(GameHandler.commands.VALIDATE, onSubmission);
+
+    socket1.on(GameHandler.commands.LOADED, onLoad);
+    socket2.on(GameHandler.commands.LOADED, onLoad);
   }
 
   removeListeners() {
@@ -123,6 +149,7 @@ class GameHandler {
       onP1Disconnect,
       onP2Disconnect,
       onSubmission,
+      onLoad,
     } = this;
 
     socket1.off(GameHandler.commands.KEYSTROKE, onKeystroke);
@@ -133,6 +160,9 @@ class GameHandler {
 
     socket1.off(GameHandler.commands.VALIDATE, onSubmission);
     socket2.off(GameHandler.commands.VALIDATE, onSubmission);
+
+    socket1.off(GameHandler.commands.LOADED, onLoad);
+    socket2.off(GameHandler.commands.LOADED, onLoad);
   }
 
   start() {
@@ -144,8 +174,8 @@ class GameHandler {
     }
 
     this.debug("Game " + gameId + " started");
-    // emit start to all users in game
-    this.io.to(gameId).emit(GameHandler.commands.START, {
+    // emit match found
+    this.io.to(gameId).emit(GameHandler.commands.MATCH_FOUND, {
       player1: player1,
       player2: player2,
       gameId: gameId,
@@ -164,7 +194,7 @@ class GameHandler {
 
     this.io
       .to(gameId)
-      .emit(GameHandler.commands.FINISH, { winner: this.gameInfo.winner });
+      .emit(GameHandler.commands.FINISH, { winnerId: this.gameInfo.winner.id });
 
     this.gameInfo.state = GameInfo.states.finished;
 
@@ -187,6 +217,8 @@ GameHandler.commands = {
   DISCONNECT: "disconnect",
   VALIDATE: "validate",
   FAIL: "fail",
+  LOADED: "loaded",
+  MATCH_FOUND: "match found",
 };
 
 module.exports = GameHandler;

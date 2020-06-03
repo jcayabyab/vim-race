@@ -1,0 +1,6 @@
+export default {
+  IDLE: "IDLE",
+  SEARCHING: "SEARCHING",
+  LOADING: "LOADING",
+  PLAYING: "PLAYING",
+};
