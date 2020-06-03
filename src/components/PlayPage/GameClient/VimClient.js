@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import styled from "styled-components";
 import vimOptions from "./vimOptions";
+import STATES from "./states";
 
 const VimCanvas = styled.canvas`
   width: 600px;
@@ -14,7 +15,8 @@ export default function VimClient({
   isEditable,
   startText,
   handleClientInit,
-  userClient
+  userClient,
+  gameState,
 }) {
   // maybe move vim logic inside of here
   // we would need to initialize this when it's rendered,
@@ -81,30 +83,32 @@ export default function VimClient({
   );
 
   useEffect(() => {
-    if (vimInitialized && startText) {
+    if (vimInitialized) {
+      if (handleClientInit) {
+        handleClientInit();
+      }
+    }
+    if(vimInitialized && startText && gameState === STATES.PLAYING) {
       // load into vim client on startup
       // set timeout - screen needs to appear before writing to buffer
-    // failsafe in case this function isn't passed down
-    if (handleClientInit) {
-      handleClientInit();
-    }
+      // failsafe in case this function isn't passed down
       setTimeout(() => writeToTerminal(startText), 100);
       console.log("initialized");
     }
-  }, [startText, vimInitialized, writeToTerminal]);
+  }, [handleClientInit, startText, vimInitialized, writeToTerminal, gameState]);
 
   // remove initial onKeyDown event listener
   useEffect(() => {
     // remove already existing event listener to
-    // intercept key pressesk
-    if (vimInitialized && socket && user) {
+    // intercept key presses when game starts
+    if (vimInitialized && socket && user && gameState === STATES.PLAYING) {
       vim.screen.input.elem.removeEventListener(
         "keydown",
         vim.screen.input.onKeydown,
         { capture: true }
       );
     }
-  }, [vimInitialized, vim, socket, user]);
+  }, [gameState, vimInitialized, vim, socket, user]);
 
   // add socket logic
   useEffect(() => {
@@ -119,30 +123,30 @@ export default function VimClient({
       const alt = event.altKey;
       const meta = event.metaKey;
 
-  if (key.length > 1) {
-    if (
-      key === "Unidentified" ||
-      (ctrl && key === "Control") ||
-      (shift && key === "Shift") ||
-      (alt && key === "Alt") ||
-      (meta && key === "Meta")
-    ) {
-      return;
-    }
-  }
+      if (key.length > 1) {
+        if (
+          key === "Unidentified" ||
+          (ctrl && key === "Control") ||
+          (shift && key === "Shift") ||
+          (alt && key === "Alt") ||
+          (meta && key === "Meta")
+        ) {
+          return;
+        }
+      }
 
-  // Note: Yen needs to be fixed to backslash
-  // Note: Also check event.code since Ctrl + yen is recognized as Ctrl + | due to Chrome bug.
-  // https://bugs.chromium.org/p/chromium/issues/detail?id=871650
-  if (
-    key === "\u00A5" ||
-    (!shift && key === "|" && event.code === "IntlYen")
-  ) {
-    key = "\\";
-  }
+      // Note: Yen needs to be fixed to backslash
+      // Note: Also check event.code since Ctrl + yen is recognized as Ctrl + | due to Chrome bug.
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=871650
+      if (
+        key === "\u00A5" ||
+        (!shift && key === "|" && event.code === "IntlYen")
+      ) {
+        key = "\\";
+      }
 
-    vim.worker.notifyKeyEvent(key, event.keyCode, ctrl, shift, alt, meta);
-  };
+      vim.worker.notifyKeyEvent(key, event.keyCode, ctrl, shift, alt, meta);
+    };
 
     if (vimInitialized && user && socket)
       // add socket listener
@@ -171,9 +175,9 @@ export default function VimClient({
         id: user.id,
       });
 
-    // client side validation
-    // vim.cmdline("export submission");
-  };
+      // client side validation
+      // vim.cmdline("export submission");
+    };
 
     // in case editable logic needs to change in the future, e.g., on winner declaration
     if (vimInitialized) {

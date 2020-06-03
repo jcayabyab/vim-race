@@ -8,7 +8,9 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 
 const useSocket = (endpoint) => {
@@ -72,6 +74,7 @@ export default function GameClient() {
   }, [socket, socketInitialized, setSocketInitialized, setOpponent, user]);
 
   useEffect(() => {
+    console.log({userInitialized, opponentInitialized})
     if (userInitialized && opponentInitialized) {
       socket.emit("loaded", { id: user.id });
     }
