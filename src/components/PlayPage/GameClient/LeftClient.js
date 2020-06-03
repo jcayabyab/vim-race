@@ -11,6 +11,8 @@ const GoalBox = styled.div`
   font-family: "Lucida Console", "Consolas", monospace;
   white-space: pre-wrap;
   font-size: 11px;
+  overflow: scroll;
+  min-height: 300px;
 `;
 
 const GoalHeader = styled.div`

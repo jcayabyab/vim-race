@@ -52,7 +52,6 @@ export default function GameClient() {
         setGoalText(data.goalText);
       });
       socket.on("finish", (data) => {
-        console.log(data.winnerId);
         if (data.winnerId === user.id) {
           alert("You, " + (user.username || "player") + ", have won!");
         } else {
