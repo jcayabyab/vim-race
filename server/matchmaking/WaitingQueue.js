@@ -36,7 +36,7 @@ class WaitingQueue {
   }
 
   playerInQueue(id) {
-    return queue.has(id);
+    return this.queue.has(id);
   }
 
   size() {

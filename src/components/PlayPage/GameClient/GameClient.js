@@ -9,7 +9,7 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
 `;
 
@@ -35,9 +35,9 @@ const useSocketFunctions = (
   setSocketInitialized,
   user,
   setClientState,
-  setOpponent,
   setStartText,
-  setGoalText
+  setGoalText,
+  setOpponent
 ) => {
   const handleMatchFound = useCallback(() => {
     socket.on("match found", (data) => {
@@ -57,11 +57,8 @@ const useSocketFunctions = (
         alert("You, " + (user.username || "player") + ", have lost!");
       }
       setClientState(STATES.IDLE);
-      setOpponent(null);
-      setStartText(null);
-      setGoalText(null);
     });
-  }, [socket, setClientState, user, setOpponent, setStartText, setGoalText]);
+  }, [socket, setClientState, user]);
 
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
@@ -106,6 +103,7 @@ const useSocketFunctions = (
 
   // setup to listen for start and finish
   useEffect(() => {
+    // socketIntialized to ensure these listeners are only defined once
     if (socket && !socketInitialized && user) {
       handleMatchFound();
       handleMatchFinish();
@@ -160,9 +158,9 @@ export default function GameClient() {
     setSocketInitialized,
     user,
     setClientState,
-    setOpponent,
     setStartText,
-    setGoalText
+    setGoalText,
+    setOpponent
   );
 
   useEffect(() => {
@@ -170,6 +168,17 @@ export default function GameClient() {
       handleTerminalsLoaded();
     }
   }, [userInitialized, opponentInitialized, handleTerminalsLoaded]);
+
+  // reset after game ended
+  useEffect(() => {
+    if (clientState === STATES.IDLE) {
+      setOpponent(null);
+      setStartText(null);
+      setGoalText(null);
+      setUserInitialized(false);
+      setOpponentInitialized(false);
+    }
+  }, [clientState, setUserInitialized, setOpponentInitialized]);
 
   const handleSearch = () => {
     if (user) {

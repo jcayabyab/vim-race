@@ -36,30 +36,27 @@ app.use(authRoutes);
 
 io.on("connection", (socket) => {
   // username of player - variables on a per-socket basis
-  let username = null;
-  let idle = true;
+  let id = null;
 
   socket.on("disconnect", () => {
-    console.log("client disconnected: " + username);
+    console.log("client disconnected: " + id);
     // should have them leave the game here
     // also pop them off of waiting queue
-    if (username) {
-      matchmaker.waitingQueue.removePlayerFromQueue(username);
+    if (id) {
+      matchmaker.waitingQueue.removePlayerFromQueue(id);
     }
   });
 
   // data: { username: String }
   socket.on("request match", (data) => {
-    const id = data.id;
-    if (idle) {
+    id = data.id;
+    if (matchmaker.playerIdActive(id)) {
+      console.log("user already connected as " + id);
+    } else {
       // prevent user from connecting multiple times
       console.log(data.username + " requested match");
       // matchmaking logic
       matchmaker.handleRequest(id, socket);
-      // need a way to check if user is searching or playing a game quickly
-      idle = false;
-    } else {
-      console.log("user already connected as " + id);
     }
   });
 });

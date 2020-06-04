@@ -3,7 +3,15 @@ const GameInfo = require("./GameInfo");
 const problemGenerator = require("../problem-generator/ProblemGenerator");
 
 class GameHandler {
-  constructor(io, player1, player2, socket1, socket2, showDebug = false) {
+  constructor(
+    io,
+    player1,
+    player2,
+    socket1,
+    socket2,
+    handleFinish,
+    showDebug = false
+  ) {
     this.gameId = this.generateGameId();
     this.gameInfo = new GameInfo(this.generateGameId(), player1, player2);
     this.socket1 = socket1;
@@ -13,6 +21,7 @@ class GameHandler {
     this.generator = problemGenerator;
     this.player1Loaded = false;
     this.player2Loaded = false;
+    this.handleFinish = handleFinish;
 
     const { start, goal } = this.generator.generateProblem();
 
@@ -118,6 +127,7 @@ class GameHandler {
     }
     if (this.player1Loaded && this.player2Loaded) {
       // emit start to all users in game
+      this.debug("Game " + gameId + " started");
       this.io.to(gameId).emit(GameHandler.commands.START);
     }
   }
@@ -178,9 +188,8 @@ class GameHandler {
       throw "Start method called before game was initialized";
     }
 
-    this.debug("Game " + gameId + " started");
-    this.debug(player1);
-    this.debug(player2);
+    this.debug("Game " + gameId + " waiting for clients to load");
+    this.debug("Player IDs: " + player1.id + ", " + player2.id);
     // emit match found
     this.io.to(gameId).emit(GameHandler.commands.MATCH_FOUND, {
       player1: player1,
@@ -210,6 +219,9 @@ class GameHandler {
     // remove sockets from previously created room
     this.socket1.leave(gameId);
     this.socket2.leave(gameId);
+
+    // callback from matchmaker
+    this.handleFinish(this);
   }
 
   generateGameId() {
