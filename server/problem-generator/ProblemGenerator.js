@@ -2,12 +2,18 @@ const fs = require("fs");
 const path = require("path");
 
 class ProblemGenerator {
-  constructor(showDebug) {
+  constructor(showDebug, dummyProblem) {
     this.showDebug = showDebug;
 
     this.problems = [];
 
-    this.readProblemsFromFiles();
+    if (!dummyProblem) {
+      this.readProblemsFromFiles();
+    } else {
+      const startText = `Hello, universe!`;
+      const goalText = `Hello, world!`;
+      this.problems.push([startText, goalText]);
+    }
   }
 
   debug(msg) {
@@ -56,6 +62,6 @@ class ProblemGenerator {
   }
 }
 
-const problemGenerator = new ProblemGenerator();
+const problemGenerator = new ProblemGenerator(false, true);
 
 module.exports = problemGenerator;
