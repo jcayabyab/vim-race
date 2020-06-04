@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import LeftClient from "./LeftClient";
 import RightClient from "./RightClient";
@@ -29,6 +29,108 @@ const useSocket = (endpoint) => {
   return [socket, socketInitialized, setSocketInitialized];
 };
 
+const useSocketFunctions = (
+  socket,
+  socketInitialized,
+  setSocketInitialized,
+  user,
+  setClientState,
+  setOpponent,
+  setStartText,
+  setGoalText
+) => {
+  const handleMatchFound = useCallback(() => {
+    socket.on("match found", (data) => {
+      setClientState(STATES.LOADING);
+      // set based on your own username
+      setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
+      setStartText(data.startText);
+      setGoalText(data.goalText);
+    });
+  }, [user, socket, setStartText, setGoalText, setClientState, setOpponent]);
+
+  const handleMatchFinish = useCallback(() => {
+    socket.on("finish", (data) => {
+      if (data.winnerId === user.id) {
+        alert("You, " + (user.username || "player") + ", have won!");
+      } else {
+        alert("You, " + (user.username || "player") + ", have lost!");
+      }
+      setClientState(STATES.IDLE);
+    });
+  }, [socket, setClientState, user]);
+
+  const handleSubmissionFail = useCallback(() => {
+    socket.on("fail", (data) => {
+      console.log("Your bad submission: ", data.submission);
+    });
+  }, [socket]);
+
+  const handleGameStart = useCallback(() => {
+    socket.on("start", () => {
+      setClientState(STATES.PLAYING);
+    });
+  }, [socket, setClientState]);
+
+  const handleTerminalsLoaded = useCallback(() => {
+    socket.emit("loaded", { id: user.id });
+  }, [user, socket]);
+
+  const sendSearchReqToSocket = useCallback(() => {
+    socket.emit("request match", { id: user.id });
+  }, [user, socket]);
+
+  const sendSubmissionToSocket = useCallback(
+    (submissionText) => {
+      socket.emit("validate", {
+        id: user.id,
+        submission: submissionText,
+      });
+    },
+    [user, socket]
+  );
+
+  const handleKeystrokeReceived = useCallback(
+    (handleKeystrokeEvent, terminalUser) => {
+      socket.on("keystroke", (data) => {
+        if (data.id === terminalUser.id) {
+          handleKeystrokeEvent(data.event);
+        }
+      });
+    }
+  );
+
+  // setup to listen for start and finish
+  useEffect(() => {
+    if (socket && !socketInitialized && user) {
+      handleMatchFound();
+      handleMatchFinish();
+      handleSubmissionFail();
+      handleGameStart();
+      setSocketInitialized(true);
+    }
+  }, [
+    socket,
+    socketInitialized,
+    user,
+    handleMatchFound,
+    handleMatchFinish,
+    handleSubmissionFail,
+    handleGameStart,
+  ]);
+
+  return {
+    handleMatchFound,
+    handleMatchFinish,
+    handleSubmissionFail,
+    handleGameStart,
+    handleTerminalsLoaded,
+    sendSearchReqToSocket,
+    sendSubmissionToSocket,
+    handleKeystrokeReceived,
+  };
+};
+
 export default function GameClient() {
   // change to username later
   const user = useSelector((state) => state.user);
@@ -42,51 +144,34 @@ export default function GameClient() {
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     "http://184.64.21.125:4001"
   );
-
-  // setup to listen for start and finish
-  useEffect(() => {
-    if (socket && !socketInitialized && user) {
-      socket.on("match found", (data) => {
-        setClientState(STATES.LOADING);
-        // set based on your own username
-        setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
-        setStartText(data.startText);
-        setGoalText(data.goalText);
-      });
-      socket.on("finish", (data) => {
-        if (data.winnerId === user.id) {
-          alert("You, " + (user.username || "player") + ", have won!");
-        } else {
-          alert("You, " + (user.username || "player") + ", have lost!");
-        }
-        setClientState(STATES.IDLE);
-      });
-      socket.on("fail", (data) => {
-        console.log("Your bad submission: ", data.submission);
-      });
-      socket.on("start", () => {
-        console.log("start");
-        setClientState(STATES.PLAYING);
-      });
-
-      setSocketInitialized(true);
-    }
-  }, [socket, socketInitialized, setSocketInitialized, setOpponent, user]);
+  const {
+    handleTerminalsLoaded,
+    sendSearchReqToSocket,
+    sendSubmissionToSocket,
+    handleKeystrokeReceived,
+  } = useSocketFunctions(
+    socket,
+    socketInitialized,
+    setSocketInitialized,
+    user,
+    setClientState,
+    setOpponent,
+    setStartText,
+    setGoalText
+  );
 
   useEffect(() => {
-    console.log({userInitialized, opponentInitialized})
     if (userInitialized && opponentInitialized) {
-      socket.emit("loaded", { id: user.id });
+      handleTerminalsLoaded();
     }
-  }, [socket, userInitialized, user, opponentInitialized]);
+  }, [userInitialized, opponentInitialized]);
 
   const handleSearch = () => {
-    console.log(user);
     if (user) {
-      socket.emit("request match", { id: user.id });
+      sendSearchReqToSocket();
       setClientState(STATES.SEARCHING);
     } else {
-      console.log("username not established");
+      console.log("user is not logged in");
     }
   };
 
@@ -101,6 +186,8 @@ export default function GameClient() {
             goalText={goalText}
             gameState={clientState}
             handleClientInit={() => setUserInitialized(true)}
+            sendSubmissionToSocket={sendSubmissionToSocket}
+            handleKeystrokeReceived={handleKeystrokeReceived}
           ></LeftClient>
           <RightClient
             socket={socket}
@@ -109,6 +196,7 @@ export default function GameClient() {
             gameState={clientState}
             handleSearch={handleSearch}
             handleClientInit={() => setOpponentInitialized(true)}
+            handleKeystrokeReceived={handleKeystrokeReceived}
           ></RightClient>
         </React.Fragment>
       )}

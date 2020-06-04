@@ -17,6 +17,7 @@ export default function RightClient({
   startText,
   handleSearch,
   handleClientInit,
+  handleKeystrokeReceived,
 }) {
   const renderBody = () => {
     switch (gameState) {
@@ -35,6 +36,7 @@ export default function RightClient({
               startText={startText}
               handleClientInit={handleClientInit}
               gameState={gameState}
+              handleKeystrokeReceived={handleKeystrokeReceived}
             ></VimClient>
           </div>
         );

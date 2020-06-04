@@ -110,16 +110,13 @@ class GameHandler {
   onLoad(data) {
     const { player1, player2, gameId } = this.gameInfo;
     this.debug(data.id + " loaded");
-    console.log(data.id, player1);
     if (data.id === player1.id) {
       this.player1Loaded = true;
     }
     if (data.id === player2.id) {
       this.player2Loaded = true;
     }
-    console.log(this.player1Loaded, this.player2Loaded);
     if (this.player1Loaded && this.player2Loaded) {
-      console.log("ready to go");
       // emit start to all users in game
       this.io.to(gameId).emit(GameHandler.commands.START);
     }
@@ -182,6 +179,8 @@ class GameHandler {
     }
 
     this.debug("Game " + gameId + " started");
+    this.debug(player1);
+    this.debug(player2);
     // emit match found
     this.io.to(gameId).emit(GameHandler.commands.MATCH_FOUND, {
       player1: player1,

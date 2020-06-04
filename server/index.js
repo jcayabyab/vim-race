@@ -50,9 +50,9 @@ io.on("connection", (socket) => {
 
   // data: { username: String }
   socket.on("request match", (data) => {
+    const id = data.id;
     if (idle) {
       // prevent user from connecting multiple times
-      const id = data.id;
       console.log(data.username + " requested match");
       // matchmaking logic
       matchmaker.handleRequest(id, socket);

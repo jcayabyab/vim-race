@@ -37,11 +37,13 @@ export default function LeftClient({
   startText,
   goalText,
   handleClientInit,
+  sendSubmissionToSocket,
+  handleKeystrokeReceived,
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
-    style: vimOptions.canvasStyle
+    style: vimOptions.canvasStyle,
   };
   return (
     <Wrapper>
@@ -55,6 +57,8 @@ export default function LeftClient({
           startText={startText}
           handleClientInit={handleClientInit}
           gameState={gameState}
+          sendSubmissionToSocket={sendSubmissionToSocket}
+          handleKeystrokeReceived={handleKeystrokeReceived}
         ></VimClient>
       )}
       <GoalHeader>Goal:</GoalHeader>

@@ -55,9 +55,10 @@ const useVimTextInjector = (vim, startText, gameStarted) => {
  * Handles text extraction from export callback in Vim
  * @param {*} socket The socket object initialized by GameClient - used for sending extracted text
  * @param {*} isUserClient True if this is the user client instead of the opponent's client. Used to prevent
+ * @param {*} sendSubmissionToSocket Helper function to send submission text to client
  * a submission from the opponent client on your site
  */
-const useVimTextExtractor = (socket, isUserClient, user) => {
+const useVimTextExtractor = (socket, isUserClient, sendSubmissionToSocket) => {
   const validateSubmission = useCallback(
     async (_, contents) => {
       // only send validate if your own client
@@ -66,14 +67,13 @@ const useVimTextExtractor = (socket, isUserClient, user) => {
         const ab2str = (buf) => {
           return String.fromCharCode.apply(null, new Uint8Array(buf));
         };
-        // trim to remove whitespace added at beginning
-        socket.emit("validate", {
-          id: user.id,
-          submission: ab2str(contents).trim(),
-        });
+
+        // trim to remove whitespace added at beginning or left at end
+        const submissionText = ab2str(contents).trim();
+        sendSubmissionToSocket(submissionText);
       }
     },
-    [socket, isUserClient, user]
+    [socket, isUserClient, sendSubmissionToSocket]
   );
 
   return [validateSubmission];
@@ -115,7 +115,8 @@ const useListenerHandler = (
   user,
   socket,
   gameStarted,
-  isEditable
+  isEditable,
+  handleKeystrokeReceived
 ) => {
   // wrapper around notifyKeyEvent for sending and receiving events
   // based from onkeyDown function inside of vimwasm.ts, but adapted
@@ -171,15 +172,10 @@ const useListenerHandler = (
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {
-    if (user && socket && gameStarted) {
-      // add socket listener
-      socket.on("keystroke", (data) => {
-        if (data.id === user.id) {
-          handleEvent(data.event);
-        }
-      });
+    if (gameStarted) {
+      handleKeystrokeReceived(handleEvent, user);
     }
-  }, [vim, gameStarted, socket, user, handleEvent]);
+  }, [gameStarted, handleEvent, handleKeystrokeReceived, user]);
 
   // double check event listener along with isEditable
   const [listenerEnabled, setListenerEnabled] = useState(false);
@@ -237,10 +233,17 @@ export default function VimClient({
   startText,
   handleClientInit,
   gameState,
+  sendSubmissionToSocket,
+  handleKeystrokeReceived,
 }) {
   const { canvasStyle, inputStyle, ...vimOptions } = opts;
   const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
-  const [validateSubmission] = useVimTextExtractor(socket, isEditable, user);
+  const [validateSubmission] = useVimTextExtractor(
+    socket,
+    isEditable,
+    user,
+    sendSubmissionToSocket
+  );
   const [canvasRef, inputRef, vim] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     onVimInit: () => {
@@ -256,7 +259,8 @@ export default function VimClient({
     user,
     socket,
     gameState === STATES.PLAYING,
-    isEditable
+    isEditable,
+    handleKeystrokeReceived
   );
 
   return (
