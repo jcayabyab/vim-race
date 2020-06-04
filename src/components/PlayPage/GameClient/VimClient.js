@@ -168,7 +168,7 @@ const useListenerHandler = (
         { capture: true }
       );
     }
-  }, [vimInitialized]);
+  }, [vimInitialized, vim]);
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {

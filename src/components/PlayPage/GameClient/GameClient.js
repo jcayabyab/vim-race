@@ -57,8 +57,11 @@ const useSocketFunctions = (
         alert("You, " + (user.username || "player") + ", have lost!");
       }
       setClientState(STATES.IDLE);
+      setOpponent(null);
+      setStartText(null);
+      setGoalText(null);
     });
-  }, [socket, setClientState, user]);
+  }, [socket, setClientState, user, setOpponent, setStartText, setGoalText]);
 
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
@@ -97,7 +100,8 @@ const useSocketFunctions = (
           handleKeystrokeEvent(data.event);
         }
       });
-    }
+    },
+    [socket]
   );
 
   // setup to listen for start and finish
@@ -112,6 +116,7 @@ const useSocketFunctions = (
   }, [
     socket,
     socketInitialized,
+    setSocketInitialized,
     user,
     handleMatchFound,
     handleMatchFinish,
@@ -164,7 +169,7 @@ export default function GameClient() {
     if (userInitialized && opponentInitialized) {
       handleTerminalsLoaded();
     }
-  }, [userInitialized, opponentInitialized]);
+  }, [userInitialized, opponentInitialized, handleTerminalsLoaded]);
 
   const handleSearch = () => {
     if (user) {
