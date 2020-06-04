@@ -6,14 +6,15 @@ import { useSelector } from "react-redux";
 
 const NavbarWrapper = styled.div`
   display: flex;
-  background-color: #1f1f1f;
+  background-color: #212121;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 `;
 
 const LogoImage = styled.img`
   image-rendering: pixelated;
-  height: 105px;
+  height: ${31 * 3}px;
+  width: ${85 * 3}px;
   cursor: pointer;
   padding: 10px;
 `;
