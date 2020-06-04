@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import Navbar from "./components/NavBar/NavBar";
 import { fetchUser } from "./actions/userActions";
 import { useDispatch } from "react-redux";

@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import STATES from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
@@ -12,7 +11,7 @@ const GoalBox = styled.div`
   border-radius: 3px;
   font-family: "Lucida Console", "Consolas", monospace;
   white-space: pre-wrap;
-  font-size: 11px;
+  font-size: 9pt;
   overflow: scroll;
   min-height: 300px;
   width: 600px;
@@ -55,7 +54,6 @@ export default function LeftClient({
           isEditable={true}
           startText={startText}
           handleClientInit={handleClientInit}
-          userClient
           gameState={gameState}
         ></VimClient>
       )}
