@@ -83,18 +83,26 @@ class GameHandler {
   }
 
   onSubmission(data) {
+    const {
+      socket1,
+      socket2,
+      io,
+      gameInfo: { player1, player2 },
+    } = this;
+
     this.debug(data.id + " submitted: " + data.submission);
     if (data.submission.trim() === this.goalText.trim()) {
-      this.finish(data.id);
+      const winner = data.id === player1.id ? player1 : player2;
+      this.finish(winner);
     } else {
-      let socketId = this.socket1.id;
-      if (data.id === this.gameInfo.player2.id) {
-        socketId = this.socket2.id;
+      let socketId = socket1.id;
+      if (data.id === player2.id) {
+        socketId = socket2.id;
       }
       // send bad submission back to them
-      this.io
-        .to(socketId)
-        .emit(GameHandler.commands.FAIL, { submission: data.submission });
+      io.to(socketId).emit(GameHandler.commands.FAIL, {
+        submission: data.submission,
+      });
     }
   }
 
