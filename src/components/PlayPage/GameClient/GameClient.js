@@ -78,7 +78,7 @@ export default function GameClient() {
     if (userInitialized && opponentInitialized) {
       socket.emit("loaded", { id: user.id });
     }
-  }, [socket, userInitialized, opponentInitialized]);
+  }, [socket, userInitialized, user, opponentInitialized]);
 
   const handleSearch = () => {
     console.log(user);

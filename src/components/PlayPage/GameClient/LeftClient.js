@@ -5,14 +5,13 @@ import styled from "styled-components";
 import { Vim } from "react-vim-wasm";
 import vimOptions from "./vimOptions";
 
-const GoalBox = styled.div`
+const GoalBox = styled.code`
   background-color: #1f1f1f;
   border: 1px solid black;
   border-radius: 3px;
   font-family: "Lucida Console", "Consolas", monospace;
   white-space: pre-wrap;
   font-size: 9pt;
-  overflow: scroll;
   min-height: 300px;
   width: 600px;
 `;
@@ -42,6 +41,7 @@ export default function LeftClient({
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
+    style: vimOptions.canvasStyle
   };
   return (
     <Wrapper>

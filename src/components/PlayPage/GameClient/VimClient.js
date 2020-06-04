@@ -1,52 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
-import styled from "styled-components";
 import opts from "./vimOptions";
 import STATES from "./states";
 
-export default function VimClient({
-  user,
-  socket,
-  isEditable,
-  startText,
-  handleClientInit,
-  userClient,
-  gameState,
-}) {
-  // maybe move vim logic inside of here
-  // we would need to initialize this when it's rendered,
-  // then setup event listeners, then setup socket
-  // would have to pass it event listener function only I think
-  const [vimInitialized, setVimInitialized] = useState(false);
-  // double check event listener along with isEditable
-  const [listenerEnabled, setListenerEnabled] = useState(false);
-
-  const {style, ...vimOptions} = opts;
-
-  const validateSubmission = async (_, contents) => {
-    // only send validate if your own client
-    if (userClient) {
-      // convert arraybuffer back into string
-      const ab2str = (buf) => {
-        return String.fromCharCode.apply(null, new Uint8Array(buf));
-      };
-      // trim to remove whitespace added at beginning
-      socket.emit("validate", {
-        id: user.id,
-        submission: ab2str(contents).trim(),
-      });
-    }
-  };
-
-  const [canvasRef, inputRef, vim] = useVim({
-    worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
-    onVimInit: () => {
-      setVimInitialized(true);
-    },
-    onFileExport: validateSubmission,
-    ...vimOptions,
-  });
-
+/**
+ * Handles text injection when game starts
+ * @param {C} vim The vim terminal returned from useVim
+ * @param {*} startText The starting text from the server - injected into client
+ * @param {*} gameStarted true if game state === PLAYING
+ */
+const useVimTextInjector = (vim, startText, gameStarted) => {
   const writeToTerminal = useCallback(
     async (str) => {
       const str2ab = (str) => {
@@ -79,40 +42,87 @@ export default function VimClient({
   );
 
   useEffect(() => {
+    if (gameStarted) {
+      // load into vim client on startup
+      // set timeout - screen needs to appear before writing to buffer
+      // failsafe in case this function isn't passed down
+      setTimeout(() => writeToTerminal(startText), 100);
+    }
+  }, [gameStarted, startText, writeToTerminal]);
+};
+
+/**
+ * Handles text extraction from export callback in Vim
+ * @param {*} socket The socket object initialized by GameClient - used for sending extracted text
+ * @param {*} isUserClient True if this is the user client instead of the opponent's client. Used to prevent
+ * a submission from the opponent client on your site
+ */
+const useVimTextExtractor = (socket, isUserClient, user) => {
+  const validateSubmission = useCallback(
+    async (_, contents) => {
+      // only send validate if your own client
+      if (isUserClient) {
+        // convert arraybuffer back into string
+        const ab2str = (buf) => {
+          return String.fromCharCode.apply(null, new Uint8Array(buf));
+        };
+        // trim to remove whitespace added at beginning
+        socket.emit("validate", {
+          id: user.id,
+          submission: ab2str(contents).trim(),
+        });
+      }
+    },
+    [socket, isUserClient, user]
+  );
+
+  return [validateSubmission];
+};
+
+/**
+ * Handles terminal initialization logic.
+ * @param {*} handleClientInit The function to be called once the Vim terminal is initialized. Typically used
+ * to signal the server that this player is ready to begin the game.
+ */
+const useVimInit = (handleClientInit) => {
+  const [vimInitialized, setVimInitialized] = useState(false);
+
+  useEffect(() => {
     if (vimInitialized) {
       if (handleClientInit) {
         handleClientInit();
       }
     }
-    if(vimInitialized && startText && gameState === STATES.PLAYING) {
-      // load into vim client on startup
-      // set timeout - screen needs to appear before writing to buffer
-      // failsafe in case this function isn't passed down
-      setTimeout(() => writeToTerminal(startText), 100);
-      console.log("initialized");
-    }
-  }, [handleClientInit, startText, vimInitialized, writeToTerminal, gameState]);
+  }, [handleClientInit, vimInitialized]);
 
-  // remove initial onKeyDown event listener
-  useEffect(() => {
-    // remove already existing event listener to
-    // intercept key presses when game starts
-    if (vimInitialized && socket && user && gameState === STATES.PLAYING) {
-      vim.screen.input.elem.removeEventListener(
-        "keydown",
-        vim.screen.input.onKeydown,
-        { capture: true }
-      );
-    }
-  }, [gameState, vimInitialized, vim, socket, user]);
+  return [vimInitialized, setVimInitialized];
+};
 
-  // add socket logic
-  useEffect(() => {
-    // wrapper around notifyKeyEvent for sending and receiving events
-    // based from onkeyDown function inside of vimwasm.ts, but adapted
-    // to handle slimmed down event, i.e., removes preventDefault()
-    // and stopPropagation()
-    const handleEvent = (event) => {
+/**
+ * Handles all listener functions. In specific, removes initial event listener, adds keyDown event listener
+ * for sending keystrokes to server, adds socket listener for getting keystrokes from server and sending
+ * to client, and removes or adds this functionality when isEditable is toggled
+ * @param {*} vim
+ * @param {*} vimInitialized
+ * @param {*} user
+ * @param {*} socket
+ * @param {*} gameStarted
+ * @param {*} isEditable
+ */
+const useListenerHandler = (
+  vim,
+  vimInitialized,
+  user,
+  socket,
+  gameStarted,
+  isEditable
+) => {
+  // wrapper around notifyKeyEvent for sending and receiving events
+  // based from onkeyDown function inside of vimwasm.ts, but adapted
+  // to handle slimmed down event, i.e., removes preventDefault()
+  // and stopPropagation()
+  const handleEvent = useCallback(
+    (event) => {
       let key = event.key;
       const ctrl = event.ctrlKey;
       const shift = event.shiftKey;
@@ -142,20 +152,41 @@ export default function VimClient({
       }
 
       vim.worker.notifyKeyEvent(key, event.keyCode, ctrl, shift, alt, meta);
-    };
+    },
+    [vim]
+  );
 
-    if (vimInitialized && user && socket)
+  // remove initial onKeyDown event listener
+  useEffect(() => {
+    // remove already existing event listener to
+    // intercept key presses
+    if (vimInitialized && socket && user) {
+      vim.screen.input.elem.removeEventListener(
+        "keydown",
+        vim.screen.input.onKeydown,
+        { capture: true }
+      );
+    }
+  }, [vimInitialized, vim, socket, user]);
+
+  // add socket listener for when server sends keystrokes
+  useEffect(() => {
+    if (user && socket && gameStarted) {
       // add socket listener
       socket.on("keystroke", (data) => {
         if (data.id === user.id) {
           handleEvent(data.event);
         }
       });
-  }, [vim, vimInitialized, socket, user]);
+    }
+  }, [vim, gameStarted, socket, user, handleEvent]);
 
-  // handles isEditable logic - adds/removes event listener
-  useEffect(() => {
-    const handleKeyDown = (e) => {
+  // double check event listener along with isEditable
+  const [listenerEnabled, setListenerEnabled] = useState(false);
+
+  // logic for grabbing event info from event and passing to server
+  const handleKeyDown = useCallback(
+    (e) => {
       e.preventDefault();
       const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
       socket.emit("keystroke", {
@@ -170,11 +201,14 @@ export default function VimClient({
         },
         id: user.id,
       });
-
       // client side validation
       // vim.cmdline("export submission");
-    };
+    },
+    [user, socket]
+  );
 
+  // handles isEditable logic - adds/removes event listener
+  useEffect(() => {
     // in case editable logic needs to change in the future, e.g., on winner declaration
     if (vimInitialized) {
       if (isEditable && !listenerEnabled) {
@@ -192,26 +226,43 @@ export default function VimClient({
     setListenerEnabled,
     vim,
     vimInitialized,
-    socket,
-    user,
+    handleKeyDown,
   ]);
+};
 
-  const INPUT_STYLE = {
-    width: "1px",
-    color: "transparent",
-    backgroundColor: "transparent",
-    padding: "0px",
-    border: "0px",
-    outline: "none",
-    position: "relative",
-    top: "0px",
-    left: "0px",
-  };
+export default function VimClient({
+  user,
+  socket,
+  isEditable,
+  startText,
+  handleClientInit,
+  gameState,
+}) {
+  const { canvasStyle, inputStyle, ...vimOptions } = opts;
+  const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
+  const [validateSubmission] = useVimTextExtractor(socket, isEditable, user);
+  const [canvasRef, inputRef, vim] = useVim({
+    worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
+    onVimInit: () => {
+      setVimInitialized(true);
+    },
+    onFileExport: validateSubmission,
+    ...vimOptions,
+  });
+  useVimTextInjector(vim, startText, gameState === STATES.PLAYING);
+  useListenerHandler(
+    vim,
+    vimInitialized,
+    user,
+    socket,
+    gameState === STATES.PLAYING,
+    isEditable
+  );
 
   return (
     <div>
-      <canvas style={style} ref={canvasRef}></canvas>
-      <input style={INPUT_STYLE} value="" readOnly ref={inputRef}></input>
+      <canvas style={canvasStyle} ref={canvasRef}></canvas>
+      <input style={inputStyle} value="" readOnly ref={inputRef}></input>
     </div>
   );
 }

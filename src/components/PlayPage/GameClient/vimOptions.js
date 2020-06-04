@@ -29,11 +29,29 @@ const files = {
   "/home/web_user/.vim/vimrc": vimrc,
 };
 
-const style = {
+const canvasStyle = {
   width: "600px",
   height: "400px",
   border: "1px solid black",
-  borderRadius: "3px"
+  borderRadius: "2px",
 };
 
-export default { style, dirs: dirs.map((dir) => PREFIX + dir), fetchFiles, files };
+const inputStyle = {
+  width: "1px",
+  color: "transparent",
+  backgroundColor: "transparent",
+  padding: "0px",
+  border: "0px",
+  outline: "none",
+  position: "relative",
+  top: "0px",
+  left: "0px",
+};
+
+export default {
+  canvasStyle,
+  inputStyle,
+  dirs: dirs.map((dir) => PREFIX + dir),
+  fetchFiles,
+  files,
+};
