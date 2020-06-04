@@ -6,7 +6,7 @@ import { Vim } from "react-vim-wasm";
 import vimOptions from "./vimOptions";
 
 const GoalBox = styled.code`
-  background-color: #1f1f1f;
+  background-color: #212121;
   border: 1px solid black;
   border-radius: 3px;
   font-family: "Lucida Console", "Consolas", monospace;
@@ -16,17 +16,18 @@ const GoalBox = styled.code`
   width: 600px;
 `;
 
-const GoalHeader = styled.div`
+const GoalHeader = styled.h3`
   color: white;
   font-family: "Share Tech Mono", "Consolas", monospace;
-  font-size: 14px;
+  margin: 0px 0px 10px;
 `;
 
 const Wrapper = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  padding: 0px 25px;
 `;
 
 // stores all functionality on left side -> user terminal, goal text
@@ -61,7 +62,7 @@ export default function LeftClient({
           handleKeystrokeReceived={handleKeystrokeReceived}
         ></VimClient>
       )}
-      <GoalHeader>Goal:</GoalHeader>
+      <GoalHeader>Goal</GoalHeader>
       <GoalBox>{goalText || ""}</GoalBox>
     </Wrapper>
   );

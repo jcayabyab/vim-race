@@ -262,9 +262,9 @@ export default function VimClient({
   );
 
   return (
-    <div>
+    <React.Fragment>
       <canvas style={canvasStyle} ref={canvasRef}></canvas>
       <input style={inputStyle} value="" readOnly ref={inputRef}></input>
-    </div>
+    </React.Fragment>
   );
 }
