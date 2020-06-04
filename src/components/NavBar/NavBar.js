@@ -8,6 +8,7 @@ const NavbarWrapper = styled.div`
   display: flex;
   background-color: #1f1f1f;
   align-items: center;
+  margin-bottom: 30px;
 `;
 
 const LogoImage = styled.img`

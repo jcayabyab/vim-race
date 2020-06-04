@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import styled from "styled-components";
-import vimOptions from "./vimOptions";
+import opts from "./vimOptions";
 import STATES from "./states";
-
-const VimCanvas = styled.canvas`
-  width: 600px;
-  height: 400px;
-`;
 
 export default function VimClient({
   user,
@@ -26,9 +21,10 @@ export default function VimClient({
   // double check event listener along with isEditable
   const [listenerEnabled, setListenerEnabled] = useState(false);
 
+  const {style, ...vimOptions} = opts;
+
   const validateSubmission = async (_, contents) => {
     // only send validate if your own client
-    console.log(userClient);
     if (userClient) {
       // convert arraybuffer back into string
       const ab2str = (buf) => {
@@ -214,7 +210,7 @@ export default function VimClient({
 
   return (
     <div>
-      <VimCanvas ref={canvasRef}></VimCanvas>
+      <canvas style={style} ref={canvasRef}></canvas>
       <input style={INPUT_STYLE} value="" readOnly ref={inputRef}></input>
     </div>
   );

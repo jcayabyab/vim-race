@@ -43,10 +43,6 @@ export default function LeftClient({
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
-    style: {
-      width: "600px",
-      height: "400px"
-    }
   };
   return (
     <Wrapper>

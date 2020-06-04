@@ -29,4 +29,11 @@ const files = {
   "/home/web_user/.vim/vimrc": vimrc,
 };
 
-export default { dirs: dirs.map((dir) => PREFIX + dir), fetchFiles, files };
+const style = {
+  width: "600px",
+  height: "400px",
+  border: "1px solid black",
+  borderRadius: "3px"
+};
+
+export default { style, dirs: dirs.map((dir) => PREFIX + dir), fetchFiles, files };
