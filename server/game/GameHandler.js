@@ -195,7 +195,7 @@ class GameHandler {
     const { gameId } = this.gameInfo;
 
     this.debug("Game " + gameId + " ended");
-    this.debug("Game " + gameId + " winner: " + winner);
+    this.debug("Game " + gameId + " winner: " + winner.id);
 
     this.gameInfo.winner = winner;
 
