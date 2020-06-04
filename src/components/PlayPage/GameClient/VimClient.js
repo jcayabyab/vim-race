@@ -58,7 +58,7 @@ const useVimTextInjector = (vim, startText, gameStarted) => {
  * @param {*} sendSubmissionToSocket Helper function to send submission text to client
  * a submission from the opponent client on your site
  */
-const useVimTextExtractor = (socket, isUserClient, sendSubmissionToSocket) => {
+const useVimTextExtractor = (isUserClient, sendSubmissionToSocket) => {
   const validateSubmission = useCallback(
     async (_, contents) => {
       // only send validate if your own client
@@ -73,7 +73,7 @@ const useVimTextExtractor = (socket, isUserClient, sendSubmissionToSocket) => {
         sendSubmissionToSocket(submissionText);
       }
     },
-    [socket, isUserClient, sendSubmissionToSocket]
+    [isUserClient, sendSubmissionToSocket]
   );
 
   return [validateSubmission];
@@ -161,14 +161,14 @@ const useListenerHandler = (
   useEffect(() => {
     // remove already existing event listener to
     // intercept key presses
-    if (vimInitialized && socket && user) {
+    if (vimInitialized) {
       vim.screen.input.elem.removeEventListener(
         "keydown",
         vim.screen.input.onKeydown,
         { capture: true }
       );
     }
-  }, [vimInitialized, vim, socket, user]);
+  }, [vimInitialized]);
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {
@@ -239,9 +239,7 @@ export default function VimClient({
   const { canvasStyle, inputStyle, ...vimOptions } = opts;
   const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
   const [validateSubmission] = useVimTextExtractor(
-    socket,
     isEditable,
-    user,
     sendSubmissionToSocket
   );
   const [canvasRef, inputRef, vim] = useVim({
