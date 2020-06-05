@@ -29,11 +29,12 @@ module.exports = {
       throw error;
     }
   },
-  updateUser: async (user) => {
+  updateProfileInfo: async (user) => {
     return await User.update(user, {
       where: {
         id: user.id,
       },
+      fields: ["username", "email", "profilePictureUrl"],
     });
   },
   updateVimrc: async (userId, vimrcText) => {
@@ -43,6 +44,7 @@ module.exports = {
         where: {
           id: userId,
         },
+        fields: ["vimrcText"],
       }
     );
   },
