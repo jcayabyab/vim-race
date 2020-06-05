@@ -1,33 +1,71 @@
-const knex = require("./knex");
+const { DataTypes } = require("sequelize");
+const { sequelize, models } = require("./db");
+const { User, Game } = models;
 
 module.exports = {
   findUserByGoogleId: async (googleId) => {
     try {
-      const user = await knex("users")
-        .select()
-        .where({ google_id: googleId })
-        .first();
-      console.log(user);
+      const user = await User.findOne({
+        where: {
+          googleId,
+        },
+      });
+      return user;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw error;
     }
   },
-  findUserById: (userId) => {
-    return knex("users").select().where({ id: userId }).first();
+  findUserById: async (userId) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   },
-  updateUserTimeById: (userId) => {
-    return knex("users")
-      .where({ id: userId })
-      .update({ last_sign_in_time: new Date() });
+  updateUser: async (user) => {
+    return await User.update(user, {
+      where: {
+        id: user.id,
+      },
+    });
+  },
+  updateVimrc: async (userId, vimrcText) => {
+    return await User.update(
+      { vimrcText },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+  },
+  updateUserTimeById: async (userId) => {
+    return await User.update(
+      { lastSignInTime: new Date() },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
   },
   createNewUserGoogle: async (googleId) => {
     try {
-      const newUser = await knex("users").insert(
-        { google_id: googleId, last_sign_in_time: new Date() },
-        ["id", "email", "last_sign_in_time"]
+      const newUser = await User.create(
+        {
+          googleId: googleId.toString(),
+          lastSignInTime: new Date(),
+        },
+        { fields: ["id", "lastSignInTime", "googleId"] }
       );
-      return newUser[0];
+      return newUser;
     } catch (error) {
       console.log(error);
       throw error;
