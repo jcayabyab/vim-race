@@ -3,13 +3,27 @@ import { Vim } from "react-vim-wasm";
 import vimOptions from "../PlayPage/GameClient/vimOptions";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserVimrc } from "../../actions/userActions";
+import styled from "styled-components";
 
+const ButtonWrapper = styled.div`
+  font-family: "Share Tech Mono", Consolas, monospace;
+  font-size: 24pt;
+
+  & > * {
+    padding: 20px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+    display: block;
+  }
+`;
 /**
  * Handles text extraction from export callback in Vim
- * @param {*} socket The socket object initialized by GameClient - used for sending extracted text
- * @param {*} isUserClient True if this is the user client instead of the opponent's client. Used to prevent
- * @param {*} sendSubmissionToSocket Helper function to send submission text to client
- * a submission from the opponent client on your site
+ * @param {*} onExtraction callback that runs when the extraction completes
  */
 const useVimTextExtractor = (onExtraction) => {
   const extractText = useCallback(
@@ -41,13 +55,18 @@ export default function VimrcPage() {
     ...vimOptions,
     onFileExport: extractText,
     style: vimOptions.canvasStyle,
-    cmdArgs: ["~/vimrc-edit.vim"],
+    cmdArgs: ["/home/web_user/.vim/vimrc"],
   };
 
   if (user.vimrcText) {
     vimProps.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
-    vimProps.files["~/vimrc-edit.vim"] = user.vimrcText;
   }
 
-  return <div>{user && <Vim {...vimProps}></Vim>}</div>;
+  return (
+    <div>
+      <h1>Edit .vimrc</h1>
+      {user && <Vim {...vimProps}></Vim>}
+      <ButtonWrapper></ButtonWrapper>
+    </div>
+  );
 }
