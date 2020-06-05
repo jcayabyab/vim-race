@@ -4,10 +4,12 @@ const db = require("../db/api");
 const keys = require("../config/keys");
 
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user.id);
 });
 
-passport.deserializeUser((user, done) => {
+passport.deserializeUser(async (id, done) => {
+  const user = await db.findUserById(id);
+
   done(null, user);
 });
 
