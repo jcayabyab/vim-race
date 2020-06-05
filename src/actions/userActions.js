@@ -1,7 +1,35 @@
-import { FETCH_USER } from "./types";
+import { UPDATE_USER } from "./types";
 import axios from "axios";
 
 export const fetchUser = async () => {
   const res = await axios.get("/api/current-user");
-  return { type: FETCH_USER, user: res.data };
+  return { type: UPDATE_USER, user: res.data };
+};
+
+export const updateUserProfile = async (
+  user,
+  username,
+  email,
+  profilePictureUrl
+) => {
+  const newUser = { ...user, username, email, profilePictureUrl };
+  const res = await axios.put("/api/user/profile", { user: newUser });
+  console.log(res);
+  if (res.status !== 200) {
+    throw `Server error(${res.response}): ${res.data}`;
+  }
+  return { type: UPDATE_USER, user: newUser };
+};
+
+export const updateUserVimrc = async (user, vimrcText) => {
+  const newUser = { ...user, vimrcText };
+
+  const res = await axios.put("/api/user/vimrc", {
+    userId: user.id,
+    vimrcText,
+  });
+  if (res.status !== 200) {
+    throw `Server error(${res.response}): ${res.data}`;
+  }
+  return { type: UPDATE_USER, user: newUser };
 };

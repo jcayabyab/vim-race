@@ -11,6 +11,7 @@ const Sequelize = require("sequelize");
 
 const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 // services
 require("./services/passport");
@@ -34,6 +35,7 @@ app.use(passport.session());
 
 app.use(indexRoutes);
 app.use(authRoutes);
+app.use(profileRoutes);
 
 io.on("connection", (socket) => {
   // username of player - variables on a per-socket basis
