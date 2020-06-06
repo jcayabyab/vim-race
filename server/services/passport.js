@@ -3,6 +3,11 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const db = require("../db/api");
 const keys = require("../config/keys");
 
+const callbackURL =
+  process.env.NODE_ENV === "production"
+    ? "https://vimrace.herokuapp.com/auth/google/callback"
+    : "http://192.168.0.24.sslip.io:3000/auth/google/callback";
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -18,7 +23,7 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: "http://192.168.0.24.sslip.io:3000/auth/google/callback",
+      callbackURL,
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
