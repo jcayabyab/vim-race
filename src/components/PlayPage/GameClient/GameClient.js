@@ -149,7 +149,9 @@ export default function GameClient() {
   const [terminalLoaded, setTerminalLoaded] = useState(false);
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
-    "http://184.64.21.125:4001"
+    process.env.NODE_ENV === "production"
+      ? "https://vimrace.herokuapp.com:" + process.env.PORT
+      : "http://184.64.21.125:4001"
   );
   const {
     handleTerminalsLoaded,
