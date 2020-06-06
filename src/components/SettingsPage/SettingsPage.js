@@ -88,16 +88,6 @@ export default function SettingsPage() {
             <Link to="/settings/vimrc">:edit .vimrc</Link>
           </ButtonWrapper>
         </Center>
-        <TextArea
-          onChange={(e) => setVimrcText(e.target.value)}
-          value={vimrcText}
-          placeholder={"vimrc"}
-        ></TextArea>
-        <button
-          onClick={async () => dispatch(await updateUserVimrc(user, vimrcText))}
-        >
-          Submit vimrc
-        </button>
       </form>
     </Wrapper>
   );

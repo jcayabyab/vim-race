@@ -4,10 +4,18 @@ import vimOptions from "../PlayPage/GameClient/vimOptions";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserVimrc } from "../../actions/userActions";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+
+const Wrapper = styled.div`
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const ButtonWrapper = styled.div`
   font-family: "Share Tech Mono", Consolas, monospace;
-  font-size: 24pt;
+  font-size: 18pt;
 
   & > * {
     padding: 20px;
@@ -63,10 +71,20 @@ export default function VimrcPage() {
   }
 
   return (
-    <div>
+    <Wrapper>
       <h1>Edit .vimrc</h1>
+      <p>
+        You can edit your .vimrc settings here. Note that plugins are currently
+        not officially supported. Using plugin managers like VimPlug or Vundle
+        may have unintended effects.
+      </p>
       {user && <Vim {...vimProps}></Vim>}
-      <ButtonWrapper></ButtonWrapper>
-    </div>
+      <p>
+        Upload your settings using <code>:w</code> then <code>:export</code>.
+      </p>
+      <ButtonWrapper>
+        <Link to="/settings">Back to main settings</Link>
+      </ButtonWrapper>
+    </Wrapper>
   );
 }

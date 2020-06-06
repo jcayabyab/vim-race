@@ -237,6 +237,9 @@ export default function VimClient({
   handleKeystrokeReceived,
 }) {
   const { canvasStyle, inputStyle, ...vimOptions } = opts;
+  if (user && user.vimrcText) {
+    vimOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
+  }
   const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
   const [validateSubmission] = useVimTextExtractor(
     isEditable,
