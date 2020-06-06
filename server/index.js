@@ -32,7 +32,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(indexRoutes);
+// app.use(indexRoutes);
 app.use(authRoutes);
 app.use(profileRoutes);
 
@@ -63,12 +63,12 @@ io.on("connection", (socket) => {
   });
 });
 
-if (process.env.NODE_ENV === "production") {
-  console.log("Using production assets");
-  app.use(express.static("../build"));
+if (process.env.NODE_ENV === "development") {
   const path = require("path");
+  const root = path.join(__dirname, "..", "build");
+  app.use(express.static(root));
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
+    res.sendFile("index.html", { root });
   });
 }
 
