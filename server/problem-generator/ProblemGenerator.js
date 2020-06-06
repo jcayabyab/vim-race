@@ -4,6 +4,7 @@ const path = require("path");
 class ProblemGenerator {
   constructor(showDebug, dummyProblem) {
     this.showDebug = showDebug;
+    this.lengthThreshold = 200;
 
     this.problems = [];
 
@@ -31,7 +32,8 @@ class ProblemGenerator {
       const goalPath = path.join(rootPath, "outfiles", fn);
       const startText = fs.readFileSync(startPath, { encoding: "utf-8" });
       const goalText = fs.readFileSync(goalPath, { encoding: "utf-8" });
-      this.problems.push([startText, goalText]);
+      if (startText.length < this.lengthThreshold)
+        this.problems.push([startText, goalText]);
     }
   }
 
@@ -62,6 +64,6 @@ class ProblemGenerator {
   }
 }
 
-const problemGenerator = new ProblemGenerator(false, true);
+const problemGenerator = new ProblemGenerator(false, false);
 
 module.exports = problemGenerator;
