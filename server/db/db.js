@@ -2,7 +2,10 @@ const keys = require("../config/keys");
 const Sequelize = require("sequelize");
 
 // init database connection
-const sequelize = new Sequelize(keys.postgresURI, { schema: "vimrace-dev" });
+const sequelize = new Sequelize(keys.postgresURI, {
+  schema: "vimrace-dev",
+  logging: false,
+});
 
 sequelize
   .authenticate()
