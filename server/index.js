@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
   });
 });
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "production") {
   const path = require("path");
   const root = path.join(__dirname, "..", "build");
   app.use(express.static(root));
