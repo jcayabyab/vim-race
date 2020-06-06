@@ -18,7 +18,7 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: "https://192-168-0-24.sslip.io:3000/auth/google/callback",
+      callbackURL: "http://192.168.0.24.sslip.io:3000/auth/google/callback",
       proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
