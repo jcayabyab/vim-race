@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Vim } from "react-vim-wasm";
 import vimOptions from "../PlayPage/GameClient/vimOptions";
 import { useSelector, useDispatch } from "react-redux";
@@ -51,6 +51,7 @@ const useVimTextExtractor = (onExtraction) => {
 };
 
 export default function VimrcPage() {
+  const [vimrc, setVimrc] = useState("");
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -64,10 +65,21 @@ export default function VimrcPage() {
     onFileExport: extractText,
     style: vimOptions.canvasStyle,
     cmdArgs: ["/home/web_user/.vim/vimrc"],
+    clipboard: true,
+    readClipboard: () =>
+      navigator.clipboard ? navigator.clipboard.readText() : null,
+    onWriteClipboard: (text) =>
+      navigator.clipboard ? navigator.clipboard.writeText(text) : null,
   };
 
-  if (user.vimrcText) {
-    vimProps.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
+  useEffect(() => {
+    if (user && user.vimrcText) {
+      setVimrc(user.vimrcText);
+    }
+  }, [user]);
+
+  if (vimrc) {
+    vimProps.files["/home/web_user/.vim/vimrc"] = vimrc;
   }
 
   return (
@@ -81,6 +93,8 @@ export default function VimrcPage() {
       {user && <Vim {...vimProps}></Vim>}
       <p>
         Upload your settings using <code>:w</code> then <code>:export</code>.
+        You may also drag your currrent <code>.vimrc</code> directly into the
+        terminal for uploading.
       </p>
       <ButtonWrapper>
         <Link to="/settings">Back to main settings</Link>

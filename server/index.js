@@ -7,7 +7,6 @@ const port = process.env.PORT || 4001;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const keys = require("./config/keys");
-const Sequelize = require("sequelize");
 
 const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/authRoutes");
@@ -65,7 +64,7 @@ io.on("connection", (socket) => {
 });
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
+  app.use(express.static("../build"));
   const path = require("path");
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));

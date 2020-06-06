@@ -24,6 +24,9 @@ const useSocket = (endpoint) => {
       const newSocket = io(endpoint);
       setSocket(newSocket);
     }
+    return () => {
+      if (socket) socket.disconnect();
+    };
   }, [socket, setSocket, endpoint]);
 
   return [socket, socketInitialized, setSocketInitialized];

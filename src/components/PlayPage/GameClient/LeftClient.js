@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import STATES from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
@@ -41,7 +41,7 @@ export default function LeftClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
   onVimTerminalInit,
-  terminalLoaded
+  terminalLoaded,
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",

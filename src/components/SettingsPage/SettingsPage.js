@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { updateUserProfile, updateUserVimrc } from "../../actions/userActions";
+import { updateUserProfile } from "../../actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../utils/Input";
-import TextArea from "../utils/TextArea";
 import FormLabel from "../utils/FormLabel";
 import VimButton from "../utils/VimButton";
 import styled from "styled-components";
@@ -44,7 +43,6 @@ export default function SettingsPage() {
   const [username, setUsername] = useState(user.username || "");
   const [email, setEmail] = useState(user.email || "");
   const [profPicUrl, setProfPicUrl] = useState(user.profilePictureUrl || "");
-  const [vimrcText, setVimrcText] = useState(user.vimrcText || "");
 
   useEffect(() => {
     if (user) {

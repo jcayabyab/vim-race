@@ -3,7 +3,7 @@ import Navbar from "./components/NavBar/NavBar";
 import { fetchUser } from "./actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import Modal from "./components/Modal/Modal";
+// import Modal from "./components/Modal/Modal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 const App = (props) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  // const user = useSelector((state) => state.user);
 
   const fetchUserOnLoad = useCallback(async () => {
     dispatch(await fetchUser());

@@ -16,7 +16,7 @@ export const updateUserProfile = async (
   const res = await axios.put("/api/user/profile", { user: newUser });
   console.log(res);
   if (res.status !== 200) {
-    throw `Server error(${res.response}): ${res.data}`;
+    throw new Error(`Server error(${res.response}): ${res.data}`);
   }
   return { type: UPDATE_USER, user: newUser };
 };
@@ -29,7 +29,7 @@ export const updateUserVimrc = async (user, vimrcText) => {
     vimrcText,
   });
   if (res.status !== 200) {
-    throw `Server error(${res.response}): ${res.data}`;
+    throw new Error(`Server error(${res.response}): ${res.data}`);
   }
   return { type: UPDATE_USER, user: newUser };
 };
