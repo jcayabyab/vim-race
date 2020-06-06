@@ -143,6 +143,7 @@ export default function GameClient() {
   const [goalText, setGoalText] = useState(null);
   const [userInitialized, setUserInitialized] = useState(false);
   const [opponentInitialized, setOpponentInitialized] = useState(false);
+  const [terminalLoaded, setTerminalLoaded] = useState(false);
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     "http://184.64.21.125:4001"
@@ -202,6 +203,8 @@ export default function GameClient() {
             handleClientInit={() => setUserInitialized(true)}
             sendSubmissionToSocket={sendSubmissionToSocket}
             handleKeystrokeReceived={handleKeystrokeReceived}
+            onVimTerminalInit={() => setTerminalLoaded(true)}
+            terminalLoaded={terminalLoaded}
           ></LeftClient>
           <RightClient
             socket={socket}
@@ -211,6 +214,7 @@ export default function GameClient() {
             handleSearch={handleSearch}
             handleClientInit={() => setOpponentInitialized(true)}
             handleKeystrokeReceived={handleKeystrokeReceived}
+            terminalLoaded={terminalLoaded}
           ></RightClient>
         </React.Fragment>
       )}

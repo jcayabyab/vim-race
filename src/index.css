@@ -14,9 +14,16 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+code {
   font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
+}
+
+code {
+  background-color: #212121;
+  padding: 3px;
+  border-radius: 2px;
 }
 
 div,

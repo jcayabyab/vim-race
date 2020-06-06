@@ -32,12 +32,15 @@ export default function RightClient({
   handleSearch,
   handleClientInit,
   handleKeystrokeReceived,
+  terminalLoaded
 }) {
   const renderBody = () => {
     switch (gameState) {
       case STATES.IDLE:
-        return (
+        return terminalLoaded ? (
           <SearchButton onClick={handleSearch}>Search for game</SearchButton>
+        ) : (
+          <div>Waiting for Vim terminal to download...</div>
         );
       case STATES.SEARCHING:
         return <div>Waiting for opponent...</div>;

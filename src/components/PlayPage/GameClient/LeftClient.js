@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import STATES from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
@@ -40,16 +40,27 @@ export default function LeftClient({
   handleClientInit,
   sendSubmissionToSocket,
   handleKeystrokeReceived,
+  onVimTerminalInit,
+  terminalLoaded
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
     style: vimOptions.canvasStyle,
+    onVimInit: () => {
+      onVimTerminalInit();
+    },
   };
+  if (user.vimrcText) {
+    vimProps.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
+  }
   return (
     <Wrapper>
       {gameState === STATES.SEARCHING || gameState === STATES.IDLE ? (
-        <Vim {...vimProps}></Vim>
+        <React.Fragment>
+          <Vim {...vimProps}></Vim>
+          {!terminalLoaded && <div>Loading Vim terminal...</div>}
+        </React.Fragment>
       ) : (
         <VimClient
           socket={socket}
