@@ -29,7 +29,9 @@
     "start": "node server/index.js",
     "server": "nodemon server/index.js",
     "dev": "concurrently \"react-scripts start\" \"npm run server\"",
-    "build": "react-scripts build",
+    "build-sw": "node ./src/sw-build.js",
+    "clean-cra-sw": "rm -f build/precache-manifest.*.js && rm -f build/service-worker.js",
+    "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
     "heroku-postbuild": "npm run install && npm run build && npm install --prefix server",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
