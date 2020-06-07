@@ -12,9 +12,9 @@ const buildSW = () => {
 
       globDirectory: "build",
 
-      globPatterns: ["**/*.{js,css,html,png,svg}"],
+      globPatterns: ["**/*.{js,css,png,svg,data}"],
 
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 102,
+      maximumFileSizeToCacheInBytes: 7 * 1024 * 102,
     })
     .then(({ count, size, warnings }) => {
       warnings.forEach(console.warn);
