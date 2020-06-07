@@ -5,7 +5,7 @@ const keys = require("../config/keys");
 
 const callbackURL =
   process.env.NODE_ENV === "production"
-    ? "http://vimrace.com/auth/google/callback"
+    ? "http://www.vimrace.com/auth/google/callback"
     : "http://192.168.0.24.sslip.io:3000/auth/google/callback";
 
 passport.serializeUser((user, done) => {
