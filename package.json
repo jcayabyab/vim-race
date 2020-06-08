@@ -23,8 +23,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "styled-components": "^5.1.1",
-    "tab-to-space": "^1.0.1"
+    "styled-components": "^5.1.1"
   },
   "scripts": {
     "start": "node server/index.js",
