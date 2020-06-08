@@ -32,7 +32,7 @@ export default function RightClient({
   handleSearch,
   handleClientInit,
   handleKeystrokeReceived,
-  terminalLoaded
+  terminalLoaded,
 }) {
   const renderBody = () => {
     switch (gameState) {
@@ -47,15 +47,21 @@ export default function RightClient({
       case STATES.LOADING:
       case STATES.PLAYING:
         return (
-          <VimClient
-            socket={socket}
-            user={opponent}
-            isEditable={false}
-            startText={startText}
-            handleClientInit={handleClientInit}
-            gameState={gameState}
-            handleKeystrokeReceived={handleKeystrokeReceived}
-          ></VimClient>
+          <React.Fragment>
+            <VimClient
+              socket={socket}
+              user={opponent}
+              isEditable={false}
+              startText={startText}
+              handleClientInit={handleClientInit}
+              gameState={gameState}
+              handleKeystrokeReceived={handleKeystrokeReceived}
+            ></VimClient>
+            <div>
+              Use <code>:w</code> then <code>:export</code> to submit your
+              entry!
+            </div>
+          </React.Fragment>
         );
       default:
         return <div>Error: {gameState}</div>;
