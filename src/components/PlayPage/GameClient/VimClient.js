@@ -264,10 +264,16 @@ export default function VimClient({
     handleKeystrokeReceived
   );
 
+  useEffect(() => {
+    if (isEditable && inputRef && gameState === STATES.PLAYING) {
+      inputRef.current.focus();
+    }
+  }, [isEditable, inputRef, gameState]);
+
   return (
     <React.Fragment>
       <canvas style={canvasStyle} ref={canvasRef}></canvas>
-      <input style={inputStyle} value="" readOnly ref={inputRef}></input>
+      <input style={inputStyle} ref={inputRef} readOnly></input>
     </React.Fragment>
   );
 }
