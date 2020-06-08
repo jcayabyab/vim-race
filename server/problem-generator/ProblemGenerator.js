@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const tabToSpace = require("tab-to-space");
 
 class ProblemGenerator {
   constructor(showDebug, dummyProblem) {
@@ -30,8 +31,12 @@ class ProblemGenerator {
       const rootPath = path.join(__dirname, "data");
       const startPath = path.join(rootPath, "infiles", fn);
       const goalPath = path.join(rootPath, "outfiles", fn);
-      const startText = fs.readFileSync(startPath, { encoding: "utf-8" });
-      const goalText = fs.readFileSync(goalPath, { encoding: "utf-8" });
+      const startText = this.replaceTabs(
+        fs.readFileSync(startPath, { encoding: "utf-8" })
+      );
+      const goalText = this.replaceTabs(
+        fs.readFileSync(goalPath, { encoding: "utf-8" })
+      );
       if (startText.length < this.lengthThreshold)
         this.problems.push([startText, goalText]);
     }
@@ -61,6 +66,10 @@ class ProblemGenerator {
     const filepath = path.join(__dirname, "data", "infiles");
 
     return fs.readdirSync(filepath);
+  }
+
+  replaceTabs(text) {
+    return tabToSpace(text, 4);
   }
 }
 
