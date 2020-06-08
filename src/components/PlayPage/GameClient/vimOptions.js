@@ -8,10 +8,11 @@ const dirs = [
 ];
 
 const vimrc = `
-  set expandtab tabstop=4 shiftwidth=4 softtabstop=4
+  set expandtab tabstop=4 shiftwidth=4 softtabstop=4 smarttab
   let g:material_theme_style = "darker"
   colorscheme material
   syntax enable
+  set number
 `;
 
 // used to manually load material theme

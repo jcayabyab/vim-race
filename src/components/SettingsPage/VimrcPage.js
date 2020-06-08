@@ -7,10 +7,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
-  max-width: 600px;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #212121;
+  padding: 25px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -72,6 +74,7 @@ export default function VimrcPage() {
       navigator.clipboard ? navigator.clipboard.writeText(text) : null,
   };
 
+  // if user has vimrc, replace default with their .vimrc
   useEffect(() => {
     if (user && user.vimrcText) {
       setVimrc(user.vimrcText);
@@ -99,6 +102,28 @@ export default function VimrcPage() {
       <ButtonWrapper>
         <Link to="/settings">Back to main settings</Link>
       </ButtonWrapper>
+      <h2>Tips</h2>
+      <ul>
+        <li>
+          All problems have tabs converted to 4 spaces. The following line is
+          recommended to be in your <code>.vimrc</code>:{" "}
+          <pre>
+            <code>
+              set expandtab tabstop=4 shiftwidth=4 softtabstop=4 smarttab
+            </code>
+          </pre>
+        </li>
+        <li>
+          Currently, the <code>:w</code> and <code>:export</code> commands are
+          used to send a submission to the backend. This can be binded to a
+          simple keybind using a mapping such as:{" "}
+          <pre>
+            <code>
+              nnoremap {"<Leader>"}e :w{"<CR>"}:export{"<CR>"}
+            </code>
+          </pre>
+        </li>
+      </ul>
     </Wrapper>
   );
 }
