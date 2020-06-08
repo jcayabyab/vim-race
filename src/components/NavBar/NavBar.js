@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/vimrace-logo.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const NavbarWrapper = styled.div`
@@ -13,8 +13,8 @@ const NavbarWrapper = styled.div`
 
 const LogoImage = styled.img`
   image-rendering: pixelated;
-  height: ${31 * 3}px;
-  width: ${85 * 3}px;
+  height: ${({isPlayPage}) => 31 * (isPlayPage ? 2 : 3)}px;
+  width: ${({isPlayPage}) => 85 * (isPlayPage ? 2 : 3)}px;
   cursor: pointer;
   padding: 10px;
 `;
@@ -54,6 +54,9 @@ const ButtonWrapper = styled.div`
 
 export default function NavBar() {
   const user = useSelector((state) => state.user);
+  const location = useLocation();
+
+  const isPlayPage = location.pathname.slice(0, "/play".length) === "/play";
 
   const renderNavbarButtons = () => {
     switch (user) {
@@ -86,7 +89,7 @@ export default function NavBar() {
     <NavbarWrapper>
       <NavbarHeaderChild></NavbarHeaderChild>
       <NavbarHeaderChild>
-        <LogoImage src={logo}></LogoImage>
+        <LogoImage isPlayPage={isPlayPage} src={logo}></LogoImage>
       </NavbarHeaderChild>
       <NavbarHeaderChild>{renderNavbarButtons()}</NavbarHeaderChild>
     </NavbarWrapper>
