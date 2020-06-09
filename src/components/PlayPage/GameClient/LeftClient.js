@@ -1,9 +1,10 @@
-import React from "react";
-import STATES from "./states";
+import React, { useState } from "react";
+import { GAME_STATES } from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
 import { Vim } from "react-vim-wasm";
 import vimOptions from "./vimOptions";
+import PlayerStateIcon from "./PlayerStateIcon";
 
 const GoalBox = styled.code`
   background-color: #212121;
@@ -16,10 +17,25 @@ const GoalBox = styled.code`
   width: 600px;
 `;
 
-const GoalHeader = styled.h3`
-  color: white;
-  font-family: "Share Tech Mono", "Consolas", monospace;
-  margin: 0px 0px 10px;
+const GoalHeader = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+`;
+
+const GoalHeaderChild = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  &:first-child {
+    margin-right: auto;
+    justify-content: flex-start;
+  }
+
+  &:last-child {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -30,6 +46,41 @@ const Wrapper = styled.div`
   padding: 0px 25px;
 `;
 
+const ShowDiffButton = styled.button`
+  border: 4px double white;
+  background-color: transparent;
+  font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 12pt;
+  border-radius: 3px;
+`;
+
+const RedText = styled.span`
+  color: crimson;
+`;
+
+const GreenText = styled.span`
+  color: limegreen;
+`;
+
+export const UserInfoHeader = styled.div`
+  display: flex;
+  font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+  justify-content: space-between;
+  width: 600px;
+  align-items: center;
+  margin-bottom: 5px;
+
+  & > * {
+    font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
+      "Courier New", monospace;
+  }
+`;
+
 // stores all functionality on left side -> user terminal, goal text
 export default function LeftClient({
   socket,
@@ -37,11 +88,12 @@ export default function LeftClient({
   gameState,
   startText,
   goalText,
+  diff,
   handleClientInit,
   sendSubmissionToSocket,
   handleKeystrokeReceived,
   onVimTerminalInit,
-  terminalLoaded,
+  playerState,
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -54,27 +106,61 @@ export default function LeftClient({
   if (user.vimrcText) {
     vimProps.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
   }
+
+  const [showDiff, setShowDiff] = useState(false);
+
+  const createDiffText = () => {
+    return (
+      <React.Fragment>
+        {diff.map((token) => {
+          if (token.removed) {
+            return <RedText>{token.value}</RedText>;
+          }
+          if (token.added) {
+            return <GreenText>{token.value}</GreenText>;
+          }
+          return <span>{token.value}</span>;
+        })}
+      </React.Fragment>
+    );
+  };
+
   return (
     <Wrapper>
-      {gameState === STATES.SEARCHING || gameState === STATES.IDLE ? (
-        <React.Fragment>
-          <Vim {...vimProps}></Vim>
-          {!terminalLoaded && <div>Loading Vim terminal...</div>}
-        </React.Fragment>
+      {gameState === GAME_STATES.SEARCHING || gameState === GAME_STATES.IDLE ? (
+        <Vim {...vimProps}></Vim>
       ) : (
-        <VimClient
-          socket={socket}
-          user={user}
-          isEditable={true}
-          startText={startText}
-          handleClientInit={handleClientInit}
-          gameState={gameState}
-          sendSubmissionToSocket={sendSubmissionToSocket}
-          handleKeystrokeReceived={handleKeystrokeReceived}
-        ></VimClient>
+        <React.Fragment>
+          <UserInfoHeader>
+            <div>{user && user.username ? user.username : "Unnamed user"}</div>
+            <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+          </UserInfoHeader>
+          <VimClient
+            socket={socket}
+            user={user}
+            isEditable={true}
+            startText={startText}
+            handleClientInit={handleClientInit}
+            gameState={gameState}
+            sendSubmissionToSocket={sendSubmissionToSocket}
+            handleKeystrokeReceived={handleKeystrokeReceived}
+          ></VimClient>
+        </React.Fragment>
       )}
-      <GoalHeader>Goal</GoalHeader>
-      <GoalBox>{goalText || ""}</GoalBox>
+      <GoalHeader>
+        <GoalHeaderChild></GoalHeaderChild>
+        <GoalHeaderChild>
+          <h3>Goal</h3>
+        </GoalHeaderChild>
+        <GoalHeaderChild>
+          {!!diff.length && (
+            <ShowDiffButton onClick={() => setShowDiff(!showDiff)}>
+              {showDiff ? "Hide" : "Show"} diff
+            </ShowDiffButton>
+          )}
+        </GoalHeaderChild>
+      </GoalHeader>
+      <GoalBox>{showDiff && diff.length ? createDiffText() : goalText}</GoalBox>
     </Wrapper>
   );
 }

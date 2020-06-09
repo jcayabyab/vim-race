@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import Navbar from "./components/NavBar/NavBar";
 import { fetchUser } from "./actions/userActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 // import Modal from "./components/Modal/Modal";
 
@@ -13,7 +13,6 @@ const Wrapper = styled.div`
 
 const App = (props) => {
   const dispatch = useDispatch();
-  // const user = useSelector((state) => state.user);
 
   const fetchUserOnLoad = useCallback(async () => {
     dispatch(await fetchUser());
@@ -26,7 +25,6 @@ const App = (props) => {
 
   return (
     <div>
-      {/* <Modal isOpen={user && !user.username}></Modal> */}
       <Navbar></Navbar>
       <Wrapper>{props.children}</Wrapper>
     </div>

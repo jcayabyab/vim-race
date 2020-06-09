@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
 const problemGenerator = require("../problem-generator/ProblemGenerator");
+const Diff = require("diff");
 
 class GameHandler {
   constructor(
@@ -96,7 +97,7 @@ class GameHandler {
       socket1,
       socket2,
       io,
-      gameInfo: { player1, player2 },
+      gameInfo: { gameId, player1, player2 },
     } = this;
 
     this.debug(data.id + " submitted: " + data.submission);
@@ -104,13 +105,13 @@ class GameHandler {
       const winner = data.id === player1.id ? player1 : player2;
       this.finish(winner);
     } else {
-      let socketId = socket1.id;
-      if (data.id === player2.id) {
-        socketId = socket2.id;
-      }
-      // send bad submission back to them
-      io.to(socketId).emit(GameHandler.commands.FAIL, {
+      const diff = Diff.diffChars(data.submission.trim(), this.goalText.trim());
+
+      // send bad submission to everyone
+      io.to(gameId).emit(GameHandler.commands.FAIL, {
         submission: data.submission,
+        id: data.id,
+        diff,
       });
     }
   }
@@ -190,13 +191,17 @@ class GameHandler {
 
     this.debug("Game " + gameId + " waiting for clients to load");
     this.debug("Player IDs: " + player1.id + ", " + player2.id);
+
+    const diff = Diff.diffChars(this.startText, this.goalText);
+
     // emit match found
     this.io.to(gameId).emit(GameHandler.commands.MATCH_FOUND, {
-      player1: player1,
-      player2: player2,
-      gameId: gameId,
+      player1,
+      player2,
+      gameId,
       startText: this.startText,
       goalText: this.goalText,
+      diff,
     });
   }
 

@@ -40,15 +40,15 @@ export default function SettingsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
-  const [username, setUsername] = useState(user.username || "");
-  const [email, setEmail] = useState(user.email || "");
-  const [profPicUrl, setProfPicUrl] = useState(user.profilePictureUrl || "");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [profPicUrl, setProfPicUrl] = useState("");
 
   useEffect(() => {
     if (user) {
-      setUsername(user.username);
-      setEmail(user.email);
-      setProfPicUrl(user.profilePictureUrl);
+      setUsername(user.username || "");
+      setEmail(user.email || "");
+      setProfPicUrl(user.profilePictureUrl || "");
     }
   }, [user]);
 

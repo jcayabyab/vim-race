@@ -1,7 +1,9 @@
 import React from "react";
 import VimClient from "./VimClient";
-import STATES from "./states";
+import { GAME_STATES } from "./states";
 import styled from "styled-components";
+import { UserInfoHeader } from "./LeftClient";
+import PlayerStateIcon from "./PlayerStateIcon";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -33,30 +35,46 @@ export default function RightClient({
   handleClientInit,
   handleKeystrokeReceived,
   terminalLoaded,
+  playerState,
+  sendSubmissionToSocket,
 }) {
   const renderBody = () => {
     switch (gameState) {
-      case STATES.IDLE:
+      case GAME_STATES.IDLE:
         return terminalLoaded ? (
           <SearchButton onClick={handleSearch}>Search for game</SearchButton>
         ) : (
           <div>Waiting for Vim terminal to download...</div>
         );
-      case STATES.SEARCHING:
+      case GAME_STATES.SEARCHING:
         return <div>Waiting for opponent...</div>;
-      case STATES.LOADING:
-      case STATES.PLAYING:
+      case GAME_STATES.LOADING:
+      case GAME_STATES.PLAYING:
         return (
           <React.Fragment>
-            <VimClient
-              socket={socket}
-              user={opponent}
-              isEditable={false}
-              startText={startText}
-              handleClientInit={handleClientInit}
-              gameState={gameState}
-              handleKeystrokeReceived={handleKeystrokeReceived}
-            ></VimClient>
+            <UserInfoHeader>
+              <div>
+                {opponent && opponent.username
+                  ? opponent.username
+                  : "Unnamed user"}
+              </div>
+              <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+            </UserInfoHeader>
+            {
+              /* delay to ensure opponent info is loaded */
+              !!opponent && (
+                <VimClient
+                  socket={socket}
+                  user={opponent}
+                  isEditable={false}
+                  startText={startText}
+                  handleClientInit={handleClientInit}
+                  sendSubmissionToSocket={sendSubmissionToSocket}
+                  gameState={gameState}
+                  handleKeystrokeReceived={handleKeystrokeReceived}
+                ></VimClient>
+              )
+            }
             <div>
               Use <code>:w</code> then <code>:export</code> to submit your
               entry!

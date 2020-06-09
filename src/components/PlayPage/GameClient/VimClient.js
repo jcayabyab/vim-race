@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import opts from "./vimOptions";
-import STATES from "./states";
+import { GAME_STATES } from "./states";
 
 /**
  * Handles text injection when game starts
@@ -58,9 +58,10 @@ const useVimTextInjector = (vim, startText, gameStarted) => {
  * @param {*} sendSubmissionToSocket Helper function to send submission text to client
  * a submission from the opponent client on your site
  */
-const useVimTextExtractor = (isUserClient, sendSubmissionToSocket) => {
+const useVimTextExtractor = (isUserClient, sendSubmissionToSocket, user) => {
   const validateSubmission = useCallback(
-    async (_, contents) => {
+    (_, contents) => {
+      console.log(isUserClient);
       // only send validate if your own client
       if (isUserClient) {
         // convert arraybuffer back into string
@@ -70,10 +71,13 @@ const useVimTextExtractor = (isUserClient, sendSubmissionToSocket) => {
 
         // trim to remove whitespace added at beginning or left at end
         const submissionText = ab2str(contents).trim();
-        sendSubmissionToSocket(submissionText);
+        sendSubmissionToSocket(user.id, submissionText);
+      } else {
+        // still send to GameClient object to see when opponent sends object
+        sendSubmissionToSocket(user.id, null);
       }
     },
-    [isUserClient, sendSubmissionToSocket]
+    [isUserClient, sendSubmissionToSocket, user]
   );
 
   return [validateSubmission];
@@ -243,29 +247,34 @@ export default function VimClient({
   const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
   const [validateSubmission] = useVimTextExtractor(
     isEditable,
-    sendSubmissionToSocket
+    sendSubmissionToSocket,
+    user
   );
   const [canvasRef, inputRef, vim] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
-    onVimInit: () => {
-      setVimInitialized(true);
-    },
-    onFileExport: validateSubmission,
     ...vimOptions,
   });
-  useVimTextInjector(vim, startText, gameState === STATES.PLAYING);
+
+  useEffect(() => {
+    if (vim) {
+      vim.onVimInit = () => setVimInitialized(true);
+      vim.onFileExport = validateSubmission;
+    }
+  });
+
+  useVimTextInjector(vim, startText, gameState === GAME_STATES.PLAYING);
   useListenerHandler(
     vim,
     vimInitialized,
     user,
     socket,
-    gameState === STATES.PLAYING,
+    gameState === GAME_STATES.PLAYING,
     isEditable,
     handleKeystrokeReceived
   );
 
   useEffect(() => {
-    if (isEditable && inputRef && gameState === STATES.PLAYING) {
+    if (isEditable && inputRef && gameState === GAME_STATES.PLAYING) {
       inputRef.current.focus();
     }
   }, [isEditable, inputRef, gameState]);
