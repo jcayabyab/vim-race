@@ -37,7 +37,7 @@ class ProblemGenerator {
       const goalText = this.preprocessText(
         fs.readFileSync(goalPath, { encoding: "utf-8" })
       );
-      if (startText.length < this.lengthThreshold)
+      if (goalText.length < this.lengthThreshold)
         this.problems.push([startText, goalText]);
     }
   }
