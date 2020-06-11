@@ -60,11 +60,11 @@ const ShowDiffButton = styled.button`
 `;
 
 const RedText = styled.span`
-  color: crimson;
+  background-color: rgba(220, 20, 60, 0.7);
 `;
 
 const GreenText = styled.span`
-  color: limegreen;
+  background-color: rgba(50, 205, 50, 0.7);
 `;
 
 export const UserInfoHeader = styled.div`
