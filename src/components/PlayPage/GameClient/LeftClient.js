@@ -15,6 +15,7 @@ const GoalBox = styled.code`
   font-size: 9pt;
   min-height: 300px;
   width: 600px;
+  overflow: scroll;
 `;
 
 const GoalHeader = styled.div`

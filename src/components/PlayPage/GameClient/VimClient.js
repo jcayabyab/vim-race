@@ -171,6 +171,8 @@ const useListenerHandler = (
         vim.screen.input.onKeydown,
         { capture: true }
       );
+      // remove resize handler - currently broken
+      window.removeEventListener("resize", vim.screen.resizer.onResize);
     }
   }, [vimInitialized, vim]);
 
@@ -253,6 +255,7 @@ export default function VimClient({
   const [canvasRef, inputRef, vim] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
+    debug: true,
   });
 
   useEffect(() => {
