@@ -24,16 +24,18 @@ const Button = styled.button`
 const ButtonChild = styled.span`
   display: flex;
   justify-content: center;
-  flex: 1;
+  flex: 4;
 
   &:first-child {
     margin-right: auto;
     justify-content: flex-start;
+    flex: 1;
   }
 
   &:last-child {
     margin-left: auto;
     justify-content: flex-end;
+    flex: 1;
   }
 `;
 

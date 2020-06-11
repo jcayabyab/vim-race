@@ -1,7 +1,7 @@
 const passport = require("passport");
 const router = require("express").Router();
 
-const redirectAfterLogin = "/home";
+const redirectAfterLogin = "/play";
 const redirectAfterLogout = "/";
 
 router.get(
