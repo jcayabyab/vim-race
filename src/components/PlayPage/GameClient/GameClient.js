@@ -101,7 +101,13 @@ const useSocketFunctions = (
 
   const sendSearchReqToSocket = useCallback(() => {
     socket.emit("request match", { id: user.id });
-  }, [user, socket]);
+    setClientState(GAME_STATES.SEARCHING);
+  }, [user, socket, setClientState]);
+
+  const cancelMatchmaking = useCallback(() => {
+    socket.emit("cancel matchmaking", { id: user.id });
+    setClientState(GAME_STATES.IDLE);
+  }, [user, socket, setClientState]);
 
   const sendSubmissionToSocket = useCallback(
     (id, submissionText) => {
@@ -159,6 +165,7 @@ const useSocketFunctions = (
     sendSearchReqToSocket,
     sendSubmissionToSocket,
     handleKeystrokeReceived,
+    cancelMatchmaking,
   };
 };
 
@@ -225,6 +232,7 @@ export default function GameClient() {
     sendSearchReqToSocket,
     sendSubmissionToSocket,
     handleKeystrokeReceived,
+    cancelMatchmaking,
   } = useSocketFunctions(
     socket,
     socketInitialized,
@@ -265,14 +273,10 @@ export default function GameClient() {
     resetPlayerStates,
   ]);
 
-  const handleSearch = () => {
-    if (user) {
-      sendSearchReqToSocket();
-      setClientState(GAME_STATES.SEARCHING);
-    } else {
-      console.log("user is not logged in");
-    }
-  };
+  const handleSearch = () =>
+    (clientState === GAME_STATES.IDLE
+      ? sendSearchReqToSocket()
+      : cancelMatchmaking());
 
   return (
     <Wrapper>
@@ -311,6 +315,7 @@ export default function GameClient() {
                 ? playerStates[opponent.id]
                 : PLAYER_STATES.PLAYING
             }
+            cancelMatchmaking={cancelMatchmaking}
           ></RightClient>
         </React.Fragment>
       )}

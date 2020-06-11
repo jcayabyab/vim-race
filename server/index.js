@@ -56,10 +56,15 @@ io.on("connection", (socket) => {
       console.log("user already connected as " + id);
     } else {
       // prevent user from connecting multiple times
-      console.log(data.username + " requested match");
+      console.log(data.id + " requested match");
       // matchmaking logic
       matchmaker.handleRequest(id, socket);
     }
+  });
+
+  socket.on("cancel matchmaking", (data) => {
+    console.log()
+    matchmaker.waitingQueue.removePlayerFromQueue(data.id);
   });
 });
 
