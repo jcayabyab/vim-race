@@ -8,12 +8,12 @@ class MatchmakingClient {
     // stores player usernames and their respective socket objects.
     this.waitingQueue = new WaitingQueue(true);
     this.showDebug = showDebug;
-    this.playersInGame = new Set();
+    this.playersInGame = {};
     if (showDebug) {
       console.log("MatchmakingClient class in debug mode");
     }
 
-    this.onFinish = this.onFinish.bind(this);
+    this.onPlayerFinish = this.onPlayerFinish.bind(this);
   }
 
   debug(msg) {
@@ -43,10 +43,8 @@ class MatchmakingClient {
    * another game
    * @param {*} game The game that has finished
    */
-  onFinish(game) {
-    const { player1, player2 } = game.gameInfo;
-    this.playersInGame.delete(player1.id);
-    this.playersInGame.delete(player2.id);
+  onPlayerFinish(player) {
+    delete this.playersInGame[player.id];
   }
 
   async createMatch(id1, id2, socket1, socket2) {
@@ -63,15 +61,15 @@ class MatchmakingClient {
       player2,
       socket1,
       socket2,
-      this.onFinish,
+      this.onPlayerFinish,
       true
     );
 
     game.initialize();
 
     // add to queue
-    this.playersInGame.add(player1.id);
-    this.playersInGame.add(player2.id);
+    this.playersInGame[player1.id] = game;
+    this.playersInGame[player2.id] = game;
 
     game.start();
   }
@@ -81,8 +79,18 @@ class MatchmakingClient {
   }
 
   playerIdActive(playerId) {
+    let playerFinishedInGame = false;
+    const playerInGame = this.playersInGame.hasOwnProperty(playerId);
+    if (playerInGame) {
+      const game = this.playersInGame[playerId];
+      const { player1, player2 } = game.gameInfo;
+      const thePlayer = player1.id === playerId ? player1 : player2;
+      playerFinishedInGame = thePlayer.finished;
+    }
+
     return (
-      this.waitingQueue.playerInQueue() || this.playersInGame.has(playerId)
+      this.waitingQueue.playerInQueue() ||
+      (playerInGame && playerFinishedInGame)
     );
   }
 }

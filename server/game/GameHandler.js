@@ -11,7 +11,7 @@ class GameHandler {
     player2,
     socket1,
     socket2,
-    finishCallback,
+    playerFinishCallback,
     showDebug = false
   ) {
     this.gameId = this.generateGameId();
@@ -35,7 +35,7 @@ class GameHandler {
     this.io = io;
     this.showDebug = showDebug;
     this.generator = problemGenerator;
-    this.finishCallback = finishCallback;
+    this.playerFinishCallback = playerFinishCallback;
 
     const { start, goal } = this.generator.generateProblem();
 
@@ -248,6 +248,9 @@ class GameHandler {
       completionTime,
     });
 
+    // remove from matchmaking queue
+    this.playerFinishCallback(finishedPlayer);
+
     // if both players are finished, then do logic
     if (player1.finished && player2.finished) {
       this.debug("Game " + gameId + " ended");
@@ -265,8 +268,6 @@ class GameHandler {
         socket1.leave(gameId);
         socket2.leave(gameId);
       }
-      // callback from matchmaker
-      this.finishCallback(this);
     }
   }
 

@@ -1,8 +1,9 @@
 import React from "react";
 import Timer from "../../utils/Timer";
 import styled from "styled-components";
-import { GAME_STATES } from "./states";
+import { GAME_STATES, PLAYER_STATES } from "./states";
 import PlayerStateIcon from "./PlayerStateIcon";
+import SearchButton from "./SearchButton";
 
 const Wrapper = styled.div`
   background-color: #212121;
@@ -12,12 +13,16 @@ const Wrapper = styled.div`
   min-height: 280px;
   width: 580px;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-bottom: 10px;
 `;
 
 const Title = styled.h2`
@@ -27,6 +32,12 @@ const Title = styled.h2`
 const RowWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+`;
+
+const CompletionTime = styled.span`
+  margin-right: 5px;
 `;
 
 const PlayerInfo = ({ username, playerState }) => {
@@ -35,7 +46,7 @@ const PlayerInfo = ({ username, playerState }) => {
       <div>{username}</div>
       <div>
         {!!playerState.completionTime && (
-          <span style={{ marginRight: "5px" }}>{playerState.completionTime}</span>
+          <CompletionTime>{playerState.completionTime}</CompletionTime>
         )}
         <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
       </div>
@@ -48,11 +59,14 @@ export default function StatusScreen({
   user,
   opponent,
   prevGameFinished,
+  handleSearch,
 }) {
   const renderPlayerInfo = () => {
     // user first, then opponent
-    const userState = playerStates[user.id];
-    const opponentState = playerStates[opponent.id];
+    const userState = playerStates[user.id] || { state: PLAYER_STATES.IDLE };
+    const opponentState = playerStates[opponent.id] || {
+      state: PLAYER_STATES.IDLE,
+    };
     return (
       <React.Fragment>
         <PlayerInfo
@@ -67,21 +81,32 @@ export default function StatusScreen({
     );
   };
 
+  console.log(gameState);
+
   return (
     <Wrapper>
-      <Header>
-        <Title>Players</Title>
-        <Timer
-          style={{
-            color: "white",
-            fontFamily: "Share Tech Mono",
-            fontSize: "16pt",
-          }}
-          shouldStop={prevGameFinished}
-          shouldReset={gameState === GAME_STATES.PLAYING}
-        ></Timer>
-      </Header>
-      {Object.keys(playerStates).length && renderPlayerInfo()}
+      <div>
+        <Header>
+          <Title>Players</Title>
+          <Timer
+            style={{
+              color: "white",
+              fontFamily: "Share Tech Mono",
+              fontSize: "16pt",
+            }}
+            shouldStop={prevGameFinished}
+            shouldReset={gameState === GAME_STATES.PLAYING}
+          ></Timer>
+        </Header>
+        {Object.keys(playerStates).length && renderPlayerInfo()}
+      </div>
+      {(gameState === GAME_STATES.IDLE ||
+        gameState === GAME_STATES.SEARCHING) && (
+        <SearchButton
+          gameState={gameState}
+          onClick={handleSearch}
+        ></SearchButton>
+      )}
     </Wrapper>
   );
 }

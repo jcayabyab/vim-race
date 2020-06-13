@@ -95,6 +95,7 @@ export default function LeftClient({
   handleKeystrokeReceived,
   onVimTerminalInit,
   playerState,
+  removeKeystrokeListeners,
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -147,6 +148,7 @@ export default function LeftClient({
             gameState={gameState}
             sendSubmissionToSocket={sendSubmissionToSocket}
             handleKeystrokeReceived={handleKeystrokeReceived}
+            removeKeystrokeListeners={removeKeystrokeListeners}
           ></VimClient>
         </React.Fragment>
       )}

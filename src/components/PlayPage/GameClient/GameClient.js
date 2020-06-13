@@ -46,30 +46,6 @@ const useSocketFunctions = (
   setNewPlayers,
   setPrevGameFinished
 ) => {
-  const handleMatchFound = useCallback(() => {
-    socket.on("match found", (data) => {
-      setClientState(GAME_STATES.LOADING);
-      // set based on your own username
-      setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
-      // add players to playerState object
-      setNewPlayers([data.player1.id, data.player2.id]);
-      setStartText(data.startText);
-      setGoalText(data.goalText);
-      setDiff(data.diff);
-      setPrevGameFinished(false);
-    });
-  }, [
-    user,
-    socket,
-    setStartText,
-    setGoalText,
-    setDiff,
-    setClientState,
-    setOpponent,
-    setNewPlayers,
-    setPrevGameFinished,
-  ]);
-
   const handlePlayerFinish = useCallback(() => {
     socket.on("player finish", (data) => {
       setPlayerState(data.playerId, PLAYER_STATES.SUCCESS, data.completionTime);
@@ -149,6 +125,36 @@ const useSocketFunctions = (
     [socket]
   );
 
+  const removeKeystrokeListeners = useCallback(() => {
+    socket.removeAllListeners("keystroke");
+  }, [socket]);
+
+  const handleMatchFound = useCallback(() => {
+    socket.on("match found", (data) => {
+      setClientState(GAME_STATES.LOADING);
+      // set based on your own username
+      setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
+      // add players to playerState object
+      setNewPlayers([data.player1.id, data.player2.id]);
+      setStartText(data.startText);
+      setGoalText(data.goalText);
+      setDiff(data.diff);
+      setPrevGameFinished(false);
+      removeKeystrokeListeners();
+    });
+  }, [
+    user,
+    socket,
+    setStartText,
+    setGoalText,
+    setDiff,
+    setClientState,
+    setOpponent,
+    setNewPlayers,
+    setPrevGameFinished,
+    removeKeystrokeListeners,
+  ]);
+
   // setup to listen for start and finish
   useEffect(() => {
     // socketIntialized to ensure these listeners are only defined once
@@ -182,6 +188,7 @@ const useSocketFunctions = (
     sendSubmissionToSocket,
     handleKeystrokeReceived,
     cancelMatchmaking,
+    removeKeystrokeListeners,
   };
 };
 
@@ -308,11 +315,12 @@ export default function GameClient() {
             handleClientInit={() => setUserInitialized(true)}
             sendSubmissionToSocket={sendSubmissionToSocket}
             handleKeystrokeReceived={handleKeystrokeReceived}
+            // removeKeystrokeListeners={removeKeystrokeListeners}
             onVimTerminalInit={() => setTerminalLoaded(true)}
             terminalLoaded={terminalLoaded}
             diff={diff}
             playerState={
-              playerStates && user
+              playerStates && playerStates[user.id]
                 ? playerStates[user.id]
                 : { state: PLAYER_STATES.PLAYING }
             }
@@ -327,6 +335,7 @@ export default function GameClient() {
             handleSearch={handleSearch}
             handleClientInit={() => setOpponentInitialized(true)}
             handleKeystrokeReceived={handleKeystrokeReceived}
+            // removeKeystrokeListeners={removeKeystrokeListeners}
             terminalLoaded={terminalLoaded}
             playerStates={playerStates}
             cancelMatchmaking={cancelMatchmaking}

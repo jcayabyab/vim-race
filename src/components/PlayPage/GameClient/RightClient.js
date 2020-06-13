@@ -28,6 +28,7 @@ export default function RightClient({
   playerStates,
   sendSubmissionToSocket,
   prevGameFinished,
+  removeKeystrokeListeners,
 }) {
   // used to check if a game has been played
   const gameStarted = !!startText;
@@ -44,7 +45,7 @@ export default function RightClient({
             </div>
             <PlayerStateIcon
               problemState={
-                playerStates && opponent
+                playerStates && playerStates[opponent.id]
                   ? playerStates[opponent.id]
                   : { state: PLAYER_STATES.PLAYING }
               }
@@ -62,6 +63,7 @@ export default function RightClient({
                 sendSubmissionToSocket={sendSubmissionToSocket}
                 gameState={gameState}
                 handleKeystrokeReceived={handleKeystrokeReceived}
+                removeKeystrokeListeners={removeKeystrokeListeners}
               ></VimClient>
             )
           }
@@ -80,6 +82,7 @@ export default function RightClient({
             user={user}
             opponent={opponent}
             playerStates={playerStates}
+            handleSearch={handleSearch}
           ></StatusScreen>
         </React.Fragment>
       );
