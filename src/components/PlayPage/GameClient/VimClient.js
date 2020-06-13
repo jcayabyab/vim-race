@@ -9,7 +9,7 @@ import { GAME_STATES } from "./states";
  * @param {*} startText The starting text from the server - injected into client
  * @param {*} gameStarted true if game state === PLAYING
  */
-const useVimTextInjector = (vim, startText, gameStarted) => {
+const useVimTextInjector = (vim, startText, gameStarted, handleEvent) => {
   const writeToTerminal = useCallback(
     async (str) => {
       const str2ab = (str) => {
@@ -45,10 +45,22 @@ const useVimTextInjector = (vim, startText, gameStarted) => {
     if (gameStarted) {
       // load into vim client on startup
       // set timeout - screen needs to appear before writing to buffer
-      // failsafe in case this function isn't passed down
-      setTimeout(() => writeToTerminal(startText), 100);
+      setTimeout(() => {
+        writeToTerminal(startText);
+        // send Esc to the terminal
+        const escEvent = {
+          altKey: false,
+          code: "Escape",
+          ctrlKey: false,
+          key: "Escape",
+          keyCode: 27,
+          metaKey: false,
+          shiftKey: false,
+        };
+        handleEvent(escEvent);
+      }, 100);
     }
-  }, [gameStarted, startText, writeToTerminal]);
+  }, [gameStarted, startText, writeToTerminal, handleEvent]);
 };
 
 /**
@@ -229,6 +241,8 @@ const useListenerHandler = (
     vimInitialized,
     handleKeyDown,
   ]);
+
+  return { handleEvent };
 };
 
 export default function VimClient({
@@ -263,8 +277,7 @@ export default function VimClient({
     }
   });
 
-  useVimTextInjector(vim, startText, gameState === GAME_STATES.PLAYING);
-  useListenerHandler(
+  const { handleEvent } = useListenerHandler(
     vim,
     vimInitialized,
     user,
@@ -272,6 +285,12 @@ export default function VimClient({
     gameState === GAME_STATES.PLAYING,
     isEditable,
     handleKeystrokeReceived
+  );
+  useVimTextInjector(
+    vim,
+    startText,
+    gameState === GAME_STATES.PLAYING,
+    handleEvent
   );
 
   useEffect(() => {

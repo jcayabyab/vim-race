@@ -12,8 +12,6 @@ class MatchmakingClient {
     if (showDebug) {
       console.log("MatchmakingClient class in debug mode");
     }
-
-    this.onPlayerFinish = this.onPlayerFinish.bind(this);
   }
 
   debug(msg) {
@@ -30,21 +28,25 @@ class MatchmakingClient {
       // pop two new objects
       const [id1, socket1, id2, socket2] = this.waitingQueue.getNextPlayers();
 
+      [
+        [id1, socket1],
+        [id2, socket2],
+      ].forEach(([id, socket]) => {
+        if (this.playersInGame.hasOwnProperty(id)) {
+          // leave room
+          const game = this.playersInGame[id];
+          socket.leave(game.gameInfo.gameId);
+          // remove listeners from previous game
+          game.removeSocketListeners(socket);
+        }
+      });
+
       this.createMatch(id1, id2, socket1, socket2);
     }
   }
 
   canCreateMatch() {
     return this.waitingQueue.size() >= 2;
-  }
-
-  /**
-   * Callback function to notify the matchmaking client that these users can join
-   * another game
-   * @param {*} game The game that has finished
-   */
-  onPlayerFinish(player) {
-    delete this.playersInGame[player.id];
   }
 
   async createMatch(id1, id2, socket1, socket2) {
@@ -61,7 +63,6 @@ class MatchmakingClient {
       player2,
       socket1,
       socket2,
-      this.onPlayerFinish,
       true
     );
 
@@ -90,7 +91,7 @@ class MatchmakingClient {
 
     return (
       this.waitingQueue.playerInQueue() ||
-      (playerInGame && playerFinishedInGame)
+      (playerInGame && !playerFinishedInGame)
     );
   }
 }

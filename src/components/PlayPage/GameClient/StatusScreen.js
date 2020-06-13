@@ -34,6 +34,8 @@ const RowWrapper = styled.div`
   justify-content: space-between;
   font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
+  align-items: center;
+  margin: 3px 0px;
 `;
 
 const CompletionTime = styled.span`
@@ -43,7 +45,7 @@ const CompletionTime = styled.span`
 const PlayerInfo = ({ username, playerState }) => {
   return (
     <RowWrapper>
-      <div>{username}</div>
+      <div>{username || "Unnamed user"}</div>
       <div>
         {!!playerState.completionTime && (
           <CompletionTime>{playerState.completionTime}</CompletionTime>

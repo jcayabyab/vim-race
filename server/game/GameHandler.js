@@ -5,16 +5,7 @@ const Diff = require("diff");
 const moment = require("moment");
 
 class GameHandler {
-  constructor(
-    io,
-    player1,
-    player2,
-    socket1,
-    socket2,
-    playerFinishCallback,
-    showDebug = false
-  ) {
-    this.gameId = this.generateGameId();
+  constructor(io, player1, player2, socket1, socket2, showDebug = false) {
     this.gameInfo = new GameInfo(
       this.generateGameId(),
       {
@@ -35,7 +26,6 @@ class GameHandler {
     this.io = io;
     this.showDebug = showDebug;
     this.generator = problemGenerator;
-    this.playerFinishCallback = playerFinishCallback;
 
     const { start, goal } = this.generator.generateProblem();
 
@@ -109,13 +99,16 @@ class GameHandler {
     const {
       io,
       gameInfo: { gameId, player1, player2 },
+      socket1,
+      socket2,
     } = this;
 
     this.debug(data.id + " submitted: " + data.submission);
     if (data.submission.trim() === this.goalText.trim()) {
       // log player as finished - game goes until all players finish
       const finishedPlayer = data.id === player1.id ? player1 : player2;
-      this.handleFinish(finishedPlayer);
+      const finishedSocket = finishedPlayer === player1 ? socket1 : socket2;
+      this.handleFinish(finishedPlayer, finishedSocket);
     } else {
       const diff = Diff.diffChars(data.submission.trim(), this.goalText.trim());
 
@@ -168,6 +161,14 @@ class GameHandler {
     socket2.on(GameHandler.commands.LOADED, onLoad);
   }
 
+  removeSocketListeners(socket) {
+    const { onKeystroke, onDisconnect, onSubmission, onLoad } = this;
+    socket.off(GameHandler.commands.KEYSTROKE, onKeystroke);
+    socket.off(GameHandler.commands.DISCONNECT, onDisconnect);
+    socket.off(GameHandler.commands.VALIDATE, onSubmission);
+    socket.off(GameHandler.commands.LOADED, onLoad);
+  }
+
   removeListeners() {
     const {
       socket1,
@@ -215,7 +216,7 @@ class GameHandler {
     });
   }
 
-  handleFinish(finishedPlayer) {
+  handleFinish(finishedPlayer, finishedSocket = null) {
     const {
       socket1,
       socket2,
@@ -236,7 +237,7 @@ class GameHandler {
       return (
         minutes.toFixed(0).padStart(2, "0") +
         ":" +
-        seconds.toFixed(2).padStart(2+3, "0")
+        seconds.toFixed(2).padStart(2 + 3, "0")
       );
     };
 
@@ -247,9 +248,6 @@ class GameHandler {
       playerId: finishedPlayer.id,
       completionTime,
     });
-
-    // remove from matchmaking queue
-    this.playerFinishCallback(finishedPlayer);
 
     // if both players are finished, then do logic
     if (player1.finished && player2.finished) {

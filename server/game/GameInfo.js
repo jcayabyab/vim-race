@@ -8,7 +8,6 @@ class GameInfo {
     this.state = GameInfo.states.created;
     this.winner = null;
     this.timeStart = moment();
-    console.log(player1, player2);
   }
 }
 

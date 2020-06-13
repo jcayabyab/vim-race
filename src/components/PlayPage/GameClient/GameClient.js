@@ -120,13 +120,16 @@ const useSocketFunctions = (
         if (data.id === terminalUser.id) {
           handleKeystrokeEvent(data.event);
         }
+        console.log(socket.listeners("keystroke"));
       });
     },
     [socket]
   );
 
   const removeKeystrokeListeners = useCallback(() => {
+    console.log(socket.listeners("keystroke"));
     socket.removeAllListeners("keystroke");
+    console.log(socket.listeners("keystroke"));
   }, [socket]);
 
   const handleMatchFound = useCallback(() => {
