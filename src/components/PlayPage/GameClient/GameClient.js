@@ -120,16 +120,13 @@ const useSocketFunctions = (
         if (data.id === terminalUser.id) {
           handleKeystrokeEvent(data.event);
         }
-        console.log(socket.listeners("keystroke"));
       });
     },
     [socket]
   );
 
   const removeKeystrokeListeners = useCallback(() => {
-    console.log(socket.listeners("keystroke"));
     socket.removeAllListeners("keystroke");
-    console.log(socket.listeners("keystroke"));
   }, [socket]);
 
   const handleMatchFound = useCallback(() => {
@@ -206,12 +203,16 @@ const usePlayerStates = () => {
 
   const setPlayerState = useCallback(
     (id, newState, completionTime = null) => {
-      const newPlayerState = { state: newState };
-      // should only be defined when playerState === FINISHED
-      if (completionTime) {
-        newPlayerState.completionTime = completionTime;
+      const oldState = prevRef.current[id];
+      // handle race condition
+      if (oldState.state !== PLAYER_STATES.SUCCESS) {
+        const newPlayerState = { state: newState };
+        // should only be defined when playerState === FINISHED
+        if (completionTime) {
+          newPlayerState.completionTime = completionTime;
+        }
+        setPlayerStates({ ...prevRef.current, [id]: newPlayerState });
       }
-      setPlayerStates({ ...prevRef.current, [id]: newPlayerState });
     },
     [setPlayerStates, prevRef]
   );
