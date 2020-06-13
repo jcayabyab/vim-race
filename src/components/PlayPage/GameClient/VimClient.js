@@ -47,7 +47,7 @@ const useVimTextInjector = (vim, startText, gameStarted, handleEvent) => {
       // set timeout - screen needs to appear before writing to buffer
       setTimeout(() => {
         writeToTerminal(startText);
-        // send Esc to the terminal
+        // send Esc to the terminal to reset cursor
         const escEvent = {
           altKey: false,
           code: "Escape",
