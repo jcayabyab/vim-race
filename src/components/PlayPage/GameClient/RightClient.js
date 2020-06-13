@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { UserInfoHeader } from "./LeftClient";
 import PlayerStateIcon from "./PlayerStateIcon";
 import SearchButton from "./SearchButton";
+import StatusScreen from "./StatusScreen";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 
 export default function RightClient({
   socket,
+  user,
   opponent,
   gameState,
   startText,
@@ -25,55 +27,63 @@ export default function RightClient({
   terminalLoaded,
   playerState,
   sendSubmissionToSocket,
+  prevGameFinished,
 }) {
+  // used to check if a game has been played
+  const gameStarted = !!startText;
+  console.log(gameState);
+
   const renderBody = () => {
-    switch (gameState) {
-      case GAME_STATES.IDLE:
-      case GAME_STATES.SEARCHING:
-        return terminalLoaded ? (
-          <SearchButton onClick={handleSearch} gameState={gameState}></SearchButton>
-        ) : (
-          <div>Waiting for Vim terminal to download...</div>
-        );
-      case GAME_STATES.LOADING:
-      case GAME_STATES.PLAYING:
-        return (
-          <React.Fragment>
-            <UserInfoHeader>
-              <div>
-                {opponent && opponent.username
-                  ? opponent.username
-                  : "Unnamed user"}
-              </div>
-              <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
-            </UserInfoHeader>
-            {
-              /* delay to ensure opponent info is loaded */
-              !!opponent && (
-                <VimClient
-                  socket={socket}
-                  user={opponent}
-                  isEditable={false}
-                  startText={startText}
-                  handleClientInit={handleClientInit}
-                  sendSubmissionToSocket={sendSubmissionToSocket}
-                  gameState={gameState}
-                  handleKeystrokeReceived={handleKeystrokeReceived}
-                ></VimClient>
-              )
-            }
-            {gameState === GAME_STATES.PLAYING ? (
-              <div>
-                Use <code>:w</code> then <code>:export</code> to submit your
-                entry!
-              </div>
-            ) : (
-              <div>Waiting for players to load...</div>
-            )}
-          </React.Fragment>
-        );
-      default:
-        return <div>Error: {gameState}</div>;
+    if (gameStarted) {
+      return (
+        <React.Fragment>
+          <UserInfoHeader>
+            <div>
+              {opponent && opponent.username
+                ? opponent.username
+                : "Unnamed user"}
+            </div>
+            <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+          </UserInfoHeader>
+          {
+            /* delay to ensure opponent info is loaded */
+            !!opponent && (
+              <VimClient
+                socket={socket}
+                user={opponent}
+                isEditable={false}
+                startText={startText}
+                handleClientInit={handleClientInit}
+                sendSubmissionToSocket={sendSubmissionToSocket}
+                gameState={gameState}
+                handleKeystrokeReceived={handleKeystrokeReceived}
+              ></VimClient>
+            )
+          }
+          {gameState === GAME_STATES.PLAYING && (
+            <div>
+              Use <code>:w</code> then <code>:export</code> to submit your
+              entry!
+            </div>
+          )}
+          {gameState === GAME_STATES.LOADING && (
+            <div>Waiting for players to load...</div>
+          )}
+          <StatusScreen
+            gameState={gameState}
+            prevGameFinished={prevGameFinished}
+          ></StatusScreen>
+        </React.Fragment>
+      );
+    } else {
+      return terminalLoaded ? (
+        <SearchButton
+          onClick={handleSearch}
+          gameState={gameState}
+        ></SearchButton>
+      ) : (
+        <div>Waiting for Vim terminal to download...</div>
+      );
     }
   };
 

@@ -3,7 +3,7 @@ const path = require("path");
 const tabToSpace = require("tab-to-space");
 
 class ProblemGenerator {
-  constructor(showDebug, dummyProblem) {
+  constructor(showDebug, dummyProblem = false) {
     this.showDebug = showDebug;
     this.lengthThreshold = 200;
 
@@ -80,6 +80,6 @@ class ProblemGenerator {
   }
 }
 
-const problemGenerator = new ProblemGenerator(false, false);
+const problemGenerator = new ProblemGenerator(false, true);
 
 module.exports = problemGenerator;

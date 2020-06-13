@@ -1,7 +1,7 @@
 import React from "react";
 import { GAME_STATES } from "./states";
 import styled from "styled-components";
-import Timer from "react-compound-timer";
+import Timer from "../../utils/Timer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -57,11 +57,7 @@ export default function SearchButton({ gameState, onClick }) {
       </ButtonChild>
       <ButtonChild>
         {gameState === GAME_STATES.SEARCHING && (
-          <Timer formatValue={(value) => `${value < 10 ? "0" : ""}${value}`}>
-            <span style={{ color: "gray" }}>
-              <Timer.Minutes></Timer.Minutes>:<Timer.Seconds></Timer.Seconds>
-            </span>
-          </Timer>
+          <Timer style={{ color: "gray" }}></Timer>
         )}
       </ButtonChild>
     </Button>

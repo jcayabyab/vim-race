@@ -10,19 +10,31 @@ class GameHandler {
     player2,
     socket1,
     socket2,
-    handleFinish,
+    finishCallback,
     showDebug = false
   ) {
     this.gameId = this.generateGameId();
-    this.gameInfo = new GameInfo(this.generateGameId(), player1, player2);
+    this.gameInfo = new GameInfo(
+      this.generateGameId(),
+      {
+        ...player1.dataValues,
+        loaded: false,
+        finished: false,
+        disconnected: false,
+      },
+      {
+        ...player2.dataValues,
+        loaded: false,
+        finished: false,
+        disconnected: false,
+      }
+    );
     this.socket1 = socket1;
     this.socket2 = socket2;
     this.io = io;
     this.showDebug = showDebug;
     this.generator = problemGenerator;
-    this.player1Loaded = false;
-    this.player2Loaded = false;
-    this.handleFinish = handleFinish;
+    this.finishCallback = finishCallback;
 
     const { start, goal } = this.generator.generateProblem();
 
@@ -30,11 +42,11 @@ class GameHandler {
     this.goalText = goal;
 
     // bind these - passed as callback functions
-    this.onP1Disconnect = this.onP1Disconnect.bind(this);
-    this.onP2Disconnect = this.onP2Disconnect.bind(this);
+    this.onDisconnect = this.onDisconnect.bind(this);
     this.onKeystroke = this.onKeystroke.bind(this);
     this.onSubmission = this.onSubmission.bind(this);
     this.onLoad = this.onLoad.bind(this);
+    this.removeListeners = this.removeListeners.bind(this);
 
     if (showDebug) {
       console.log("GameHandler class in debug mode");
@@ -63,26 +75,26 @@ class GameHandler {
     this.gameInfo.state = GameInfo.states.initialized;
   }
 
-  onDisconnect(disconnectedPlayer) {
-    const { player1, player2, gameId } = this.gameInfo;
+  onDisconnect() {
+    const {
+      socket1,
+      gameInfo: { player1, player2, gameId },
+    } = this;
+
+    // find out who just disconnected
+    const disconnectedPlayer =
+      // if player1 just disconnected, then they will not be labeled finished
+      // player1 might be labeled finished actually - how to fix?
+      // if player has already disconnected, how to force to player 2?
+      !socket1.connected && !player1.disconnected ? player1 : player2;
 
     this.debug(
       "Player " + disconnectedPlayer.id + " disconnected from game " + gameId
     );
-    const gameWinner = disconnectedPlayer === player1 ? player2 : player1;
-    this.finish(gameWinner);
-  }
-
-  // abstract to function to ensure correctly removed when game is finished
-  onP1Disconnect() {
-    this.debug("player 1 disconnected");
-    this.onDisconnect(this.gameInfo.player1);
-  }
-
-  // abstract to function to ensure correctly removed when game is finished
-  onP2Disconnect() {
-    this.debug("player 2 disconnected");
-    this.onDisconnect(this.gameInfo.player2);
+    // manually set disconnected player finish, but do not set as winner
+    disconnectedPlayer.finished = true;
+    disconnectedPlayer.disconnected = true;
+    this.handleFinish(disconnectedPlayer);
   }
 
   onKeystroke(data) {
@@ -94,16 +106,15 @@ class GameHandler {
 
   onSubmission(data) {
     const {
-      socket1,
-      socket2,
       io,
       gameInfo: { gameId, player1, player2 },
     } = this;
 
     this.debug(data.id + " submitted: " + data.submission);
     if (data.submission.trim() === this.goalText.trim()) {
-      const winner = data.id === player1.id ? player1 : player2;
-      this.finish(winner);
+      // log player as finished - game goes until all players finish
+      const finishedPlayer = data.id === player1.id ? player1 : player2;
+      this.handleFinish(finishedPlayer);
     } else {
       const diff = Diff.diffChars(data.submission.trim(), this.goalText.trim());
 
@@ -121,12 +132,12 @@ class GameHandler {
     const { player1, player2, gameId } = this.gameInfo;
     this.debug(data.id + " loaded");
     if (data.id === player1.id) {
-      this.player1Loaded = true;
+      player1.loaded = true;
     }
     if (data.id === player2.id) {
-      this.player2Loaded = true;
+      player2.loaded = true;
     }
-    if (this.player1Loaded && this.player2Loaded) {
+    if (player1.loaded && player2.loaded) {
       // emit start to all users in game
       this.debug("Game " + gameId + " started");
       this.io.to(gameId).emit(GameHandler.commands.START);
@@ -138,8 +149,7 @@ class GameHandler {
       socket1,
       socket2,
       onKeystroke,
-      onP1Disconnect,
-      onP2Disconnect,
+      onDisconnect,
       onSubmission,
       onLoad,
     } = this;
@@ -147,8 +157,8 @@ class GameHandler {
     socket1.on(GameHandler.commands.KEYSTROKE, onKeystroke);
     socket2.on(GameHandler.commands.KEYSTROKE, onKeystroke);
 
-    socket1.on(GameHandler.commands.DISCONNECT, onP1Disconnect);
-    socket2.on(GameHandler.commands.DISCONNECT, onP2Disconnect);
+    socket1.on(GameHandler.commands.DISCONNECT, onDisconnect);
+    socket2.on(GameHandler.commands.DISCONNECT, onDisconnect);
 
     socket1.on(GameHandler.commands.VALIDATE, onSubmission);
     socket2.on(GameHandler.commands.VALIDATE, onSubmission);
@@ -162,8 +172,7 @@ class GameHandler {
       socket1,
       socket2,
       onKeystroke,
-      onP1Disconnect,
-      onP2Disconnect,
+      onDisconnect,
       onSubmission,
       onLoad,
     } = this;
@@ -171,8 +180,8 @@ class GameHandler {
     socket1.off(GameHandler.commands.KEYSTROKE, onKeystroke);
     socket2.off(GameHandler.commands.KEYSTROKE, onKeystroke);
 
-    socket1.off(GameHandler.commands.DISCONNECT, onP1Disconnect);
-    socket2.off(GameHandler.commands.DISCONNECT, onP2Disconnect);
+    socket1.off(GameHandler.commands.DISCONNECT, onDisconnect);
+    socket2.off(GameHandler.commands.DISCONNECT, onDisconnect);
 
     socket1.off(GameHandler.commands.VALIDATE, onSubmission);
     socket2.off(GameHandler.commands.VALIDATE, onSubmission);
@@ -205,28 +214,45 @@ class GameHandler {
     });
   }
 
-  finish(winner) {
-    const { gameId } = this.gameInfo;
+  handleFinish(finishedPlayer) {
+    const {
+      socket1,
+      socket2,
+      gameInfo: { player1, player2, gameId },
+    } = this;
 
-    this.debug("Game " + gameId + " ended");
-    this.debug("Game " + gameId + " winner: " + winner.id);
+    this.debug(finishedPlayer.id + " finished");
+    finishedPlayer.finished = true;
+    // if first, then finished player is the winner
+    if (!this.gameInfo.winner && !finishedPlayer.disconnected) {
+      this.gameInfo.winner = finishedPlayer;
+    }
 
-    this.gameInfo.winner = winner;
+    // broadcast that player has finished
+    this.io.to(gameId).emit(GameHandler.commands.PLAYER_FINISH, {
+      playerId: finishedPlayer.id,
+    });
 
-    this.io
-      .to(gameId)
-      .emit(GameHandler.commands.FINISH, { winnerId: this.gameInfo.winner.id });
+    // if both players are finished, then do logic
+    if (player1.finished && player2.finished) {
+      this.debug("Game " + gameId + " ended");
+      // if winner is null, both players disconnected
+      if (this.gameInfo.winner) {
+        this.debug("Game " + gameId + " winner: " + this.gameInfo.winner.id);
 
-    this.gameInfo.state = GameInfo.states.finished;
+        this.io.to(gameId).emit(GameHandler.commands.GAME_FINISH);
 
-    this.removeListeners();
+        this.gameInfo.state = GameInfo.states.finished;
 
-    // remove sockets from previously created room
-    this.socket1.leave(gameId);
-    this.socket2.leave(gameId);
+        this.removeListeners();
 
-    // callback from matchmaker
-    this.handleFinish(this);
+        // remove sockets from previously created room
+        socket1.leave(gameId);
+        socket2.leave(gameId);
+      }
+      // callback from matchmaker
+      this.finishCallback(this);
+    }
   }
 
   generateGameId() {
@@ -236,7 +262,8 @@ class GameHandler {
 
 GameHandler.commands = {
   START: "start",
-  FINISH: "finish",
+  GAME_FINISH: "game finish",
+  PLAYER_FINISH: "player finish",
   KEYSTROKE: "keystroke",
   DISCONNECT: "disconnect",
   VALIDATE: "validate",

@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 class GameInfo {
   constructor(gameId, player1, player2) {
     this.gameId = gameId;
@@ -5,6 +7,8 @@ class GameInfo {
     this.player2 = player2;
     this.state = GameInfo.states.created;
     this.winner = null;
+    this.timeStart = moment();
+    console.log(player1, player2);
   }
 }
 

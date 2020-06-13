@@ -43,7 +43,8 @@ const useSocketFunctions = (
   setDiff,
   setOpponent,
   setPlayerState,
-  addPlayersToState
+  setNewPlayers,
+  setPrevGameFinished
 ) => {
   const handleMatchFound = useCallback(() => {
     socket.on("match found", (data) => {
@@ -51,10 +52,11 @@ const useSocketFunctions = (
       // set based on your own username
       setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
       // add players to playerState object
-      addPlayersToState([data.player1.id, data.player2.id]);
+      setNewPlayers([data.player1.id, data.player2.id]);
       setStartText(data.startText);
       setGoalText(data.goalText);
       setDiff(data.diff);
+      setPrevGameFinished(false);
     });
   }, [
     user,
@@ -64,20 +66,28 @@ const useSocketFunctions = (
     setDiff,
     setClientState,
     setOpponent,
-    addPlayersToState,
+    setNewPlayers,
+    setPrevGameFinished,
   ]);
 
-  const handleMatchFinish = useCallback(() => {
-    socket.on("finish", (data) => {
-      if (data.winnerId === user.id) {
+  const handlePlayerFinish = useCallback(() => {
+    socket.on("player finish", (data) => {
+      setPlayerState(data.playerId, PLAYER_STATES.SUCCESS);
+      // if (data.winnerId === user.id) {
+      //   alert("You, " + (user.username || "player") + ", have won!");
+      // } else {
+      //   alert("You, " + (user.username || "player") + ", have lost!");
+      // }
+      if (data.playerId === user.id) {
         alert("You, " + (user.username || "player") + ", have won!");
-      } else {
-        alert("You, " + (user.username || "player") + ", have lost!");
+        setClientState(GAME_STATES.IDLE);
       }
-      setPlayerState(data.winnerId, PLAYER_STATES.SUCCESS);
-      setClientState(GAME_STATES.IDLE);
     });
   }, [socket, setClientState, user, setPlayerState]);
+
+  const handleGameFinish = useCallback(() => {
+    setPrevGameFinished(true);
+  }, [setPrevGameFinished]);
 
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
@@ -91,6 +101,7 @@ const useSocketFunctions = (
 
   const handleGameStart = useCallback(() => {
     socket.on("start", () => {
+      console.log("start");
       setClientState(GAME_STATES.PLAYING);
     });
   }, [socket, setClientState]);
@@ -140,7 +151,7 @@ const useSocketFunctions = (
     // socketIntialized to ensure these listeners are only defined once
     if (socket && !socketInitialized && user) {
       handleMatchFound();
-      handleMatchFinish();
+      handlePlayerFinish();
       handleSubmissionFail();
       handleGameStart();
       setSocketInitialized(true);
@@ -151,14 +162,14 @@ const useSocketFunctions = (
     setSocketInitialized,
     user,
     handleMatchFound,
-    handleMatchFinish,
+    handlePlayerFinish,
     handleSubmissionFail,
     handleGameStart,
   ]);
 
   return {
     handleMatchFound,
-    handleMatchFinish,
+    handlePlayerFinish,
     handleSubmissionFail,
     handleGameStart,
     handleTerminalsLoaded,
@@ -176,30 +187,33 @@ const usePlayerStates = () => {
 
   useEffect(() => {
     prevRef.current = playerStates;
-  });
+  }, [playerStates]);
 
   const setPlayerState = useCallback(
-    (id, newState) => {
-      setPlayerStates({ ...prevRef.current, [id]: newState });
+    (id, newState, completionTime = null) => {
+      const newPlayerState = { state: newState };
+      // should only be defined when playerState === FINISHED
+      if (completionTime) {
+        newPlayerState.completionTime = completionTime;
+      }
+      setPlayerStates({ ...prevRef.current, [id]: newPlayerState });
     },
     [setPlayerStates, prevRef]
   );
 
-  const addPlayersToState = useCallback(
+  const setNewPlayers = useCallback(
     (ids) => {
-      const newPlayerStates = { ...prevRef.current };
-      ids.forEach((id) => (newPlayerStates[id] = PLAYER_STATES.PLAYING));
+      const newPlayerStates = {};
+      ids.forEach(
+        (id) => (newPlayerStates[id] = { state: PLAYER_STATES.PLAYING })
+      );
 
       setPlayerStates(newPlayerStates);
     },
-    [setPlayerStates, prevRef]
+    [setPlayerStates]
   );
 
-  const resetPlayerStates = useCallback(() => {
-    setPlayerStates({});
-  }, [setPlayerStates]);
-
-  return [playerStates, addPlayersToState, setPlayerState, resetPlayerStates];
+  return [playerStates, setNewPlayers, setPlayerState];
 };
 
 export default function GameClient() {
@@ -213,6 +227,9 @@ export default function GameClient() {
   const [userInitialized, setUserInitialized] = useState(false);
   const [opponentInitialized, setOpponentInitialized] = useState(false);
   const [terminalLoaded, setTerminalLoaded] = useState(false);
+  const [prevGameFinished, setPrevGameFinished] = useState(false);
+
+  console.log("gameclient", {clientState});
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     process.env.NODE_ENV === "production"
@@ -220,12 +237,7 @@ export default function GameClient() {
       : "http://184.64.21.125:4001"
   );
 
-  const [
-    playerStates,
-    addPlayersToState,
-    setPlayerState,
-    resetPlayerStates,
-  ] = usePlayerStates();
+  const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
 
   const {
     handleTerminalsLoaded,
@@ -244,39 +256,28 @@ export default function GameClient() {
     setDiff,
     setOpponent,
     setPlayerState,
-    addPlayersToState
+    setNewPlayers,
+    setPrevGameFinished
   );
 
   useEffect(() => {
-    if (userInitialized && opponentInitialized) {
+    if (userInitialized && opponentInitialized && clientState === GAME_STATES.LOADING) {
       handleTerminalsLoaded();
     }
-  }, [userInitialized, opponentInitialized, handleTerminalsLoaded]);
+  }, [userInitialized, opponentInitialized, handleTerminalsLoaded, clientState]);
+
+  const handleSearch = () =>
+    clientState === GAME_STATES.IDLE
+      ? sendSearchReqToSocket()
+      : cancelMatchmaking();
 
   // reset after game ended
   useEffect(() => {
     if (clientState === GAME_STATES.IDLE) {
-      setOpponent(null);
-      setStartText(null);
-      setGoalText(null);
       setUserInitialized(false);
       setOpponentInitialized(false);
-      resetPlayerStates();
     }
-  }, [
-    clientState,
-    setOpponent,
-    setStartText,
-    setGoalText,
-    setUserInitialized,
-    setOpponentInitialized,
-    resetPlayerStates,
-  ]);
-
-  const handleSearch = () =>
-    (clientState === GAME_STATES.IDLE
-      ? sendSearchReqToSocket()
-      : cancelMatchmaking());
+  }, [clientState, setUserInitialized, setOpponentInitialized]);
 
   return (
     <Wrapper>
@@ -297,11 +298,12 @@ export default function GameClient() {
             playerState={
               playerStates && user
                 ? playerStates[user.id]
-                : PLAYER_STATES.PLAYING
+                : { state: PLAYER_STATES.PLAYING }
             }
           ></LeftClient>
           <RightClient
             socket={socket}
+            user={user}
             opponent={opponent}
             startText={startText}
             gameState={clientState}
@@ -313,9 +315,10 @@ export default function GameClient() {
             playerState={
               playerStates && opponent
                 ? playerStates[opponent.id]
-                : PLAYER_STATES.PLAYING
+                : { state: PLAYER_STATES.PLAYING }
             }
             cancelMatchmaking={cancelMatchmaking}
+            prevGameFinished={prevGameFinished}
           ></RightClient>
         </React.Fragment>
       )}

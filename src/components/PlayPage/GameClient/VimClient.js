@@ -178,6 +178,7 @@ const useListenerHandler = (
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {
+    console.log({ gameStarted });
     if (gameStarted) {
       handleKeystrokeReceived(handleEvent, user);
     }
@@ -242,6 +243,7 @@ export default function VimClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
 }) {
+  console.log({ gameState });
   const { canvasStyle, inputStyle, ...vimOptions } = opts;
   if (user && user.vimrcText) {
     vimOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
@@ -255,7 +257,6 @@ export default function VimClient({
   const [canvasRef, inputRef, vim] = useVim({
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
     ...vimOptions,
-    debug: true,
   });
 
   useEffect(() => {

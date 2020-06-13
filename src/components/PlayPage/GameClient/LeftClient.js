@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { GAME_STATES } from "./states";
+import React, { useState, useEffect } from "react";
+import { GAME_STATES, PLAYER_STATES } from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
 import { Vim } from "react-vim-wasm";
@@ -60,11 +60,11 @@ const ShowDiffButton = styled.button`
 `;
 
 const RedText = styled.span`
-  background-color: rgba(220, 20, 60, 0.7);
+  background-color: rgba(220, 50, 60, 0.6);
 `;
 
 const GreenText = styled.span`
-  background-color: rgba(50, 205, 50, 0.7);
+  background-color: rgba(50, 205, 50, 0.6);
 `;
 
 export const UserInfoHeader = styled.div`
@@ -110,15 +110,17 @@ export default function LeftClient({
 
   const [showDiff, setShowDiff] = useState(false);
 
+  const gameStarted = !!startText;
+
   const createDiffText = () => {
     return (
       <React.Fragment>
-        {diff.map((token) => {
+        {diff.map((token, index) => {
           if (token.removed) {
-            return <RedText>{token.value}</RedText>;
+            return <RedText key={index}>{token.value}</RedText>;
           }
           if (token.added) {
-            return <GreenText>{token.value}</GreenText>;
+            return <GreenText key={index}>{token.value}</GreenText>;
           }
           return <span>{token.value}</span>;
         })}
@@ -128,7 +130,7 @@ export default function LeftClient({
 
   return (
     <Wrapper>
-      {gameState === GAME_STATES.SEARCHING || gameState === GAME_STATES.IDLE ? (
+      {!gameStarted ? (
         <Vim {...vimProps}></Vim>
       ) : (
         <React.Fragment>
@@ -139,7 +141,7 @@ export default function LeftClient({
           <VimClient
             socket={socket}
             user={user}
-            isEditable={true}
+            isEditable={playerState.state !== PLAYER_STATES.SUCCESS}
             startText={startText}
             handleClientInit={handleClientInit}
             gameState={gameState}
