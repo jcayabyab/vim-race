@@ -16,6 +16,7 @@ export default function CustomTimer({
         <TimerHandler
           stop={stop}
           reset={reset}
+          start={start}
           shouldStop={shouldStop}
           shouldReset={shouldReset}
         >
@@ -30,6 +31,7 @@ export default function CustomTimer({
 
 const TimerHandler = ({
   stop,
+  start,
   reset,
   shouldStop,
   shouldReset,
@@ -37,6 +39,7 @@ const TimerHandler = ({
 }) => {
   useEffect(() => {
     if (stop && shouldStop) stop();
+    else start();
   }, [shouldStop, stop]);
 
   useEffect(() => {

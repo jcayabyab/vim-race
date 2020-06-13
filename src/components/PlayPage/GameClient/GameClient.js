@@ -86,8 +86,10 @@ const useSocketFunctions = (
   }, [socket, setClientState, user, setPlayerState]);
 
   const handleGameFinish = useCallback(() => {
-    setPrevGameFinished(true);
-  }, [setPrevGameFinished]);
+    socket.on("game finish", () => {
+      setPrevGameFinished(true);
+    });
+  }, [socket, setPrevGameFinished]);
 
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
@@ -155,6 +157,7 @@ const useSocketFunctions = (
       handleSubmissionFail();
       handleGameStart();
       setSocketInitialized(true);
+      handleGameFinish();
     }
   }, [
     socket,
@@ -229,12 +232,12 @@ export default function GameClient() {
   const [terminalLoaded, setTerminalLoaded] = useState(false);
   const [prevGameFinished, setPrevGameFinished] = useState(false);
 
-  console.log("gameclient", {clientState});
+  console.log("gameclient", { clientState });
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     process.env.NODE_ENV === "production"
       ? "https://vimrace.herokuapp.com"
-      : "http://184.64.21.125:4001"
+      : "http://192.168.0.24:4001"
   );
 
   const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
@@ -261,10 +264,19 @@ export default function GameClient() {
   );
 
   useEffect(() => {
-    if (userInitialized && opponentInitialized && clientState === GAME_STATES.LOADING) {
+    if (
+      userInitialized &&
+      opponentInitialized &&
+      clientState === GAME_STATES.LOADING
+    ) {
       handleTerminalsLoaded();
     }
-  }, [userInitialized, opponentInitialized, handleTerminalsLoaded, clientState]);
+  }, [
+    userInitialized,
+    opponentInitialized,
+    handleTerminalsLoaded,
+    clientState,
+  ]);
 
   const handleSearch = () =>
     clientState === GAME_STATES.IDLE

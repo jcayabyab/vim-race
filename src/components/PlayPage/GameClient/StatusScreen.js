@@ -37,6 +37,8 @@ export default function StatusScreen({
     return;
   };
 
+  console.log({ prevGameFinished });
+
   return (
     <Wrapper>
       <Header>
