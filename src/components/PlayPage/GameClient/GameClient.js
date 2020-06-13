@@ -72,14 +72,13 @@ const useSocketFunctions = (
 
   const handlePlayerFinish = useCallback(() => {
     socket.on("player finish", (data) => {
-      setPlayerState(data.playerId, PLAYER_STATES.SUCCESS);
+      setPlayerState(data.playerId, PLAYER_STATES.SUCCESS, data.completionTime);
       // if (data.winnerId === user.id) {
       //   alert("You, " + (user.username || "player") + ", have won!");
       // } else {
       //   alert("You, " + (user.username || "player") + ", have lost!");
       // }
       if (data.playerId === user.id) {
-        alert("You, " + (user.username || "player") + ", have won!");
         setClientState(GAME_STATES.IDLE);
       }
     });
@@ -87,23 +86,25 @@ const useSocketFunctions = (
 
   const handleGameFinish = useCallback(() => {
     socket.on("game finish", () => {
-      setPrevGameFinished(true);
+      // stop timer after 1 second
+      setTimeout(() => {
+        setPrevGameFinished(true);
+      }, 1000);
     });
   }, [socket, setPrevGameFinished]);
 
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
+      setPlayerState(data.id, PLAYER_STATES.FAIL);
       console.log("Bad submission by " + data.id + ": ", data.submission);
       if (data.id === user.id) {
         setDiff(data.diff);
       }
-      setPlayerState(data.id, PLAYER_STATES.FAIL);
     });
   }, [socket, setDiff, setPlayerState, user]);
 
   const handleGameStart = useCallback(() => {
     socket.on("start", () => {
-      console.log("start");
       setClientState(GAME_STATES.PLAYING);
     });
   }, [socket, setClientState]);
@@ -113,17 +114,19 @@ const useSocketFunctions = (
   }, [user, socket]);
 
   const sendSearchReqToSocket = useCallback(() => {
-    socket.emit("request match", { id: user.id });
     setClientState(GAME_STATES.SEARCHING);
+    socket.emit("request match", { id: user.id });
   }, [user, socket, setClientState]);
 
   const cancelMatchmaking = useCallback(() => {
-    socket.emit("cancel matchmaking", { id: user.id });
     setClientState(GAME_STATES.IDLE);
+    socket.emit("cancel matchmaking", { id: user.id });
   }, [user, socket, setClientState]);
 
   const sendSubmissionToSocket = useCallback(
     (id, submissionText) => {
+      // always set player state
+      setPlayerState(id, PLAYER_STATES.VALIDATING);
       // only send to server if own user's submission - avoids double sending
       if (id === user.id) {
         socket.emit("validate", {
@@ -131,8 +134,6 @@ const useSocketFunctions = (
           submission: submissionText,
         });
       }
-      // always set player state
-      setPlayerState(id, PLAYER_STATES.VALIDATING);
     },
     [user, socket, setPlayerState]
   );
@@ -168,6 +169,7 @@ const useSocketFunctions = (
     handlePlayerFinish,
     handleSubmissionFail,
     handleGameStart,
+    handleGameFinish,
   ]);
 
   return {
@@ -232,8 +234,6 @@ export default function GameClient() {
   const [terminalLoaded, setTerminalLoaded] = useState(false);
   const [prevGameFinished, setPrevGameFinished] = useState(false);
 
-  console.log("gameclient", { clientState });
-
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
     process.env.NODE_ENV === "production"
       ? "https://vimrace.herokuapp.com"
@@ -241,6 +241,10 @@ export default function GameClient() {
   );
 
   const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
+
+  useEffect(() => {
+    console.log(playerStates);
+  }, [playerStates]);
 
   const {
     handleTerminalsLoaded,
@@ -324,11 +328,7 @@ export default function GameClient() {
             handleClientInit={() => setOpponentInitialized(true)}
             handleKeystrokeReceived={handleKeystrokeReceived}
             terminalLoaded={terminalLoaded}
-            playerState={
-              playerStates && opponent
-                ? playerStates[opponent.id]
-                : { state: PLAYER_STATES.PLAYING }
-            }
+            playerStates={playerStates}
             cancelMatchmaking={cancelMatchmaking}
             prevGameFinished={prevGameFinished}
           ></RightClient>

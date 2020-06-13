@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Timer from "react-compound-timer";
 
 export default function CustomTimer({
@@ -40,7 +40,7 @@ const TimerHandler = ({
   useEffect(() => {
     if (stop && shouldStop) stop();
     else start();
-  }, [shouldStop, stop]);
+  }, [shouldStop, stop, start]);
 
   useEffect(() => {
     if (reset && shouldReset) {

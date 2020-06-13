@@ -8,7 +8,7 @@ import PlayPage from "./components/PlayPage/PlayPage";
 import SettingsPage from "./components/SettingsPage/SettingsPage";
 import VimrcPage from "./components/SettingsPage/VimrcPage";
 // import RedirectRoute from "./components/utils/RedirectRoute";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { Route } from "react-router-dom";
 
 export const Routes = (props) => {

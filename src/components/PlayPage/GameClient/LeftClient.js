@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { GAME_STATES, PLAYER_STATES } from "./states";
+import React, { useState } from "react";
+import { PLAYER_STATES } from "./states";
 import VimClient from "./VimClient";
 import styled from "styled-components";
 import { Vim } from "react-vim-wasm";

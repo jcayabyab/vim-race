@@ -1,6 +1,6 @@
 import React from "react";
 import VimClient from "./VimClient";
-import { GAME_STATES } from "./states";
+import { GAME_STATES, PLAYER_STATES } from "./states";
 import styled from "styled-components";
 import { UserInfoHeader } from "./LeftClient";
 import PlayerStateIcon from "./PlayerStateIcon";
@@ -25,13 +25,12 @@ export default function RightClient({
   handleClientInit,
   handleKeystrokeReceived,
   terminalLoaded,
-  playerState,
+  playerStates,
   sendSubmissionToSocket,
   prevGameFinished,
 }) {
   // used to check if a game has been played
   const gameStarted = !!startText;
-  console.log(gameState);
 
   const renderBody = () => {
     if (gameStarted) {
@@ -43,7 +42,13 @@ export default function RightClient({
                 ? opponent.username
                 : "Unnamed user"}
             </div>
-            <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+            <PlayerStateIcon
+              problemState={
+                playerStates && opponent
+                  ? playerStates[opponent.id]
+                  : { state: PLAYER_STATES.PLAYING }
+              }
+            ></PlayerStateIcon>
           </UserInfoHeader>
           {
             /* delay to ensure opponent info is loaded */
@@ -72,6 +77,9 @@ export default function RightClient({
           <StatusScreen
             gameState={gameState}
             prevGameFinished={prevGameFinished}
+            user={user}
+            opponent={opponent}
+            playerStates={playerStates}
           ></StatusScreen>
         </React.Fragment>
       );

@@ -61,7 +61,6 @@ const useVimTextInjector = (vim, startText, gameStarted) => {
 const useVimTextExtractor = (isUserClient, sendSubmissionToSocket, user) => {
   const validateSubmission = useCallback(
     (_, contents) => {
-      console.log(isUserClient);
       // only send validate if your own client
       if (isUserClient) {
         // convert arraybuffer back into string
@@ -178,7 +177,6 @@ const useListenerHandler = (
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {
-    console.log({ gameStarted });
     if (gameStarted) {
       handleKeystrokeReceived(handleEvent, user);
     }
@@ -243,7 +241,6 @@ export default function VimClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
 }) {
-  console.log({ gameState });
   const { canvasStyle, inputStyle, ...vimOptions } = opts;
   if (user && user.vimrcText) {
     vimOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;

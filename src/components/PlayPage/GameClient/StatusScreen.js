@@ -2,6 +2,7 @@ import React from "react";
 import Timer from "../../utils/Timer";
 import styled from "styled-components";
 import { GAME_STATES } from "./states";
+import PlayerStateIcon from "./PlayerStateIcon";
 
 const Wrapper = styled.div`
   background-color: #212121;
@@ -23,8 +24,26 @@ const Title = styled.h2`
   margin: 0px;
 `;
 
+const RowWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const PlayerInfo = ({ username, playerState }) => {
+  return (
+    <RowWrapper>
+      <div>{username}</div>
+      <div>
+        {!!playerState.completionTime && (
+          <span style={{ marginRight: "5px" }}>{playerState.completionTime}</span>
+        )}
+        <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+      </div>
+    </RowWrapper>
+  );
+};
 export default function StatusScreen({
-  playerState,
+  playerStates,
   gameState,
   user,
   opponent,
@@ -32,12 +51,21 @@ export default function StatusScreen({
 }) {
   const renderPlayerInfo = () => {
     // user first, then opponent
-    const userState = playerState[user.id];
-    const opponentState = playerState[opponent.id];
-    return;
+    const userState = playerStates[user.id];
+    const opponentState = playerStates[opponent.id];
+    return (
+      <React.Fragment>
+        <PlayerInfo
+          username={user.username}
+          playerState={userState}
+        ></PlayerInfo>
+        <PlayerInfo
+          username={opponent.username}
+          playerState={opponentState}
+        ></PlayerInfo>
+      </React.Fragment>
+    );
   };
-
-  console.log({ prevGameFinished });
 
   return (
     <Wrapper>
@@ -53,6 +81,7 @@ export default function StatusScreen({
           shouldReset={gameState === GAME_STATES.PLAYING}
         ></Timer>
       </Header>
+      {Object.keys(playerStates).length && renderPlayerInfo()}
     </Wrapper>
   );
 }

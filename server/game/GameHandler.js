@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
 const problemGenerator = require("../problem-generator/ProblemGenerator");
 const Diff = require("diff");
+const moment = require("moment");
 
 class GameHandler {
   constructor(
@@ -228,9 +229,23 @@ class GameHandler {
       this.gameInfo.winner = finishedPlayer;
     }
 
+    const formatTime = (ms) => {
+      let seconds = ms / 1000;
+      const minutes = Math.floor(seconds / 60);
+      seconds = seconds % 60;
+      return (
+        minutes.toFixed(0).padStart(2, "0") +
+        ":" +
+        seconds.toFixed(2).padStart(2+3, "0")
+      );
+    };
+
+    const completionTime = formatTime(moment().diff(this.gameInfo.timeStart));
+
     // broadcast that player has finished
     this.io.to(gameId).emit(GameHandler.commands.PLAYER_FINISH, {
       playerId: finishedPlayer.id,
+      completionTime,
     });
 
     // if both players are finished, then do logic

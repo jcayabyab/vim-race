@@ -13,7 +13,7 @@ const LogoWrapper = styled.img`
 `;
 
 export default function PlayerStateIcon({ problemState }) {
-  switch (problemState) {
+  switch (problemState.state) {
     case PLAYER_STATES.FAIL:
       return <LogoWrapper src={wrongRect}></LogoWrapper>;
     case PLAYER_STATES.PLAYING:
