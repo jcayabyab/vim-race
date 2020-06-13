@@ -57,7 +57,9 @@ const useVimTextInjector = (vim, startText, gameStarted, handleEvent) => {
           metaKey: false,
           shiftKey: false,
         };
-        handleEvent(escEvent);
+        setTimeout(() => {
+          handleEvent(escEvent);
+        }, [100]);
       }, 100);
     }
   }, [gameStarted, startText, writeToTerminal, handleEvent]);
