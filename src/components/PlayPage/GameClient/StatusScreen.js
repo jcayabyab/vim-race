@@ -46,7 +46,7 @@ const PlayerInfo = ({ username, playerState }) => {
   return (
     <RowWrapper>
       <div>{username || "Unnamed user"}</div>
-      <div>
+      <div style={{ display: "flex", alignItems: "center" }}>
         {!!playerState.completionTime && (
           <CompletionTime>{playerState.completionTime}</CompletionTime>
         )}
