@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import opts from "./vimOptions";
 import { GAME_STATES } from "./states";
+import _ from "lodash";
 
 /**
  * Handles text injection when game starts
@@ -257,10 +258,17 @@ export default function VimClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
 }) {
-  const { canvasStyle, inputStyle, ...vimOptions } = opts;
-  if (user && user.vimrcText) {
-    vimOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
-  }
+  const { canvasStyle, inputStyle, ...rest } = opts;
+  const [vimOptions, setVimOptions] = useState(rest);
+
+  useEffect(() => {
+    if (user && user.vimrcText) {
+      const newOptions = { ...vimOptions };
+      newOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
+      setVimOptions(newOptions);
+    }
+  }, [setVimOptions, user]);
+
   const [vimInitialized, setVimInitialized] = useVimInit(handleClientInit);
   const [validateSubmission] = useVimTextExtractor(
     isEditable,
