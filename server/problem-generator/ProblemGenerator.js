@@ -80,6 +80,6 @@ class ProblemGenerator {
   }
 }
 
-const problemGenerator = new ProblemGenerator(false, true);
+const problemGenerator = new ProblemGenerator(false, false);
 
 module.exports = problemGenerator;
