@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
-import opts from "./vimOptions";
+import opts, { vimrc } from "./vimOptions";
 import { GAME_STATES } from "./states";
 import _ from "lodash";
 
@@ -265,6 +265,10 @@ export default function VimClient({
     if (user && user.vimrcText) {
       const newOptions = { ...vimOptions };
       newOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
+      setVimOptions(newOptions);
+    } else {
+      const newOptions = { ...vimOptions };
+      newOptions.files["/home/web_user/.vim/vimrc"] = vimrc;
       setVimOptions(newOptions);
     }
   }, [setVimOptions, user]);

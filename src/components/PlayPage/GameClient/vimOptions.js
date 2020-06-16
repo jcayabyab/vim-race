@@ -7,7 +7,7 @@ const dirs = [
   "autoload/lightline/colorscheme",
 ];
 
-const vimrc = `
+export const vimrc = `
   set expandtab tabstop=4 shiftwidth=4 softtabstop=4 smarttab
   let g:material_theme_style = "darker"
   colorscheme material
