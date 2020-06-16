@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import opts, { vimrc } from "./vimOptions";
 import { GAME_STATES } from "./states";
-import _ from "lodash";
 
 /**
  * Handles text injection when game starts
