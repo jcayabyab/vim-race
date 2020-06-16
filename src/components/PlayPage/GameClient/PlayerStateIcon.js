@@ -4,6 +4,7 @@ import styled from "styled-components";
 import currentRect1 from "../../../assets/currentrect-1.png";
 import loadingRect from "../../../assets/loadingrect.gif";
 import correctRect from "../../../assets/correctrect.png";
+import disconnectRect from "../../../assets/disconnectrect.png";
 import wrongRect from "../../../assets/wrongrect.png";
 
 const LogoWrapper = styled.img`
@@ -22,6 +23,8 @@ export default function PlayerStateIcon({ problemState }) {
       return <LogoWrapper src={loadingRect}></LogoWrapper>;
     case PLAYER_STATES.SUCCESS:
       return <LogoWrapper src={correctRect}></LogoWrapper>;
+    case PLAYER_STATES.DISCONNECTED:
+      return <LogoWrapper src={disconnectRect}></LogoWrapper>;
     default:
       console.log(problemState);
       return <div>invalid state</div>;

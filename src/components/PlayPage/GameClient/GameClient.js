@@ -48,7 +48,10 @@ const useSocketFunctions = (
 ) => {
   const handlePlayerFinish = useCallback(() => {
     socket.on("player finish", (data) => {
-      setPlayerState(data.playerId, PLAYER_STATES.SUCCESS, data.completionTime);
+      const newState = data.disconnected
+        ? PLAYER_STATES.DISCONNECTED
+        : PLAYER_STATES.SUCCESS;
+      setPlayerState(data.playerId, newState, data.completionTime);
       // if (data.winnerId === user.id) {
       //   alert("You, " + (user.username || "player") + ", have won!");
       // } else {

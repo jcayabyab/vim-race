@@ -85,13 +85,13 @@ class GameHandler {
     // manually set disconnected player finish, but do not set as winner
     disconnectedPlayer.finished = true;
     disconnectedPlayer.disconnected = true;
-    this.handleFinish(disconnectedPlayer);
+    this.handlePlayerFinish(disconnectedPlayer);
   }
 
   onKeystroke(data) {
     // responds to keystroke from any player
     // emits to all players
-    // this.debug("Player " + data.username + " keystroke");
+    // this.debug("Player " + data.id + " keystroke");
     this.io.in(this.gameInfo.gameId).emit(GameHandler.commands.KEYSTROKE, data);
   }
 
@@ -108,7 +108,7 @@ class GameHandler {
       // log player as finished - game goes until all players finish
       const finishedPlayer = data.id === player1.id ? player1 : player2;
       const finishedSocket = finishedPlayer === player1 ? socket1 : socket2;
-      this.handleFinish(finishedPlayer, finishedSocket);
+      this.handlePlayerFinish(finishedPlayer, finishedSocket);
     } else {
       const diff = Diff.diffChars(data.submission.trim(), this.goalText.trim());
 
@@ -216,7 +216,7 @@ class GameHandler {
     });
   }
 
-  handleFinish(finishedPlayer, finishedSocket = null) {
+  handlePlayerFinish(finishedPlayer, finishedSocket = null) {
     const {
       socket1,
       socket2,
@@ -247,25 +247,37 @@ class GameHandler {
     this.io.to(gameId).emit(GameHandler.commands.PLAYER_FINISH, {
       playerId: finishedPlayer.id,
       completionTime,
+      disconnected: finishedPlayer.disconnected
     });
 
     // if both players are finished, then do logic
     if (player1.finished && player2.finished) {
-      this.debug("Game " + gameId + " ended");
-      // if winner is null, both players disconnected
-      if (this.gameInfo.winner) {
-        this.debug("Game " + gameId + " winner: " + this.gameInfo.winner.id);
+      this.handleGameFinish();
+    }
+  }
 
-        this.io.to(gameId).emit(GameHandler.commands.GAME_FINISH);
+  handleGameFinish() {
+    const {
+      gameInfo: { winner },
+      io,
+      socket1,
+      socket2,
+    } = this;
 
-        this.gameInfo.state = GameInfo.states.finished;
+    this.debug("Game " + gameId + " ended");
+    // if winner is null, both players disconnected
+    if (gameInfo.winner) {
+      this.debug("Game " + gameId + " winner: " + winner.id);
 
-        this.removeListeners();
+      io.to(gameId).emit(GameHandler.commands.GAME_FINISH);
 
-        // remove sockets from previously created room
-        socket1.leave(gameId);
-        socket2.leave(gameId);
-      }
+      this.gameInfo.state = GameInfo.states.finished;
+
+      this.removeListeners();
+
+      // remove sockets from previously created room
+      socket1.leave(gameId);
+      socket2.leave(gameId);
     }
   }
 
