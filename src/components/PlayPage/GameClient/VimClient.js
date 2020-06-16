@@ -3,6 +3,8 @@ import { useVim } from "react-vim-wasm";
 import opts, { vimrc } from "./vimOptions";
 import { GAME_STATES } from "./states";
 
+const { canvasStyle, inputStyle, ...rest } = opts;
+
 /**
  * Handles text injection when game starts
  * @param {C} vim The vim terminal returned from useVim
@@ -257,16 +259,15 @@ export default function VimClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
 }) {
-  const { canvasStyle, inputStyle, ...rest } = opts;
   const [vimOptions, setVimOptions] = useState(rest);
 
   useEffect(() => {
     if (user && user.vimrcText) {
-      const newOptions = { ...vimOptions };
+      const newOptions = { ...rest };
       newOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
       setVimOptions(newOptions);
     } else {
-      const newOptions = { ...vimOptions };
+      const newOptions = { ...rest };
       newOptions.files["/home/web_user/.vim/vimrc"] = vimrc;
       setVimOptions(newOptions);
     }
