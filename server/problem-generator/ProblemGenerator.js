@@ -80,6 +80,8 @@ class ProblemGenerator {
   }
 }
 
-const problemGenerator = new ProblemGenerator(false, false);
+const showDummyProblem = process.env.NODE_ENV !== "production";
+
+const problemGenerator = new ProblemGenerator(false, showDummyProblem);
 
 module.exports = problemGenerator;

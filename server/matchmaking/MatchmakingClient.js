@@ -28,6 +28,7 @@ class MatchmakingClient {
       // pop two new objects
       const [id1, socket1, id2, socket2] = this.waitingQueue.getNextPlayers();
 
+      // remove both players from any lobbies they may currently be in
       [
         [id1, socket1],
         [id2, socket2],
