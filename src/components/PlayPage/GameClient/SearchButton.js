@@ -4,22 +4,7 @@ import styled from "styled-components";
 import Timer from "../../utils/Timer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-
-// custom border
-const Button = styled.button`
-  position: relative;
-  border: 1px solid black;
-  border-radius: 3px;
-  background-color: #d1d1d1;
-  padding: 20px;
-  font-size: 16pt;
-  color: black;
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+import SolidButton from "../../utils/SolidButton";
 
 const ButtonChild = styled.span`
   display: flex;
@@ -41,7 +26,7 @@ const ButtonChild = styled.span`
 
 export default function SearchButton({ gameState, onClick }) {
   return (
-    <Button onClick={onClick}>
+    <SolidButton onClick={onClick}>
       <ButtonChild>
         {gameState === GAME_STATES.SEARCHING && (
           <FontAwesomeIcon
@@ -60,6 +45,6 @@ export default function SearchButton({ gameState, onClick }) {
           <Timer style={{ color: "gray" }}></Timer>
         )}
       </ButtonChild>
-    </Button>
+    </SolidButton>
   );
 }

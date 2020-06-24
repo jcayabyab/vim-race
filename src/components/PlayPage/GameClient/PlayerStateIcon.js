@@ -5,6 +5,8 @@ import currentRect1 from "../../../assets/currentrect-1.png";
 import loadingRect from "../../../assets/loadingrect.gif";
 import correctRect from "../../../assets/correctrect.png";
 import disconnectRect from "../../../assets/disconnectrect.png";
+import resignRect from "../../../assets/resignrect.png";
+import acceptRect from "../../../assets/acceptrect.png";
 import wrongRect from "../../../assets/wrongrect.png";
 
 const LogoWrapper = styled.img`
@@ -13,8 +15,8 @@ const LogoWrapper = styled.img`
   width: ${31}px;
 `;
 
-export default function PlayerStateIcon({ problemState }) {
-  switch (problemState.state) {
+export default function PlayerStateIcon({ playerState }) {
+  switch (playerState.state) {
     case PLAYER_STATES.FAIL:
       return <LogoWrapper src={wrongRect}></LogoWrapper>;
     case PLAYER_STATES.PLAYING:
@@ -25,8 +27,14 @@ export default function PlayerStateIcon({ problemState }) {
       return <LogoWrapper src={correctRect}></LogoWrapper>;
     case PLAYER_STATES.DISCONNECTED:
       return <LogoWrapper src={disconnectRect}></LogoWrapper>;
+    case PLAYER_STATES.RESIGNED:
+      return (
+        <LogoWrapper
+          src={playerState.placement ? acceptRect : resignRect}
+        ></LogoWrapper>
+      );
     default:
-      console.log(problemState);
+      console.log(playerState);
       return <div>invalid state</div>;
   }
 }

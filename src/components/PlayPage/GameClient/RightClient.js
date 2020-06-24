@@ -29,6 +29,7 @@ export default function RightClient({
   sendSubmissionToSocket,
   prevGameFinished,
   removeKeystrokeListeners,
+  resignGame,
 }) {
   // used to check if a game has been played
   const gameStarted = !!startText;
@@ -44,7 +45,7 @@ export default function RightClient({
                 : "Unnamed user"}
             </div>
             <PlayerStateIcon
-              problemState={
+              playerState={
                 playerStates && playerStates[opponent.id]
                   ? playerStates[opponent.id]
                   : { state: PLAYER_STATES.PLAYING }
@@ -83,6 +84,7 @@ export default function RightClient({
             opponent={opponent}
             playerStates={playerStates}
             handleSearch={handleSearch}
+            resignGame={resignGame}
           ></StatusScreen>
         </React.Fragment>
       );

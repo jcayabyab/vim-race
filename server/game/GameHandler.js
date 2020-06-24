@@ -156,19 +156,21 @@ class GameHandler {
   }
 
   addSocketListeners(socket) {
-    const { onKeystroke, onDisconnect, onSubmission, onLoad } = this;
+    const { onKeystroke, onDisconnect, onSubmission, onLoad, onResign } = this;
     socket.on(GameHandler.commands.KEYSTROKE, onKeystroke);
     socket.on(GameHandler.commands.DISCONNECT, onDisconnect);
     socket.on(GameHandler.commands.VALIDATE, onSubmission);
     socket.on(GameHandler.commands.LOADED, onLoad);
+    socket.on(GameHandler.commands.RESIGN, onResign);
   }
 
   removeSocketListeners(socket) {
-    const { onKeystroke, onDisconnect, onSubmission, onLoad } = this;
+    const { onKeystroke, onDisconnect, onSubmission, onLoad, onResign } = this;
     socket.off(GameHandler.commands.KEYSTROKE, onKeystroke);
     socket.off(GameHandler.commands.DISCONNECT, onDisconnect);
     socket.off(GameHandler.commands.VALIDATE, onSubmission);
     socket.off(GameHandler.commands.LOADED, onLoad);
+    socket.off(GameHandler.commands.RESIGN, onResign);
   }
 
   removeListeners() {
@@ -246,7 +248,7 @@ class GameHandler {
       this.finishedUsers++;
     }
 
-    const placement = validWin ? this.finished : null;
+    const placement = validWin ? this.finishedUsers : null;
     // broadcast that player has finished
     this.io.to(gameId).emit(GameHandler.commands.PLAYER_FINISH, {
       playerId: finishedPlayer.id,

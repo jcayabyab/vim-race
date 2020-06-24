@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 import LeftClient from "./LeftClient";
 import RightClient from "./RightClient";
@@ -48,10 +48,24 @@ const useSocketFunctions = (
 ) => {
   const handlePlayerFinish = useCallback(() => {
     socket.on("player finish", (data) => {
-      const newState = data.disconnected
-        ? PLAYER_STATES.DISCONNECTED
-        : PLAYER_STATES.SUCCESS;
-      setPlayerState(data.playerId, newState, data.completionTime);
+      let newState = PLAYER_STATES.SUCCESS;
+      if (data.resigned) {
+        newState = PLAYER_STATES.RESIGNED;
+      }
+      // if disconnected is found, then the player had not finished
+      // the server does not send finish message for an already finished player
+      else if (data.disconnected) {
+        newState = PLAYER_STATES.DISCONNECTED;
+      }
+
+      // we want to read the current state of the player
+      // if they have already resigned, then do not update as disconnected
+      setPlayerState(
+        data.playerId,
+        newState,
+        data.completionTime,
+        data.placement
+      );
       // if (data.winnerId === user.id) {
       //   alert("You, " + (user.username || "player") + ", have won!");
       // } else {
@@ -101,6 +115,10 @@ const useSocketFunctions = (
     setClientState(GAME_STATES.IDLE);
     socket.emit("cancel matchmaking", { id: user.id });
   }, [user, socket, setClientState]);
+
+  const resignGame = useCallback(() => {
+    socket.emit("resign", { id: user.id });
+  }, [user, socket]);
 
   const sendSubmissionToSocket = useCallback(
     (id, submissionText) => {
@@ -192,32 +210,38 @@ const useSocketFunctions = (
     handleKeystrokeReceived,
     cancelMatchmaking,
     removeKeystrokeListeners,
+    resignGame,
   };
 };
 
 const usePlayerStates = () => {
   const [playerStates, setPlayerStates] = useState({});
   // handle previous logic for callbacks
-  const prevRef = useRef();
-
-  useEffect(() => {
-    prevRef.current = playerStates;
-  }, [playerStates]);
 
   const setPlayerState = useCallback(
-    (id, newState, completionTime = null) => {
-      const oldState = prevRef.current[id];
+    (id, newState, completionTime = null, placement = null) => {
       // handle race condition
-      if (oldState.state !== PLAYER_STATES.SUCCESS) {
-        const newPlayerState = { state: newState };
-        // should only be defined when playerState === FINISHED
-        if (completionTime) {
-          newPlayerState.completionTime = completionTime;
+      setPlayerStates((prevState) => {
+        // if player already finished or resigned, do not update on disconnect
+        if (
+          prevState[id].state === PLAYER_STATES.SUCCESS ||
+          prevState[id].state === PLAYER_STATES.RESIGNED
+        ) {
+          return prevState;
+        } else {
+          const newPlayerState = { state: newState, placement };
+          if (
+            newState === PLAYER_STATES.SUCCESS ||
+            newState === PLAYER_STATES.RESIGNED
+          ) {
+            newPlayerState.completionTime = completionTime;
+          }
+
+          return { ...prevState, [id]: newPlayerState };
         }
-        setPlayerStates({ ...prevRef.current, [id]: newPlayerState });
-      }
+      });
     },
-    [setPlayerStates, prevRef]
+    [setPlayerStates]
   );
 
   const setNewPlayers = useCallback(
@@ -256,16 +280,13 @@ export default function GameClient() {
 
   const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
 
-  useEffect(() => {
-    console.log(playerStates);
-  }, [playerStates]);
-
   const {
     handleTerminalsLoaded,
     sendSearchReqToSocket,
     sendSubmissionToSocket,
     handleKeystrokeReceived,
     cancelMatchmaking,
+    resignGame,
   } = useSocketFunctions(
     socket,
     socketInitialized,
@@ -347,6 +368,7 @@ export default function GameClient() {
             playerStates={playerStates}
             cancelMatchmaking={cancelMatchmaking}
             prevGameFinished={prevGameFinished}
+            resignGame={resignGame}
           ></RightClient>
         </React.Fragment>
       )}

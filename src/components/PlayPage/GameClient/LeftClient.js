@@ -137,7 +137,7 @@ export default function LeftClient({
         <React.Fragment>
           <UserInfoHeader>
             <div>{user && user.username ? user.username : "Unnamed user"}</div>
-            <PlayerStateIcon problemState={playerState}></PlayerStateIcon>
+            <PlayerStateIcon playerState={playerState}></PlayerStateIcon>
           </UserInfoHeader>
           <VimClient
             socket={socket}
