@@ -43,6 +43,7 @@ export default function GameClient() {
     handleKeystrokeReceived,
     cancelMatchmaking,
     resignGame,
+    handleVimKeydown,
   } = useSocketFunctions(
     socket,
     socketInitialized,
@@ -91,7 +92,7 @@ export default function GameClient() {
       {socketInitialized && (
         <React.Fragment>
           <LeftClient
-            socket={socket}
+            handleVimKeydown={handleVimKeydown}
             user={user}
             startText={startText}
             goalText={goalText}
@@ -110,7 +111,7 @@ export default function GameClient() {
             }
           ></LeftClient>
           <RightClient
-            socket={socket}
+            handleVimKeydown={handleVimKeydown}
             user={user}
             opponent={opponent}
             startText={startText}

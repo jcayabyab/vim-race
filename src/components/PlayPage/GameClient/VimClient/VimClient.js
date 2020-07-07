@@ -18,6 +18,7 @@ export default function VimClient({
   gameState,
   sendSubmissionToSocket,
   handleKeystrokeReceived,
+  handleVimKeydown,
 }) {
   const [vimOptions] = useVimOptions(user);
   const [validateSubmission] = useVimTextExtractor(
@@ -37,10 +38,10 @@ export default function VimClient({
     vim,
     vimInitialized,
     user,
-    socket,
     gameState === GAME_STATES.PLAYING,
     isEditable,
-    handleKeystrokeReceived
+    handleKeystrokeReceived,
+    handleVimKeydown
   );
   useVimTextInjector(
     vim,

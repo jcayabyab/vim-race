@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 export default function RightClient({
-  socket,
+  handleVimKeydown,
   user,
   opponent,
   gameState,
@@ -56,7 +56,7 @@ export default function RightClient({
             /* delay to ensure opponent info is loaded */
             !!opponent && (
               <VimClient
-                socket={socket}
+                handleVimKeydown={handleVimKeydown}
                 user={opponent}
                 isEditable={false}
                 startText={startText}

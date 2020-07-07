@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { PLAYER_STATES } from "./states";
 import VimClient from "./VimClient/VimClient";
 import GoalDisplay from "./GoalDisplay";
@@ -32,7 +32,7 @@ export const UserInfoHeader = styled.div`
 
 // stores all functionality on left side -> user terminal, goal text
 export default function LeftClient({
-  socket,
+  handleVimKeydown,
   user,
   gameState,
   startText,
@@ -70,7 +70,7 @@ export default function LeftClient({
             <PlayerStateIcon playerState={playerState}></PlayerStateIcon>
           </UserInfoHeader>
           <VimClient
-            socket={socket}
+            handleVimKeydown={handleVimKeydown}
             user={user}
             isEditable={playerState.state !== PLAYER_STATES.SUCCESS}
             startText={startText}

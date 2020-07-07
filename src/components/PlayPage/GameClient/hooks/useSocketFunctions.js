@@ -55,6 +55,29 @@ const useSocketFunctions = (
     });
   }, [socket, setPrevGameFinished]);
 
+  // logic for grabbing event info from event and passing to server
+  const handleVimKeydown = useCallback(
+    (e) => {
+      e.preventDefault();
+      const { key, keyCode, code, ctrlKey, shiftKey, altKey, metaKey } = e;
+      socket.emit("keystroke", {
+        event: {
+          key,
+          keyCode,
+          code,
+          ctrlKey,
+          shiftKey,
+          altKey,
+          metaKey,
+        },
+        id: user.id,
+      });
+      // client side validation
+      // vim.cmdline("export submission");
+    },
+    [user, socket]
+  );
+
   const handleSubmissionFail = useCallback(() => {
     socket.on("fail", (data) => {
       setPlayerState(data.id, PLAYER_STATES.FAIL);
@@ -180,6 +203,7 @@ const useSocketFunctions = (
     cancelMatchmaking,
     removeKeystrokeListeners,
     resignGame,
+    handleVimKeydown,
   };
 };
 
