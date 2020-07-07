@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import useSocket from "./hooks/useSocket";
 import useSocketFunctions from "./hooks/useSocketFunctions";
 import usePlayerStates from "./hooks/usePlayerStates";
@@ -26,6 +26,7 @@ export default function GameClient() {
   const [userInitialized, setUserInitialized] = useState(false);
   const [opponentInitialized, setOpponentInitialized] = useState(false);
   const [terminalLoaded, setTerminalLoaded] = useState(false);
+  // used to stop timer once game is over
   const [prevGameFinished, setPrevGameFinished] = useState(false);
 
   const [socket, socketInitialized, setSocketInitialized] = useSocket(
@@ -79,13 +80,14 @@ export default function GameClient() {
       ? sendSearchReqToSocket()
       : cancelMatchmaking();
 
-  // reset after game ended
-  useEffect(() => {
-    if (clientState === GAME_STATES.IDLE) {
-      setUserInitialized(false);
-      setOpponentInitialized(false);
-    }
-  }, [clientState, setUserInitialized, setOpponentInitialized]);
+  // used to reset initialization variables when Vim component resets
+  const handleUserUnmount = useCallback(() => setUserInitialized(false), [
+    setUserInitialized,
+  ]);
+  const handleOpponentUnmount = useCallback(
+    () => setOpponentInitialized(false),
+    [setOpponentInitialized]
+  );
 
   return (
     <Wrapper>
@@ -98,7 +100,7 @@ export default function GameClient() {
             goalText={goalText}
             gameState={clientState}
             handleClientInit={() => setUserInitialized(true)}
-            sendSubmissionToSocket={sendSubmissionToSocket}
+            handleSubmission={sendSubmissionToSocket}
             handleKeystrokeReceived={handleKeystrokeReceived}
             // removeKeystrokeListeners={removeKeystrokeListeners}
             onVimTerminalInit={() => setTerminalLoaded(true)}
@@ -109,6 +111,7 @@ export default function GameClient() {
                 ? playerStates[user.id]
                 : { state: PLAYER_STATES.PLAYING }
             }
+            handleUserUnmount={handleUserUnmount}
           ></LeftClient>
           <RightClient
             handleVimKeydown={handleVimKeydown}
@@ -116,16 +119,16 @@ export default function GameClient() {
             opponent={opponent}
             startText={startText}
             gameState={clientState}
-            sendSubmissionToSocket={sendSubmissionToSocket}
+            handleSubmission={sendSubmissionToSocket}
             handleSearch={handleSearch}
             handleClientInit={() => setOpponentInitialized(true)}
             handleKeystrokeReceived={handleKeystrokeReceived}
-            // removeKeystrokeListeners={removeKeystrokeListeners}
             terminalLoaded={terminalLoaded}
             playerStates={playerStates}
             cancelMatchmaking={cancelMatchmaking}
             prevGameFinished={prevGameFinished}
             resignGame={resignGame}
+            handleOpponentUnmount={handleOpponentUnmount}
           ></RightClient>
         </React.Fragment>
       )}
