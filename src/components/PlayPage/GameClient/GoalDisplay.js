@@ -67,7 +67,7 @@ const GoalDisplay = ({ diff, goalText }) => {
           if (token.added) {
             return <GreenText key={index}>{token.value}</GreenText>;
           }
-          return <span>{token.value}</span>;
+          return <span key={index}>{token.value}</span>;
         })}
       </React.Fragment>
     );
@@ -91,7 +91,7 @@ const GoalDisplay = ({ diff, goalText }) => {
       </GoalHeader>
       <GoalBox>
         <PerfectScrollbar>
-          {showDiff && diff.length ? createDiffText() : goalText}
+          <span>{showDiff && diff.length ? createDiffText() : goalText}</span>
         </PerfectScrollbar>
       </GoalBox>
     </React.Fragment>
