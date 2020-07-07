@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Vim } from "react-vim-wasm";
-import vimOptions from "../PlayPage/GameClient/vimOptions";
+import vimOptions from "../PlayPage/GameClient/VimClient/vimOptions";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserVimrc } from "../../actions/userActions";
 import styled from "styled-components";

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { PLAYER_STATES } from "./states";
-import VimClient from "./VimClient";
+import VimClient from "./VimClient/VimClient";
 import styled from "styled-components";
 import { Vim } from "react-vim-wasm";
-import vimOptions from "./vimOptions";
+import vimOptions from "./VimClient/vimOptions";
 import PlayerStateIcon from "./PlayerStateIcon";
 
 const GoalBox = styled.code`

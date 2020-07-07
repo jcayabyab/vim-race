@@ -1,5 +1,5 @@
 import React from "react";
-import VimClient from "./VimClient";
+import VimClient from "./VimClient/VimClient";
 import { GAME_STATES, PLAYER_STATES } from "./states";
 import styled from "styled-components";
 import { UserInfoHeader } from "./LeftClient";
