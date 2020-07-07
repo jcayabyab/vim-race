@@ -24,7 +24,7 @@ const useListenerHandler = (
   // based from onkeyDown function inside of vimwasm.ts, but adapted
   // to handle slimmed down event, i.e., removes preventDefault()
   // and stopPropagation()
-  const handleEvent = useCallback(
+  const handleKeystrokeEvent = useCallback(
     (event) => {
       let key = event.key;
       const ctrl = event.ctrlKey;
@@ -62,9 +62,9 @@ const useListenerHandler = (
   // add socket listener for when server sends keystrokes
   useEffect(() => {
     if (gameStarted) {
-      handleKeystrokeReceived(handleEvent, user);
+      handleKeystrokeReceived(handleKeystrokeEvent, user);
     }
-  }, [gameStarted, handleEvent, handleKeystrokeReceived, user]);
+  }, [gameStarted, handleKeystrokeEvent, handleKeystrokeReceived, user]);
 
   // double check event listener along with isEditable
   const [listenerEnabled, setListenerEnabled] = useState(false);
@@ -73,9 +73,8 @@ const useListenerHandler = (
   useEffect(() => {
     // in case editable logic needs to change in the future, e.g., on winner declaration
     if (vimInitialized) {
-      if (isEditable && !listenerEnabled) {
+      if (isEditable && !listenerEnabled && handleVimKeydown) {
         vim.screen.input.elem.addEventListener("keydown", handleVimKeydown);
-        console.log(handleVimKeydown);
         setListenerEnabled(true);
       }
       if (!isEditable && listenerEnabled) {
@@ -92,7 +91,7 @@ const useListenerHandler = (
     handleVimKeydown,
   ]);
 
-  return { handleEvent };
+  return { handleKeystrokeEvent };
 };
 
 export default useListenerHandler;

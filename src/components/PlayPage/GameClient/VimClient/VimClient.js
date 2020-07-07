@@ -11,19 +11,19 @@ const { canvasStyle, inputStyle } = opts;
 
 export default function VimClient({
   user,
-  socket,
   isEditable,
   startText,
   handleClientInit,
   gameState,
-  sendSubmissionToSocket,
+  handleSubmission,
   handleKeystrokeReceived,
   handleVimKeydown,
+  handleUnmount,
 }) {
   const [vimOptions] = useVimOptions(user);
   const [validateSubmission] = useVimTextExtractor(
     isEditable,
-    sendSubmissionToSocket,
+    handleSubmission,
     user
   );
 
@@ -34,7 +34,7 @@ export default function VimClient({
 
   const [vimInitialized, onVimInit] = useVimInit(vim, handleClientInit);
 
-  const { handleEvent } = useListenerHandler(
+  const { handleKeystrokeEvent } = useListenerHandler(
     vim,
     vimInitialized,
     user,
@@ -47,7 +47,7 @@ export default function VimClient({
     vim,
     startText,
     gameState === GAME_STATES.PLAYING,
-    handleEvent
+    handleKeystrokeEvent
   );
 
   // focus on terminal upon game start
@@ -64,6 +64,15 @@ export default function VimClient({
       vim.onFileExport = validateSubmission;
     }
   }, [vim, onVimInit, validateSubmission]);
+
+  // do unmount logic on terminal unmount - typically
+  // setting initialization flags
+  useEffect(() => {
+    console.log(handleUnmount)
+    if (handleUnmount) {
+      return handleUnmount;
+    }
+  }, [handleUnmount]);
 
   return (
     <React.Fragment>
