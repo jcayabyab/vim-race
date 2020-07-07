@@ -113,7 +113,8 @@ const useSocketFunctions = (
   }, [user, socket]);
 
   const sendSubmissionToSocket = useCallback(
-    (id, submissionText) => {
+    (terminalUser, submissionText) => {
+      const id = terminalUser.id;
       // always set player state
       setPlayerState(id, PLAYER_STATES.VALIDATING);
       // only send to server if own user's submission - avoids double sending
