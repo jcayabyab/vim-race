@@ -7,11 +7,20 @@ const dirs = [
   "autoload/lightline/colorscheme",
 ];
 
-export const vimrc = `set expandtab tabstop=4 shiftwidth=4 softtabstop=4 smarttab
+export const vimrc = `" This default vimrc should be enough for every problem 
+" Set all tabs to 4
+" Feel free to edit this file as you'd like!
+set expandtab tabstop=4 shiftwidth=4 softtabstop=4 smarttab
+
+" Add custom theme - more support for custom themes coming soon
 let g:material_theme_style = "darker"
 colorscheme material
 syntax enable
 set number
+
+" The default command for submitting is :export - this rebinds write and export
+" to :E
+command E w | export
 `;
 
 // used to manually load material theme
