@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-const GoalBox = styled.code`
+const GoalBox = styled.div`
   background-color: #212121;
   border: 1px solid black;
   border-radius: 3px;
   font-family: "Lucida Console", "Consolas", monospace;
   white-space: pre-wrap;
   font-size: 9pt;
-  min-height: 300px;
+  height: 300px;
   width: 600px;
-  overflow: scroll;
+  padding: 3px;
 `;
 
 const GoalHeader = styled.div`
@@ -87,7 +89,11 @@ const GoalDisplay = ({ diff, goalText }) => {
           )}
         </GoalHeaderChild>
       </GoalHeader>
-      <GoalBox>{showDiff && diff.length ? createDiffText() : goalText}</GoalBox>
+      <GoalBox>
+        <PerfectScrollbar>
+          {showDiff && diff.length ? createDiffText() : goalText}
+        </PerfectScrollbar>
+      </GoalBox>
     </React.Fragment>
   );
 };
