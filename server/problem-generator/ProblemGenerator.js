@@ -13,41 +13,7 @@ class ProblemGenerator {
       this.readProblemsFromFiles();
     } else {
       const startText = `Hello, universe!`;
-      const goalText = `
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      Hello, world!
-      `;
+      const goalText = `Hello, world!`;
       this.problems.push([startText, goalText]);
     }
   }
