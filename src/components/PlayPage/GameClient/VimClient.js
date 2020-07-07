@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useVim } from "react-vim-wasm";
 import opts, { vimrc } from "./vimOptions";
 import { GAME_STATES } from "./states";
+import _ from "lodash";
 
-const { canvasStyle, inputStyle, ...rest } = opts;
+const { canvasStyle, inputStyle, ...vimOpts } = opts;
 
 /**
  * Handles text injection when game starts
@@ -135,7 +136,9 @@ const useListenerHandler = (
   socket,
   gameStarted,
   isEditable,
-  handleKeystrokeReceived
+  handleKeystrokeReceived,
+  validateSubmission,
+  setVimInitialized
 ) => {
   // wrapper around notifyKeyEvent for sending and receiving events
   // based from onkeyDown function inside of vimwasm.ts, but adapted
@@ -176,20 +179,22 @@ const useListenerHandler = (
     [vim]
   );
 
-  // remove initial onKeyDown event listener
   useEffect(() => {
-    // remove already existing event listener to
-    // intercept key presses
-    if (vimInitialized) {
-      vim.screen.input.elem.removeEventListener(
-        "keydown",
-        vim.screen.input.onKeydown,
-        { capture: true }
-      );
-      // remove resize handler - currently broken
-      window.removeEventListener("resize", vim.screen.resizer.onResize);
+    if (vim) {
+      // remove initial onKeyDown event listener
+      vim.onVimInit = () => {
+        vim.screen.input.elem.removeEventListener(
+          "keydown",
+          vim.screen.input.onKeydown,
+          { capture: true }
+        );
+        // remove resize handler - currently broken
+        window.removeEventListener("resize", vim.screen.resizer.onResize);
+        setVimInitialized(true);
+      };
+      vim.onFileExport = validateSubmission;
     }
-  }, [vimInitialized, vim]);
+  }, [vim, setVimInitialized, validateSubmission]);
 
   // add socket listener for when server sends keystrokes
   useEffect(() => {
@@ -259,15 +264,15 @@ export default function VimClient({
   sendSubmissionToSocket,
   handleKeystrokeReceived,
 }) {
-  const [vimOptions, setVimOptions] = useState(rest);
+  const [vimOptions, setVimOptions] = useState(_.cloneDeep(vimOpts));
 
   useEffect(() => {
     if (user && user.vimrcText) {
-      const newOptions = { ...rest };
+      const newOptions = _.cloneDeep(vimOpts);
       newOptions.files["/home/web_user/.vim/vimrc"] = user.vimrcText;
       setVimOptions(newOptions);
     } else {
-      const newOptions = { ...rest };
+      const newOptions = _.cloneDeep(vimOpts);
       newOptions.files["/home/web_user/.vim/vimrc"] = vimrc;
       setVimOptions(newOptions);
     }
@@ -284,13 +289,6 @@ export default function VimClient({
     ...vimOptions,
   });
 
-  useEffect(() => {
-    if (vim) {
-      vim.onVimInit = () => setVimInitialized(true);
-      vim.onFileExport = validateSubmission;
-    }
-  });
-
   const { handleEvent } = useListenerHandler(
     vim,
     vimInitialized,
@@ -298,7 +296,9 @@ export default function VimClient({
     socket,
     gameState === GAME_STATES.PLAYING,
     isEditable,
-    handleKeystrokeReceived
+    handleKeystrokeReceived,
+    validateSubmission,
+    setVimInitialized
   );
   useVimTextInjector(
     vim,
