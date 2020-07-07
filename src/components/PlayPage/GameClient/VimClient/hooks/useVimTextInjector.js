@@ -5,8 +5,14 @@ import { useCallback, useEffect } from "react";
  * @param {C} vim The vim terminal returned from useVim
  * @param {*} startText The starting text from the server - injected into client
  * @param {*} gameStarted true if game state === PLAYING
+ * @param {*} handleKeystrokeEvent The event for handling keystrokes. Used to simulate an <Esc> press to reset cursor due to cursor bug
  */
-const useVimTextInjector = (vim, startText, gameStarted, handleEvent) => {
+const useVimTextInjector = (
+  vim,
+  startText,
+  gameStarted,
+  handleKeystrokeEvent
+) => {
   const writeToTerminal = useCallback(
     async (str) => {
       const str2ab = (str) => {
@@ -55,11 +61,11 @@ const useVimTextInjector = (vim, startText, gameStarted, handleEvent) => {
           shiftKey: false,
         };
         setTimeout(() => {
-          handleEvent(escEvent);
+          handleKeystrokeEvent(escEvent);
         }, [100]);
       }, 100);
     }
-  }, [gameStarted, startText, writeToTerminal, handleEvent]);
+  }, [gameStarted, startText, writeToTerminal, handleKeystrokeEvent]);
 };
 
 export default useVimTextInjector;

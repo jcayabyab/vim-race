@@ -49,15 +49,16 @@ export default function VimClient({
     handleEvent
   );
 
+  // focus on terminal upon game start
   useEffect(() => {
     if (isEditable && inputRef && gameState === GAME_STATES.PLAYING) {
       inputRef.current.focus();
     }
   }, [isEditable, inputRef, gameState]);
 
+  // add init and file export callbacks
   useEffect(() => {
     if (vim) {
-      // remove initial onKeyDown event listener
       vim.onVimInit = onVimInit;
       vim.onFileExport = validateSubmission;
     }
