@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "concurrently": "^5.2.0",
+    "diff": "^4.0.2",
     "http-proxy-middleware": "^1.0.4",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
