@@ -11,6 +11,7 @@ const keys = require("./config/keys");
 const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const demoRoutes = require("./routes/demoRoutes");
 
 // services
 require("./services/passport");
@@ -35,6 +36,7 @@ app.use(passport.session());
 // app.use(indexRoutes);
 app.use(authRoutes);
 app.use(profileRoutes);
+app.use(demoRoutes);
 
 io.on("connection", (socket) => {
   // username of player - variables on a per-socket basis
