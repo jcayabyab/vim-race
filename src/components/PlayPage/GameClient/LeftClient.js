@@ -39,11 +39,11 @@ export default function LeftClient({
   goalText,
   diff,
   handleClientInit,
-  sendSubmissionToSocket,
+  handleSubmission,
   handleKeystrokeReceived,
   onVimTerminalInit,
   playerState,
-  removeKeystrokeListeners,
+  handleUserUnmount,
 }) {
   const vimProps = {
     worker: process.env.PUBLIC_URL + "/vim-wasm/vim.js",
@@ -76,9 +76,9 @@ export default function LeftClient({
             startText={startText}
             handleClientInit={handleClientInit}
             gameState={gameState}
-            sendSubmissionToSocket={sendSubmissionToSocket}
+            handleSubmission={handleSubmission}
             handleKeystrokeReceived={handleKeystrokeReceived}
-            removeKeystrokeListeners={removeKeystrokeListeners}
+            handleUnmount={handleUserUnmount}
           ></VimClient>
           <GoalDisplay diff={diff} goalText={goalText}></GoalDisplay>
         </React.Fragment>

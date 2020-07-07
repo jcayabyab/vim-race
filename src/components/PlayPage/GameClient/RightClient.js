@@ -15,6 +15,10 @@ const Wrapper = styled.div`
   padding: 0px 25px;
 `;
 
+const Tooltip = styled.div`
+  visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
+`;
+
 export default function RightClient({
   handleVimKeydown,
   user,
@@ -26,10 +30,11 @@ export default function RightClient({
   handleKeystrokeReceived,
   terminalLoaded,
   playerStates,
-  sendSubmissionToSocket,
+  handleSubmission,
   prevGameFinished,
   removeKeystrokeListeners,
   resignGame,
+  handleOpponentUnmount,
 }) {
   // used to check if a game has been played
   const gameStarted = !!startText;
@@ -61,19 +66,17 @@ export default function RightClient({
                 isEditable={false}
                 startText={startText}
                 handleClientInit={handleClientInit}
-                sendSubmissionToSocket={sendSubmissionToSocket}
+                handleSubmission={handleSubmission}
                 gameState={gameState}
                 handleKeystrokeReceived={handleKeystrokeReceived}
                 removeKeystrokeListeners={removeKeystrokeListeners}
+                handleUnmount={handleOpponentUnmount}
               ></VimClient>
             )
           }
-          {gameState === GAME_STATES.PLAYING && (
-            <div>
-              Use <code>:w</code> then <code>:export</code> to submit your
-              entry!
-            </div>
-          )}
+          <Tooltip visible={gameState === GAME_STATES.PLAYING}>
+            Use <code>:E</code> to submit your entry!
+          </Tooltip>
           {gameState === GAME_STATES.LOADING && (
             <div>Waiting for players to load...</div>
           )}
