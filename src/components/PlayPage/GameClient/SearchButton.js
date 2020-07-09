@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { GAME_STATES } from "./states";
 import styled from "styled-components";
 import Timer from "../../utils/Timer";
@@ -24,9 +24,14 @@ const ButtonChild = styled.span`
   }
 `;
 
-export default function SearchButton({ gameState, onClick }) {
+export default function SearchButton({ gameState, onSearch, onCancel }) {
+  const handleClick = useCallback(
+    () => (gameState === GAME_STATES.IDLE ? onSearch() : onCancel()),
+    [gameState, onSearch, onCancel]
+  );
+
   return (
-    <SolidButton onClick={onClick}>
+    <SolidButton onClick={handleClick}>
       <ButtonChild>
         {gameState === GAME_STATES.SEARCHING && (
           <FontAwesomeIcon

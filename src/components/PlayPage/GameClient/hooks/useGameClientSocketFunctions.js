@@ -1,20 +1,21 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useContext, useState } from "react";
 import { GAME_STATES, PLAYER_STATES } from "../states";
+import { GameClientContext } from "../contexts/GameClientContext";
 
-const useSocketFunctions = (
-  socket,
-  socketInitialized,
-  setSocketInitialized,
-  user,
-  setClientState,
-  setStartText,
-  setGoalText,
-  setDiff,
-  setOpponent,
-  setPlayerState,
-  setNewPlayers,
-  setPrevGameFinished
-) => {
+// requires GameClientStateProvider as a parent
+const useGameClientSocketFunctions = (socket, user) => {
+  const gameClientState = useContext(GameClientContext);
+  const {
+    setGameState,
+    setStartText,
+    setGoalText,
+    setDiff,
+    setOpponent,
+    setPlayerState,
+    setNewPlayers,
+    setPrevGameFinished,
+  } = gameClientState;
+
   const handlePlayerFinish = useCallback(() => {
     socket.on("player finish", (data) => {
       let newState = PLAYER_STATES.SUCCESS;
@@ -41,10 +42,10 @@ const useSocketFunctions = (
       //   alert("You, " + (user.username || "player") + ", have lost!");
       // }
       if (data.playerId === user.id) {
-        setClientState(GAME_STATES.IDLE);
+        setGameState(GAME_STATES.IDLE);
       }
     });
-  }, [socket, setClientState, user, setPlayerState]);
+  }, [socket, setGameState, user, setPlayerState]);
 
   const handleGameFinish = useCallback(() => {
     socket.on("game finish", () => {
@@ -90,23 +91,23 @@ const useSocketFunctions = (
 
   const handleGameStart = useCallback(() => {
     socket.on("start", () => {
-      setClientState(GAME_STATES.PLAYING);
+      setGameState(GAME_STATES.PLAYING);
     });
-  }, [socket, setClientState]);
+  }, [socket, setGameState]);
 
   const handleTerminalsLoaded = useCallback(() => {
     socket.emit("loaded", { id: user.id });
   }, [user, socket]);
 
   const sendSearchReqToSocket = useCallback(() => {
-    setClientState(GAME_STATES.SEARCHING);
+    setGameState(GAME_STATES.SEARCHING);
     socket.emit("request match", { id: user.id });
-  }, [user, socket, setClientState]);
+  }, [user, socket, setGameState]);
 
   const cancelMatchmaking = useCallback(() => {
-    setClientState(GAME_STATES.IDLE);
+    setGameState(GAME_STATES.IDLE);
     socket.emit("cancel matchmaking", { id: user.id });
-  }, [user, socket, setClientState]);
+  }, [user, socket, setGameState]);
 
   const resignGame = useCallback(() => {
     socket.emit("resign", { id: user.id });
@@ -145,7 +146,7 @@ const useSocketFunctions = (
 
   const handleMatchFound = useCallback(() => {
     socket.on("match found", (data) => {
-      setClientState(GAME_STATES.LOADING);
+      setGameState(GAME_STATES.LOADING);
       // set based on your own username
       setOpponent(data.player1.id === user.id ? data.player2 : data.player1);
       // add players to playerState object
@@ -162,28 +163,31 @@ const useSocketFunctions = (
     setStartText,
     setGoalText,
     setDiff,
-    setClientState,
+    setGameState,
     setOpponent,
     setNewPlayers,
     setPrevGameFinished,
     removeKeystrokeListeners,
   ]);
 
+  // ensures that "start" and "finish" socket listeners are only
+  // established once
+  const [functionsInitialized, setFunctionsInitialized] = useState(false);
+
   // setup to listen for start and finish
   useEffect(() => {
-    // socketIntialized to ensure these listeners are only defined once
-    if (socket && !socketInitialized && user) {
+    if (socket && !functionsInitialized && user) {
       handleMatchFound();
       handlePlayerFinish();
       handleSubmissionFail();
       handleGameStart();
-      setSocketInitialized(true);
       handleGameFinish();
+      setFunctionsInitialized(true);
     }
   }, [
     socket,
-    socketInitialized,
-    setSocketInitialized,
+    functionsInitialized,
+    setFunctionsInitialized,
     user,
     handleMatchFound,
     handlePlayerFinish,
@@ -208,4 +212,4 @@ const useSocketFunctions = (
   };
 };
 
-export default useSocketFunctions;
+export default useGameClientSocketFunctions;

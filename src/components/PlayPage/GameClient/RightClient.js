@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useCallback } from "react";
 import VimClient from "./VimClient/VimClient";
 import { GAME_STATES, PLAYER_STATES } from "./states";
 import styled from "styled-components";
@@ -6,6 +6,9 @@ import { UserInfoHeader } from "./LeftClient";
 import PlayerStateIcon from "./PlayerStateIcon";
 import SearchButton from "./SearchButton";
 import StatusScreen from "./StatusScreen";
+import { GameClientSocketFunctionsContext } from "./contexts/GameClientSocketFunctionsContext";
+import { GameClientContext } from "./contexts/GameClientContext";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -19,24 +22,35 @@ const Tooltip = styled.div`
   visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
 `;
 
-export default function RightClient({
-  handleVimKeydown,
-  user,
-  opponent,
-  gameState,
-  startText,
-  handleSearch,
-  handleClientInit,
-  handleKeystrokeReceived,
-  terminalLoaded,
-  playerStates,
-  handleSubmission,
-  prevGameFinished,
-  removeKeystrokeListeners,
-  resignGame,
-  handleOpponentUnmount,
-}) {
-  // used to check if a game has been played
+export default function RightClient() {
+  const user = useSelector((state) => state.user);
+
+  const {
+    gameState,
+    startText,
+    opponent,
+    lobbyTerminalLoaded,
+    playerStates,
+    prevGameFinished,
+    setOpponentInitialized,
+  } = useContext(GameClientContext);
+
+  const {
+    sendSubmissionToSocket,
+    handleKeystrokeReceived,
+    sendSearchReqToSocket,
+    cancelMatchmaking,
+    removeKeystrokeListeners,
+    resignGame,
+    handleVimKeydown,
+  } = useContext(GameClientSocketFunctionsContext);
+
+  const handleOpponentUnmount = useCallback(
+    () => setOpponentInitialized(false),
+    [setOpponentInitialized]
+  );
+
+  // The first game has started if startText is defined
   const gameStarted = !!startText;
 
   const renderBody = () => {
@@ -65,8 +79,8 @@ export default function RightClient({
                 user={opponent}
                 isEditable={false}
                 startText={startText}
-                handleClientInit={handleClientInit}
-                handleSubmission={handleSubmission}
+                handleClientInit={() => setOpponentInitialized(true)}
+                handleSubmission={sendSubmissionToSocket}
                 gameState={gameState}
                 handleKeystrokeReceived={handleKeystrokeReceived}
                 removeKeystrokeListeners={removeKeystrokeListeners}
@@ -86,15 +100,15 @@ export default function RightClient({
             user={user}
             opponent={opponent}
             playerStates={playerStates}
-            handleSearch={handleSearch}
             resignGame={resignGame}
           ></StatusScreen>
         </React.Fragment>
       );
     } else {
-      return terminalLoaded ? (
+      return lobbyTerminalLoaded ? (
         <SearchButton
-          onClick={handleSearch}
+          onSearch={sendSearchReqToSocket}
+          onCancel={cancelMatchmaking}
           gameState={gameState}
         ></SearchButton>
       ) : (

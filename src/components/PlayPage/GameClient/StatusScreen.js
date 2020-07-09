@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Timer from "../../utils/Timer";
 import styled from "styled-components";
 import { GAME_STATES, PLAYER_STATES } from "./states";
@@ -7,6 +7,9 @@ import SearchButton from "./SearchButton";
 import SolidButton from "../../utils/SolidButton";
 import Trophy1st from "../../../assets/trophy-1st.png";
 import Trophy2nd from "../../../assets/trophy-2nd.png";
+import { useSelector } from "react-redux";
+import { GameClientContext } from "./contexts/GameClientContext";
+import { GameClientSocketFunctionsContext } from "./contexts/GameClientSocketFunctionsContext";
 
 const Wrapper = styled.div`
   background-color: #212121;
@@ -81,15 +84,17 @@ const PlayerInfo = ({ username, playerState }) => {
   );
 };
 
-export default function StatusScreen({
-  playerStates,
-  gameState,
-  user,
-  opponent,
-  prevGameFinished,
-  handleSearch,
-  resignGame,
-}) {
+export default function StatusScreen() {
+  const user = useSelector((state) => state.user);
+
+  const { gameState, opponent, playerStates, prevGameFinished } = useContext(
+    GameClientContext
+  );
+
+  const { sendSearchReqToSocket, cancelMatchmaking, resignGame } = useContext(
+    GameClientSocketFunctionsContext
+  );
+
   const userState = playerStates[user.id] || { state: PLAYER_STATES.IDLE };
   const opponentState = playerStates[opponent.id] || {
     state: PLAYER_STATES.IDLE,
@@ -130,8 +135,9 @@ export default function StatusScreen({
       {(gameState === GAME_STATES.IDLE ||
         gameState === GAME_STATES.SEARCHING) && (
         <SearchButton
+          onSearch={sendSearchReqToSocket}
+          onCancel={cancelMatchmaking}
           gameState={gameState}
-          onClick={handleSearch}
         ></SearchButton>
       )}
       {gameState === GAME_STATES.PLAYING && (

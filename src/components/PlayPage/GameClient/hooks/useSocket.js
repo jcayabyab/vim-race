@@ -3,9 +3,6 @@ import io from "socket.io-client";
 
 const useSocket = (endpoint) => {
   const [socket, setSocket] = useState(null);
-  // ensures that "start" and "finish" socket listeners are only
-  // established once
-  const [socketInitialized, setSocketInitialized] = useState(false);
 
   useEffect(() => {
     if (!socket) {
@@ -17,7 +14,7 @@ const useSocket = (endpoint) => {
     };
   }, [socket, setSocket, endpoint]);
 
-  return [socket, socketInitialized, setSocketInitialized];
+  return [socket];
 };
 
 export default useSocket;
