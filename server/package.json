@@ -10,17 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "better-queue": "^3.8.10",
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
     "diff": "^4.0.2",
     "express": "^4.17.1",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
-    "pg": "^8.2.1",
-    "sequelize": "^5.21.11",
+    "sequelize": "^5.22.3",
     "socket.io": "^2.3.0",
     "tab-to-space": "^1.0.1",
-    "uuid": "^8.1.0"
+    "uuid": "^8.2.0"
   }
 }
