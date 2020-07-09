@@ -92,12 +92,7 @@ export default function DemoClient(props) {
       </LeftSide>
       <RightSide>
         <Header>Test your Vim skills!</Header>
-        {clientState === GAME_STATES.IDLE && (
-          <SolidButton onClick={startGame}>Try another game</SolidButton>
-        )}
-        {clientState === GAME_STATES.PLAYING && (
-          <SolidButton onClick={resignGame}>Give up game</SolidButton>
-        )}
+        <SolidButton onClick={startGame}>Try another problem</SolidButton>
         {props.children}
       </RightSide>
     </Wrapper>
