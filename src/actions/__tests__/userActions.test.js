@@ -24,7 +24,7 @@ describe("fetchUser", () => {
     const action = await fetchUser();
     expect(action).toEqual({
       type: UPDATE_USER,
-      user: {
+      user: expect.objectContaining({
         email: expect.any(String),
         googleId: expect.any(String),
         id: expect.any(Number),
@@ -32,7 +32,7 @@ describe("fetchUser", () => {
         profilePictureUrl: expect.any(String),
         username: expect.any(String),
         vimrcText: expect.any(String),
-      },
+      }),
     });
   });
 
