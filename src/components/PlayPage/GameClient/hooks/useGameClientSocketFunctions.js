@@ -170,6 +170,10 @@ const useGameClientSocketFunctions = (socket, user) => {
     removeKeystrokeListeners,
   ]);
 
+  const handleHandshake = useCallback(() => {
+    socket.emit("handshake", { id: user.id });
+  }, [user, socket]);
+
   // ensures that "start" and "finish" socket listeners are only
   // established once
   const [functionsInitialized, setFunctionsInitialized] = useState(false);
@@ -182,6 +186,7 @@ const useGameClientSocketFunctions = (socket, user) => {
       handleSubmissionFail();
       handleGameStart();
       handleGameFinish();
+      handleHandshake();
       setFunctionsInitialized(true);
     }
   }, [
@@ -194,6 +199,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     handleSubmissionFail,
     handleGameStart,
     handleGameFinish,
+    handleHandshake,
   ]);
 
   return {

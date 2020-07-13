@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const problemGenerator = require("../problem-generator/ProblemGenerator");
+const { problemGenerator } = require("../problem-generator/ProblemGenerator");
 const Diff = require("diff");
 
 router.get("/api/demo/problem", async (req, res) => {

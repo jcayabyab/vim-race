@@ -1,6 +1,7 @@
 const GameHandler = require("../game/GameHandler");
 const WaitingQueue = require("./WaitingQueue");
 const db = require("../db/api");
+const { playerDict } = require("./PlayerDict");
 
 class MatchmakingClient {
   constructor(io, showDebug = false) {
@@ -8,7 +9,6 @@ class MatchmakingClient {
     // stores player usernames and their respective socket objects.
     this.waitingQueue = new WaitingQueue(true);
     this.showDebug = showDebug;
-    this.playersInGame = {};
     if (showDebug) {
       console.log("MatchmakingClient class in debug mode");
     }
@@ -22,20 +22,25 @@ class MatchmakingClient {
 
   handleRequest(id, socket) {
     // store socket objects in queue for easy access
-    this.waitingQueue.addPlayer(id, socket);
+    this.waitingQueue.addPlayer(id);
 
     if (this.canCreateMatch()) {
       // pop two new objects
-      const [id1, socket1, id2, socket2] = this.waitingQueue.getNextPlayers();
+      const [id1, id2] = this.waitingQueue.getNextPlayers();
+
+      console.log({ id1, id2 });
+
+      const socket1 = playerDict.getSocket(id1);
+      const socket2 = playerDict.getSocket(id2);
 
       // remove both players from any lobbies they may currently be in
       [
         [id1, socket1],
         [id2, socket2],
       ].forEach(([id, socket]) => {
-        if (this.playersInGame.hasOwnProperty(id)) {
+        const game = playerDict.getGame(id);
+        if (game) {
           // leave room
-          const game = this.playersInGame[id];
           socket.leave(game.gameInfo.gameId);
           // remove listeners from previous game
           game.removeSocketListeners(socket);
@@ -69,9 +74,8 @@ class MatchmakingClient {
 
     game.initialize();
 
-    // add to queue
-    this.playersInGame[player1.id] = game;
-    this.playersInGame[player2.id] = game;
+    playerDict.setPlayerGame(player1.id, game);
+    playerDict.setPlayerGame(player2.id, game);
 
     game.start();
   }
@@ -82,7 +86,7 @@ class MatchmakingClient {
 
   playerIdActive(playerId) {
     let playerFinishedInGame = false;
-    const playerInGame = this.playersInGame.hasOwnProperty(playerId);
+    const playerInGame = !!playerDict.getGame(playerId);
     if (playerInGame) {
       const game = this.playersInGame[playerId];
       const { player1, player2 } = game.gameInfo;

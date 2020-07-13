@@ -84,4 +84,4 @@ const showDummyProblem = process.env.NODE_ENV !== "production";
 
 const problemGenerator = new ProblemGenerator(false, showDummyProblem);
 
-module.exports = problemGenerator;
+module.exports = { problemGenerator, ProblemGenerator };

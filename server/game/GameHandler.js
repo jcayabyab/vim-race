@@ -1,9 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
 const GameInfo = require("./GameInfo");
-const problemGenerator = require("../problem-generator/ProblemGenerator");
+const { problemGenerator } = require("../problem-generator/ProblemGenerator");
 const Diff = require("diff");
 const moment = require("moment");
 const { formatTime } = require("../utils");
+const { playerDict } = require("../matchmaking/PlayerDict");
 
 class GameHandler {
   constructor(io, player1, player2, socket1, socket2, showDebug = false) {
@@ -266,7 +267,7 @@ class GameHandler {
 
   handleGameFinish() {
     const {
-      gameInfo: { winner, gameId },
+      gameInfo: { winner, gameId, player1, player2 },
       io,
       socket1,
       socket2,
@@ -285,6 +286,9 @@ class GameHandler {
       // remove sockets from previously created room
       socket1.leave(gameId);
       socket2.leave(gameId);
+
+      playerDict.removeGame(player1.id);
+      playerDict.removeGame(player2.id);
     }
   }
 

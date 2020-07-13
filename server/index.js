@@ -2,13 +2,13 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const MatchmakingClient = require("./matchmaking/MatchmakingClient");
+const { playerDict } = require("./matchmaking/PlayerDict");
 const passport = require("passport");
 const port = process.env.PORT || 4001;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const keys = require("./config/keys");
 
-const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const demoRoutes = require("./routes/demoRoutes");
@@ -42,16 +42,23 @@ io.on("connection", (socket) => {
   // username of player - variables on a per-socket basis
   let id = null;
 
+  socket.on("handshake", (data) => {
+    console.log("client connected: ", data.id);
+    id = data.id;
+    playerDict.addPlayer(data.id, socket);
+  });
+
   socket.on("disconnect", () => {
     console.log("client disconnected: " + id);
     // should have them leave the game here
     // also pop them off of waiting queue
     if (id) {
       matchmaker.waitingQueue.removePlayerFromQueue(id);
+      playerDict.removePlayer(id);
     }
   });
 
-  // data: { username: String }
+  // data: { id: String }
   socket.on("request match", (data) => {
     id = data.id;
     if (matchmaker.playerIdActive(id)) {
@@ -65,7 +72,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("cancel matchmaking", (data) => {
-    console.log()
     matchmaker.waitingQueue.removePlayerFromQueue(data.id);
   });
 });
