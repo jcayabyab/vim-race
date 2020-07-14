@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const MatchmakingClient = require("./matchmaking/MatchmakingClient");
+const ChallengesClient = require("./challenges/ChallengesClient");
 const { playerDict } = require("./matchmaking/PlayerDict");
 const passport = require("passport");
 const port = process.env.PORT || 4001;
@@ -22,6 +23,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server);
 const matchmaker = new MatchmakingClient(io, true);
+const challengesClient = new ChallengesClient(io);
 
 app.use(bodyParser.json());
 app.use(
@@ -54,7 +56,8 @@ io.on("connection", (socket) => {
     // also pop them off of waiting queue
     if (id) {
       matchmaker.waitingQueue.removePlayerFromQueue(id);
-      playerDict.removePlayer(id);
+      const otherUsers = playerDict.handlePlayerDisconnect(id);
+      challengesClient.notifyOnDisconnect(otherUsers);
     }
   });
 
@@ -74,6 +77,8 @@ io.on("connection", (socket) => {
   socket.on("cancel matchmaking", (data) => {
     matchmaker.waitingQueue.removePlayerFromQueue(data.id);
   });
+
+  challengesClient.addSocketListeners(socket);
 });
 
 if (process.env.NODE_ENV === "production") {
