@@ -23,7 +23,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server);
 const matchmaker = new MatchmakingClient(io, true);
-const challengesClient = new ChallengesClient(io);
+const challengesClient = new ChallengesClient(io, matchmaker);
 
 app.use(bodyParser.json());
 app.use(

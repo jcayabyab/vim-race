@@ -2,12 +2,15 @@ const { playerDict } = require("../matchmaking/PlayerDict");
 const Challenge = require("./Challenge");
 
 class ChallengesClient {
-  constructor(io) {
+  constructor(io, matchmakingClient) {
     this.io = io;
+
+    this.matchmakingClient = matchmakingClient;
 
     this.onSend = this.onSend.bind(this);
     this.onDecline = this.onDecline.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onAccept = this.onAccept.bind(this);
   }
 
   addSocketListeners(socket) {
@@ -36,26 +39,53 @@ class ChallengesClient {
   }
 
   onDecline(data) {
+    // id of challenge receiver
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
     playerDict.removeChallenge(challenge);
 
     const senderSocket = playerDict.getSocket(challenge.senderId);
-    senderSocket.emit(ChallengesClient.commands.REMOVE, "receiver declined challenge");
+    const receiverSocket = playerDict.getSocket(challenge.receiverId);
+    senderSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+    receiverSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
   }
 
   onCancel(data) {
+    // id of challenge sender
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeBySenderUuid(id, challengeUuid);
     playerDict.removeChallenge(challenge);
-    const receiverSocket = playerDict.getSocket(challenge.senderId);
-    receiverSocket.emit(ChallengesClient.commands.REMOVE, "receiver declined challenge");
+
+    const senderSocket = playerDict.getSocket(challenge.senderId);
+    const receiverSocket = playerDict.getSocket(challenge.receiverId);
+    senderSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+    receiverSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+  }
+
+  async onAccept(data) {
+    // id of challenge receiver
+    const { id, challengeUuid } = data;
+
+    const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
+    playerDict.removeChallenge(challenge);
+
+    const senderSocket = playerDict.getSocket(challenge.senderId);
+    const receiverSocket = playerDict.getSocket(challenge.receiverId);
+    senderSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+    receiverSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+
+    await this.matchmakingClient.createMatch(
+      challenge.senderId,
+      challenge.receiverId,
+      senderSocket,
+      receiverSocket
+    );
   }
 
   notifyOnDisconnect(otherUsers) {
     for (userId in otherUsers) {
       const socket = playerDict.getSocket(userId);
-      socket.emit(ChallengesClient.REMOVE, "other player disconnected");
+      socket.emit(ChallengesClient.REMOVE, { challenge });
     }
   }
 }
@@ -66,7 +96,7 @@ ChallengesClient.commands = {
   CANNOT_SEND: "cannot send challenge",
   REMOVE: "remove challenge",
   DECLINE: "decline challenge",
-  CANCEL: "cancel challenge"
+  CANCEL: "cancel challenge",
 };
 
 module.exports = ChallengesClient;
