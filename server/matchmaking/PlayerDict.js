@@ -7,16 +7,19 @@ class PlayerDict {
   }
 
   handlePlayerDisconnect(id) {
-    const otherUsers = getOtherUsersChallenged(id);
-    removeUserChallenges(id);
-    removePlayer(id);
+    const otherUsers = this.getOtherUsersChallenged(id);
+    this.removeUserChallenges(id);
+    this.removePlayer(id);
     return otherUsers;
   }
 
   removeUserChallenges(id) {
     const { sentChallenges, receivedChallenges } = this.dict[id];
-    for (challenge in [...sentChallenges, ...receivedChallenges]) {
-      removeChallenge(challenge);
+    for (challenge in [
+      ...Object.values(sentChallenges),
+      ...Object.values(receivedChallenges),
+    ]) {
+      this.removeChallenge(challenge);
     }
   }
 

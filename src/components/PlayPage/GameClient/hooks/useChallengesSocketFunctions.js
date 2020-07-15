@@ -100,3 +100,5 @@ const useChallengesSocketFunctions = (socket, user) => {
     handleChallengeCancel,
   };
 };
+
+export default useChallengesSocketFunctions;

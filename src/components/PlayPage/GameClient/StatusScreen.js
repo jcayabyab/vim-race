@@ -28,7 +28,7 @@ const Trophy = styled.img`
   image-rendering: pixelated;
   width: ${17 * 2}px;
   height: ${20 * 2}px;
-  margin-left: 5px;
+  margin-right: 7px;
 `;
 
 const Header = styled.div`
@@ -65,6 +65,7 @@ const PlayerInfo = ({ username, playerState }) => {
       return <Trophy src={Trophy1st}></Trophy>;
     } else if (playerState.placement === 2) {
       return <Trophy src={Trophy2nd}></Trophy>;
+    } else {
     }
   };
 
@@ -72,9 +73,9 @@ const PlayerInfo = ({ username, playerState }) => {
     <UserRowWrapper>
       <RowWrapper>
         <div>{username || "Unnamed user"}</div>
-        <div>{renderTrophy()}</div>
       </RowWrapper>
       <RowWrapper>
+        <div style={{ width: "41px" }}>{renderTrophy()}</div>
         {!!playerState.completionTime && (
           <CompletionTime>{playerState.completionTime}</CompletionTime>
         )}
