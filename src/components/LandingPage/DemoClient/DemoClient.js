@@ -50,7 +50,6 @@ export default function DemoClient(props) {
     handleVimKeydown,
     handleKeystrokeReceived,
     validateSubmission,
-    resignGame,
   } = useGameFunctions(
     setClientState,
     setStartText,
