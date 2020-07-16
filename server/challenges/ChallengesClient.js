@@ -26,6 +26,7 @@ class ChallengesClient {
     socket.on(ChallengesClient.commands.SENT, this.onSend);
     socket.on(ChallengesClient.commands.DECLINE, this.onDecline);
     socket.on(ChallengesClient.commands.CANCEL, this.onCancel);
+    socket.on(ChallengesClient.commands.ACCEPT, this.onAccept);
   }
 
   async onSend(data) {
@@ -129,11 +130,12 @@ class ChallengesClient {
   }
 
   notifyOnDisconnect(otherUsersAndChallenges) {
-    for (const userId in Object.keys(otherUsersAndChallenges)) {
+    for (const userId of Object.keys(otherUsersAndChallenges)) {
       const socket = playerDict.getSocket(userId);
       const challenges = otherUsersAndChallenges[userId];
-      for (const challenge in challenges) {
-        socket.emit(ChallengesClient.REMOVE, { challenge });
+      for (const challenge of challenges) {
+        console.log(challenge, userId);
+        socket.emit(ChallengesClient.commands.REMOVE, { challenge });
       }
     }
   }
@@ -146,6 +148,7 @@ ChallengesClient.commands = {
   REMOVE: "remove challenge",
   DECLINE: "decline challenge",
   CANCEL: "cancel challenge",
+  ACCEPT: "accept challenge",
 };
 
 module.exports = ChallengesClient;

@@ -14,7 +14,13 @@ const RowWrapper = styled(RowGroupWrapper)`
   margin: 3px 0px;
 `;
 
-export default function Challenge({ challenge, isSent }) {
+export default function Challenge({
+  challenge,
+  isSent,
+  handleAccept,
+  handleDecline,
+  handleCancel,
+}) {
   const { senderUsername, receiverUsername } = challenge;
   const nameToDisplay = isSent ? receiverUsername : senderUsername;
 
@@ -22,8 +28,14 @@ export default function Challenge({ challenge, isSent }) {
     <RowWrapper>
       <RowGroupWrapper>{nameToDisplay}</RowGroupWrapper>
       <RowGroupWrapper>
-        <button>Accept</button>
-        <button>Decline</button>
+        {isSent ? (
+          <button onClick={handleCancel}>Cancel</button>
+        ) : (
+          <React.Fragment>
+            <button onClick={handleAccept}>Accept</button>
+            <button onClick={handleDecline}>Decline</button>
+          </React.Fragment>
+        )}
       </RowGroupWrapper>
     </RowWrapper>
   );

@@ -21,19 +21,21 @@ export const ChallengesProvider = (props) => {
   );
 
   const removeReceivedChallenge = useCallback(
-    (challengeUuid) => {
+    (challenge) => {
       setReceivedChallenges((prevState) =>
-        prevState.filter((challenge) => challenge.uuid !== challengeUuid)
+        prevState.filter((ch) => ch.uuid !== challenge.uuid)
       );
     },
     [setReceivedChallenges]
   );
 
   const removeSentChallenge = useCallback(
-    (challengeUuid) => {
-      setSentChallenges((prevState) =>
-        prevState.filter((challenge) => challenge.uuid !== challengeUuid)
-      );
+    (challenge) => {
+      setSentChallenges((prevState) => {
+        return prevState.filter(
+          (ch) => ch.uuid !== challenge.uuid
+        );
+      });
     },
     [setSentChallenges]
   );

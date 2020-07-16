@@ -15,7 +15,7 @@ class PlayerDict {
 
   removeUserChallenges(id) {
     const { sentChallenges, receivedChallenges } = this.dict[id];
-    for (const challenge in [
+    for (const challenge of [
       ...Object.values(sentChallenges),
       ...Object.values(receivedChallenges),
     ]) {
@@ -27,17 +27,17 @@ class PlayerDict {
     const { sentChallenges, receivedChallenges } = this.dict[id];
     // for each challenge return the socket of the user
     const otherUsersAndChallenges = {};
-    for (const challenge in Object.values(sentChallenges)) {
-      if (!challenge.receiverId in otherUsers) {
-        otherUsers[challenge.receiverId] = [];
+    for (const challenge of Object.values(sentChallenges)) {
+      if (!(challenge.receiverId in otherUsersAndChallenges)) {
+        otherUsersAndChallenges[challenge.receiverId] = [];
       }
-      otherUsers[challenge.receiverId].push(challenge);
+      otherUsersAndChallenges[challenge.receiverId].push(challenge);
     }
-    for (const challenge in Object.values(receivedChallenges)) {
-      if (!challenge.senderId in otherUsers) {
-        otherUsers[challenge.senderId] = [];
+    for (const challenge of Object.values(receivedChallenges)) {
+      if (!(challenge.senderId in otherUsersAndChallenges)) {
+        otherUsersAndChallenges[challenge.senderId] = [];
       }
-      otherUsers[challenge.senderId].push(challenge);
+      otherUsersAndChallenges[challenge.senderId].push(challenge);
     }
 
     return otherUsersAndChallenges;
@@ -60,6 +60,7 @@ class PlayerDict {
   }
 
   // called on connection
+  // challenge objects: { challengeUuid: challenge }
   addPlayer(id, socket) {
     this.dict[id] = {
       socket,

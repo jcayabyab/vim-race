@@ -26,7 +26,7 @@ export default function ChallengeModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleChallengeSend(username)
+    handleChallengeSend(username);
     onRequestClose();
   };
 
