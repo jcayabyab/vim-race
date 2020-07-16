@@ -7,7 +7,8 @@ const SolidButton = styled.button`
   border-radius: 3px;
   background-color: #d1d1d1;
   padding: 20px;
-  font-size: 16pt;
+  font-size: 14pt;
+  font-weight: 600;
   color: black;
   cursor: pointer;
   width: 100%;
@@ -21,10 +22,13 @@ const SolidButton = styled.button`
     border-bottom-color: #919191;
   }
 
-  :focus {
-    outline: none;
+  :active {
     background-color: #b1b1b1;
     border-bottom-color: #818181;
+  }
+
+  :focus {
+    outline: none;
   }
 `;
 
