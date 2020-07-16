@@ -29,6 +29,19 @@ module.exports = {
       throw error;
     }
   },
+  findUserByUsername: async (username) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          username: username,
+        },
+      });
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
   updateProfileInfo: async (user) => {
     return await User.update(user, {
       where: {
