@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { GameClientStateProvider } from "./GameClient/contexts/GameClientContext";
 import { SocketProvider } from "./GameClient/contexts/SocketContext";
 import { GameClientSocketFunctionsProvider } from "./GameClient/contexts/GameClientSocketFunctionsContext";
+import { ChallengesProvider } from "./GameClient/contexts/ChallengesContext";
 
 const ClientComponent = styled.div`
   max-width: 1400px;
@@ -17,9 +18,11 @@ export default function Play() {
     <ClientComponent>
       <SocketProvider>
         <GameClientStateProvider>
-          <GameClientSocketFunctionsProvider>
-            <GameClient></GameClient>
-          </GameClientSocketFunctionsProvider>
+          <ChallengesProvider>
+            <GameClientSocketFunctionsProvider>
+              <GameClient></GameClient>
+            </GameClientSocketFunctionsProvider>
+          </ChallengesProvider>
         </GameClientStateProvider>
       </SocketProvider>
     </ClientComponent>

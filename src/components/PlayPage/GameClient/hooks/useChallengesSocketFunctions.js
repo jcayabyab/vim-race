@@ -33,6 +33,8 @@ const useChallengesSocketFunctions = (socket, user) => {
     socket.on("new challenge", (data) => {
       const { challenge } = data;
 
+      console.log(challenge);
+
       addReceivedChallenge(challenge);
     });
   }, [socket, addReceivedChallenge]);
@@ -44,8 +46,8 @@ const useChallengesSocketFunctions = (socket, user) => {
   }, [socket]);
 
   const handleChallengeSend = useCallback(
-    (receiverId) => {
-      socket.emit("sent challenge", { senderId: user.id, receiverId });
+    (receiverUsername) => {
+      socket.emit("sent challenge", { sender: user, receiverUsername });
     },
     [socket, user]
   );
@@ -64,12 +66,12 @@ const useChallengesSocketFunctions = (socket, user) => {
     [socket, user]
   );
 
-  const handleChallengeDecline = useCallback((challengeUuid) => {
+  const handleChallengeDecline = useCallback(
     (challengeUuid) => {
       socket.emit("decline challenge", { id: user.id, challengeUuid });
     },
-      [socket, user];
-  });
+    [socket, user]
+  );
 
   const [functionsInitialized, setFunctionsInitialized] = useState(false);
 

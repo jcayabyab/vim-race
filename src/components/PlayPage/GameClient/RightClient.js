@@ -5,10 +5,11 @@ import styled from "styled-components";
 import { UserInfoHeader } from "./LeftClient";
 import PlayerStateIcon from "./PlayerStateIcon";
 import SearchButton from "./SearchButton";
-import StatusScreen from "./StatusScreen";
+import StatusScreen from "./StatusScreen/StatusScreen";
 import { GameClientSocketFunctionsContext } from "./contexts/GameClientSocketFunctionsContext";
 import { GameClientContext } from "./contexts/GameClientContext";
 import { useSelector } from "react-redux";
+import ChallengesScreen from "./ChallengesScreen/ChallengesScreen";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -106,11 +107,14 @@ export default function RightClient() {
       );
     } else {
       return lobbyTerminalLoaded ? (
-        <SearchButton
-          onSearch={sendSearchReqToSocket}
-          onCancel={cancelMatchmaking}
-          gameState={gameState}
-        ></SearchButton>
+        <React.Fragment>
+          <SearchButton
+            onSearch={sendSearchReqToSocket}
+            onCancel={cancelMatchmaking}
+            gameState={gameState}
+          ></SearchButton>
+          <ChallengesScreen></ChallengesScreen>
+        </React.Fragment>
       ) : (
         <div>Waiting for Vim terminal to download...</div>
       );

@@ -2,7 +2,7 @@ import React, { useState, createContext, useCallback } from "react";
 
 export const ChallengesContext = createContext();
 
-export const GameClientStateProvider = (props) => {
+export const ChallengesProvider = (props) => {
   const [receivedChallenges, setReceivedChallenges] = useState([]);
   const [sentChallenges, setSentChallenges] = useState([]);
 
