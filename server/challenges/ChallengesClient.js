@@ -1,8 +1,9 @@
 const { playerDict } = require("../matchmaking/PlayerDict");
 const Challenge = require("./Challenge");
+const db = require("../db/api");
 
 class ChallengesClient {
-  constructor(io, matchmakingClient) {
+  constructor(io, matchmakingClient, showDebug = false) {
     this.io = io;
 
     this.matchmakingClient = matchmakingClient;
@@ -11,6 +12,14 @@ class ChallengesClient {
     this.onDecline = this.onDecline.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.onAccept = this.onAccept.bind(this);
+
+    this.showDebug = showDebug;
+  }
+
+  debug(msg) {
+    if (this.debug) {
+      console.log(msg);
+    }
   }
 
   addSocketListeners(socket) {
@@ -19,29 +28,56 @@ class ChallengesClient {
     socket.on(ChallengesClient.commands.CANCEL, this.onCancel);
   }
 
-  onSend(data) {
+  async onSend(data) {
     // add sent challenge and received challenge
-    const { senderId, receiverId } = data;
-    const senderSocket = playerDict[senderId].socket;
+    const { sender, receiverUsername } = data;
 
-    if (!playerDict.playerOnline(receiverId)) {
+    const senderSocket = playerDict.getSocket(sender.id);
+    const receiver = await db.findUserByUsername(receiverUsername);
+
+    if (!receiver) {
+      this.debug(
+        `${sender.username} challenge to user ${receiverUsername} failed: Player does not exist`
+      );
+      senderSocket.emit(ChallengesClient.commands.CANNOT_SEND, {
+        error: "Player does not exist",
+      });
+      return;
+    }
+
+    if (!playerDict.playerOnline(receiver.id)) {
+      this.debug(
+        `${sender.id} challenge to user ${receiverUsername} failed: Player is not online`
+      );
       senderSocket.emit(ChallengesClient.commands.CANNOT_SEND, {
         error: "Player is not online",
       });
       return;
     }
 
-    const receiverSocket = playerDict[receiverId].socket;
-    const challenge = new Challenge(senderId, receiverId);
+    this.debug(`${sender.id} sent challenge to user ${receiver.id}`);
+
+    const receiverSocket = playerDict.getSocket(receiver.id);
+    const challenge = new Challenge(
+      sender.id,
+      sender.username,
+      receiver.id,
+      receiver.username
+    );
     playerDict.addChallenge(challenge);
-    senderSocket.emit(ChallengesClient.commands.SENT, challenge);
-    receiverSocket.emit(ChallengesClient.commands.NEW_CHALLENGE, challenge);
+    senderSocket.emit(ChallengesClient.commands.SENT, { challenge });
+    receiverSocket.emit(ChallengesClient.commands.NEW_CHALLENGE, { challenge });
   }
 
   onDecline(data) {
     // id of challenge receiver
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
+
+    this.debug(
+      `${challenge.receiverId} declined challenge from ${challenge.senderId}`
+    );
+
     playerDict.removeChallenge(challenge);
 
     const senderSocket = playerDict.getSocket(challenge.senderId);
@@ -54,6 +90,11 @@ class ChallengesClient {
     // id of challenge sender
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeBySenderUuid(id, challengeUuid);
+
+    this.debug(
+      `${challenge.senderId} cancelled challenge to ${challenge.receiverId}`
+    );
+
     playerDict.removeChallenge(challenge);
 
     const senderSocket = playerDict.getSocket(challenge.senderId);
@@ -67,6 +108,11 @@ class ChallengesClient {
     const { id, challengeUuid } = data;
 
     const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
+
+    this.debug(
+      `${challenge.receiverId} accepted challenge from ${challenge.senderId}`
+    );
+
     playerDict.removeChallenge(challenge);
 
     const senderSocket = playerDict.getSocket(challenge.senderId);
@@ -82,10 +128,13 @@ class ChallengesClient {
     );
   }
 
-  notifyOnDisconnect(otherUsers) {
-    for (userId in otherUsers) {
+  notifyOnDisconnect(otherUsersAndChallenges) {
+    for (const userId in Object.keys(otherUsersAndChallenges)) {
       const socket = playerDict.getSocket(userId);
-      socket.emit(ChallengesClient.REMOVE, { challenge });
+      const challenges = otherUsersAndChallenges[userId];
+      for (const challenge in challenges) {
+        socket.emit(ChallengesClient.REMOVE, { challenge });
+      }
     }
   }
 }
