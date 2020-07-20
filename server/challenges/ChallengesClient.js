@@ -124,12 +124,24 @@ class ChallengesClient {
       `${challenge.receiverId} accepted challenge from ${challenge.senderId}`
     );
 
-    playerDict.removeChallenge(challenge);
-
     const senderSocket = playerDict.getSocket(challenge.senderId);
     const receiverSocket = playerDict.getSocket(challenge.receiverId);
-    senderSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
-    receiverSocket.emit(ChallengesClient.commands.REMOVE, { challenge });
+
+    // cancel all sent challenges when players enter game
+    const senderSentChallengesAndUsers = playerDict.getOtherSentChallengeUsers(
+      challenge.senderId
+    );
+    const receiverSentChallengesAndUsers = playerDict.getOtherSentChallengeUsers(
+      challenge.receiverId
+    );
+
+    playerDict.removeUserSentChallenges(challenge.senderId);
+    playerDict.removeUserSentChallenges(challenge.receiverId);
+
+    this.notifyOnRemoveOtherChallenges(senderSentChallengesAndUsers);
+    this.notifyOnRemoveOtherChallenges(receiverSentChallengesAndUsers);
+
+
 
     await this.matchmakingClient.createMatch(
       challenge.senderId,
@@ -139,7 +151,7 @@ class ChallengesClient {
     );
   }
 
-  notifyOnDisconnect(otherUsersAndChallenges) {
+  notifyOnRemoveOtherChallenges(otherUsersAndChallenges) {
     for (const userId of Object.keys(otherUsersAndChallenges)) {
       const socket = playerDict.getSocket(userId);
       const challenges = otherUsersAndChallenges[userId];

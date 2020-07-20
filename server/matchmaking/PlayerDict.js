@@ -14,9 +14,22 @@ class PlayerDict {
   }
 
   removeUserChallenges(id) {
-    const { sentChallenges, receivedChallenges } = this.dict[id];
+    this.removeUserSentChallenges(id);
+    this.removeUserReceivedChallenges(id);
+  }
+
+  removeUserSentChallenges(id) {
+    const { sentChallenges } = this.dict[id];
     for (const challenge of [
       ...Object.values(sentChallenges),
+    ]) {
+      this.removeChallenge(challenge);
+    }
+  }
+
+  removeUserReceivedChallenges(id) {
+    const { receivedChallenges } = this.dict[id];
+    for (const challenge of [
       ...Object.values(receivedChallenges),
     ]) {
       this.removeChallenge(challenge);
@@ -24,15 +37,32 @@ class PlayerDict {
   }
 
   getOtherUsersAndChallenges(id) {
-    const { sentChallenges, receivedChallenges } = this.dict[id];
-    // for each challenge return the socket of the user
+    const otherUsersAndChallenges = {
+      ...this.getOtherSentChallengeUsers(id),
+      ...this.getOtherReceivedChallengeUsers(id),
+    };
+
+    return otherUsersAndChallenges;
+  }
+
+  getOtherSentChallengeUsers(id) {
+    const { sentChallenges } = this.dict[id];
     const otherUsersAndChallenges = {};
+
     for (const challenge of Object.values(sentChallenges)) {
       if (!(challenge.receiverId in otherUsersAndChallenges)) {
         otherUsersAndChallenges[challenge.receiverId] = [];
       }
       otherUsersAndChallenges[challenge.receiverId].push(challenge);
     }
+
+    return otherUsersAndChallenges;
+  }
+
+  getOtherReceivedChallengeUsers(id) {
+    const { receivedChallenges } = this.dict[id];
+    const otherUsersAndChallenges = {};
+
     for (const challenge of Object.values(receivedChallenges)) {
       if (!(challenge.senderId in otherUsersAndChallenges)) {
         otherUsersAndChallenges[challenge.senderId] = [];

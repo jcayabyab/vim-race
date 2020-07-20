@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
     if (id) {
       matchmaker.waitingQueue.removePlayerFromQueue(id);
       const otherUsersAndChallenges = playerDict.handlePlayerDisconnect(id);
-      challengesClient.notifyOnDisconnect(otherUsersAndChallenges);
+      challengesClient.notifyOnRemoveOtherChallenges(otherUsersAndChallenges);
     }
   });
 
