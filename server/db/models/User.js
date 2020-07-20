@@ -13,6 +13,11 @@ module.exports = (sequelize) => {
       },
       username: {
         type: DataTypes.STRING,
+        unique: true,
+      },
+      usernameLastChanged: {
+        type: DataTypes.DATE,
+        defaultValue: new Date(),
       },
       lastSignInTime: {
         type: DataTypes.DATE,

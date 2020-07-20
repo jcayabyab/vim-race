@@ -12,7 +12,6 @@ const InputStyled = styled.input`
     "Courier New", monospace;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 25px;
 
   &:focus {
     outline: none;

@@ -43,11 +43,13 @@ module.exports = {
     }
   },
   updateProfileInfo: async (user) => {
-    return await User.update(user, {
+    const newUser = { ...user, usernameLastChanged: new Date() };
+
+    return await User.update(newUser, {
       where: {
         id: user.id,
       },
-      fields: ["username"],
+      fields: ["username", "usernameLastChanged"],
     });
   },
   updateVimrc: async (userId, vimrcText) => {

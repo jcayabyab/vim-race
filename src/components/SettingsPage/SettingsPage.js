@@ -14,6 +14,15 @@ const Wrapper = styled.div`
   background-color: #212121;
 `;
 
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const InputWrapper = styled.div`
+  flex: 1;
+`;
+
 const ButtonWrapper = styled.div`
   font-family: "Share Tech Mono", Consolas, monospace;
   font-size: 24pt;
@@ -57,14 +66,16 @@ export default function SettingsPage() {
         }}
       >
         <FormLabel>Username</FormLabel>
-        <Input
-          onChange={(e) => setUsername(e.target.value)}
-          value={username}
-          placeholder={"username"}
-        ></Input>
-        <Center>
+        <Row>
+          <InputWrapper>
+            <Input
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              placeholder={"username"}
+            ></Input>
+          </InputWrapper>
           <VimButton type="submit">:save</VimButton>
-        </Center>
+        </Row>
         <Center>
           <ButtonWrapper>
             <Link to="/settings/vimrc">:edit .vimrc</Link>
