@@ -11,13 +11,8 @@ export const fetchUser = async () => {
   return { type: UPDATE_USER, user: res.data };
 };
 
-export const updateUserProfile = async (
-  user,
-  username,
-  email,
-  profilePictureUrl
-) => {
-  const newUser = { ...user, username, email, profilePictureUrl };
+export const updateUserProfile = async (user, username) => {
+  const newUser = { ...user, username };
   const res = await axios.put("/api/user/profile", { user: newUser });
   if (res.status !== 200) {
     throw new Error(`Server error (${res.response}): ${res.data}`);

@@ -47,7 +47,7 @@ module.exports = {
       where: {
         id: user.id,
       },
-      fields: ["username", "email", "profilePictureUrl"],
+      fields: ["username"],
     });
   },
   updateVimrc: async (userId, vimrcText) => {

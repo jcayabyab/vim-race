@@ -14,12 +14,6 @@ module.exports = (sequelize) => {
       username: {
         type: DataTypes.STRING,
       },
-      email: {
-        type: DataTypes.STRING,
-      },
-      profilePictureUrl: {
-        type: DataTypes.TEXT,
-      },
       lastSignInTime: {
         type: DataTypes.DATE,
         defaultValue: new Date(),

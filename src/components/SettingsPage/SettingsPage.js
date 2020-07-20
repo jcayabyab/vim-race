@@ -41,14 +41,10 @@ export default function SettingsPage() {
   const user = useSelector((state) => state.user);
 
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [profPicUrl, setProfPicUrl] = useState("");
 
   useEffect(() => {
     if (user) {
       setUsername(user.username || "");
-      setEmail(user.email || "");
-      setProfPicUrl(user.profilePictureUrl || "");
     }
   }, [user]);
 
@@ -57,7 +53,7 @@ export default function SettingsPage() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          dispatch(await updateUserProfile(user, username, email, profPicUrl));
+          dispatch(await updateUserProfile(user, username));
         }}
       >
         <FormLabel>Username</FormLabel>
@@ -65,18 +61,6 @@ export default function SettingsPage() {
           onChange={(e) => setUsername(e.target.value)}
           value={username}
           placeholder={"username"}
-        ></Input>
-        <FormLabel>Email address</FormLabel>
-        <Input
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          placeholder={"email"}
-        ></Input>
-        <FormLabel>Profile Picture URL</FormLabel>
-        <Input
-          onChange={(e) => setProfPicUrl(e.target.value)}
-          value={profPicUrl}
-          placeholder={"profile picture url"}
         ></Input>
         <Center>
           <VimButton type="submit">:save</VimButton>
