@@ -1,25 +1,24 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import SolidButton from "../../../utils/SolidButton";
 import { useSelector } from "react-redux";
-import { ChallengesContext } from "../contexts/ChallengesContext";
-import ChallengeModal from "./ChallengeModal";
 import useChallengesSocketFunctions from "../hooks/useChallengesSocketFunctions";
+import { ChallengesContext } from "../contexts/ChallengesContext";
 import { SocketContext } from "../contexts/SocketContext";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import Challenge from "./Challenge";
+import SolidButton from "../../../utils/SolidButton";
+import ChallengeModal from "./ChallengeModal";
+import ChallengeList from "./ChallengeList";
 
 const Wrapper = styled.div`
   background-color: #212121;
   border: solid 1px black;
   border-radius: 3px;
-  margin-top: 10px;
-  min-height: 280px;
-  width: 580px;
+  width: 600px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 const Header = styled.div`
@@ -37,9 +36,11 @@ const Challenges = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: stretch;
+  flex: 1;
+  margin-bottom: 10px;
 `;
 
-export default function ChallengesScreen() {
+export default function ChallengesScreen({ style }) {
   const user = useSelector((state) => state.user);
   const socket = useContext(SocketContext);
   const [showModal, setShowModal] = useState(false);
@@ -56,37 +57,29 @@ export default function ChallengesScreen() {
   const openChallengesModal = () => setShowModal(true);
   const closeChallengesModal = () => setShowModal(false);
 
-  const renderChallenges = (challenges, isSent) =>
-    challenges.map((challenge) => (
-      <Challenge
-        key={challenge.uuid}
-        challenge={challenge}
-        isSent={isSent}
-        handleAccept={() => handleChallengeAccept(challenge.uuid)}
-        handleDecline={() => handleChallengeDecline(challenge.uuid)}
-        handleCancel={() => handleChallengeCancel(challenge.uuid)}
-      ></Challenge>
-    ));
-
   return (
-    <Wrapper>
-      <div>
-        <Header>
-          <Title>Challenges</Title>
-        </Header>
-        <Challenges>
-          <div>
-            <PerfectScrollbar>
-              <span>{renderChallenges(receivedChallenges, false)}</span>
-            </PerfectScrollbar>
-          </div>
-          <div>
-            <PerfectScrollbar>
-              <span>{renderChallenges(sentChallenges, true)}</span>
-            </PerfectScrollbar>
-          </div>
-        </Challenges>
-      </div>
+    <Wrapper style={style}>
+      <Header>
+        <Title>Challenges</Title>
+      </Header>
+      <Challenges>
+        <ChallengeList
+          title={"Sent"}
+          challenges={sentChallenges}
+          isSentChallenges={true}
+          handleChallengeAccept={handleChallengeAccept}
+          handleChallengeDecline={handleChallengeDecline}
+          handleChallengeCancel={handleChallengeCancel}
+        ></ChallengeList>
+        <ChallengeList
+          title={"Received"}
+          challenges={receivedChallenges}
+          isSentChallenges={false}
+          handleChallengeAccept={handleChallengeAccept}
+          handleChallengeDecline={handleChallengeDecline}
+          handleChallengeCancel={handleChallengeCancel}
+        ></ChallengeList>
+      </Challenges>
       <SolidButton onClick={openChallengesModal}>
         Create a challenge
       </SolidButton>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext, useState } from "react";
+import { useCallback, useEffect, useContext } from "react";
 import { ChallengesContext } from "../contexts/ChallengesContext";
 
 const useChallengesSocketFunctions = (socket, user) => {
@@ -8,6 +8,8 @@ const useChallengesSocketFunctions = (socket, user) => {
     addSentChallenge,
     removeReceivedChallenge,
     removeSentChallenge,
+    challengesSocketFunctionsInitialized,
+    setChallengesSocketFunctionsInitialized,
   } = challengesState;
 
   const handleRemoveChallenge = useCallback(() => {
@@ -15,7 +17,8 @@ const useChallengesSocketFunctions = (socket, user) => {
       const { challenge } = data;
       if (user.id === challenge.senderId) {
         removeSentChallenge(challenge);
-      } else {
+      }
+      if (user.id === challenge.receiverId) {
         removeReceivedChallenge(challenge);
       }
     });
@@ -25,6 +28,8 @@ const useChallengesSocketFunctions = (socket, user) => {
     socket.on("sent challenge", (data) => {
       const { challenge } = data;
 
+      console.log("challenge successfully sent");
+
       addSentChallenge(challenge);
     });
   }, [socket, addSentChallenge]);
@@ -32,8 +37,6 @@ const useChallengesSocketFunctions = (socket, user) => {
   const handleNewChallenge = useCallback(() => {
     socket.on("new challenge", (data) => {
       const { challenge } = data;
-
-      console.log(challenge);
 
       addReceivedChallenge(challenge);
     });
@@ -73,21 +76,19 @@ const useChallengesSocketFunctions = (socket, user) => {
     [socket, user]
   );
 
-  const [functionsInitialized, setFunctionsInitialized] = useState(false);
-
   // setup to listen for start and finish
   useEffect(() => {
-    if (socket && !functionsInitialized && user) {
+    if (socket && !challengesSocketFunctionsInitialized && user) {
       handleRemoveChallenge();
       handleChallengeSendSuccess();
       handleNewChallenge();
       handleChallengeSendFail();
-      setFunctionsInitialized(true);
+      setChallengesSocketFunctionsInitialized(true);
     }
   }, [
     socket,
-    functionsInitialized,
-    setFunctionsInitialized,
+    challengesSocketFunctionsInitialized,
+    setChallengesSocketFunctionsInitialized,
     user,
     handleRemoveChallenge,
     handleChallengeSendSuccess,

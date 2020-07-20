@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useState, useEffect } from "react";
 import VimClient from "./VimClient/VimClient";
 import { GAME_STATES, PLAYER_STATES } from "./states";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import { GameClientSocketFunctionsContext } from "./contexts/GameClientSocketFun
 import { GameClientContext } from "./contexts/GameClientContext";
 import { useSelector } from "react-redux";
 import ChallengesScreen from "./ChallengesScreen/ChallengesScreen";
+import MenuToggle from "./MenuToggle";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -20,7 +21,9 @@ const Wrapper = styled.div`
 `;
 
 const Tooltip = styled.div`
-  visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
+  font-size: 10pt;
+  height: 1em;
+  margin-top: 3px;
 `;
 
 export default function RightClient() {
@@ -50,6 +53,86 @@ export default function RightClient() {
     () => setOpponentInitialized(false),
     [setOpponentInitialized]
   );
+
+  const [showChallenges, setShowChallenges] = useState(false);
+
+  useEffect(() => {
+    if (gameState !== GAME_STATES.IDLE) {
+      setShowChallenges(false);
+    }
+  }, [gameState, setShowChallenges]);
+
+  const renderGameMenu = () => {
+    switch (gameState) {
+      case GAME_STATES.LOADING:
+        return (
+          <React.Fragment>
+            <div style={{ height: "320px" }}>
+              <StatusScreen
+                gameState={gameState}
+                prevGameFinished={prevGameFinished}
+                user={user}
+                opponent={opponent}
+                playerStates={playerStates}
+                resignGame={resignGame}
+              ></StatusScreen>
+            </div>
+            <Tooltip>Waiting for players to load...</Tooltip>
+          </React.Fragment>
+        );
+      case GAME_STATES.PLAYING:
+        return (
+          <React.Fragment>
+            <div style={{ height: "320px" }}>
+              <StatusScreen
+                gameState={gameState}
+                prevGameFinished={prevGameFinished}
+                user={user}
+                opponent={opponent}
+                playerStates={playerStates}
+                resignGame={resignGame}
+              ></StatusScreen>
+            </div>
+            <Tooltip>
+              Use <code>:E</code> to submit your entry!
+            </Tooltip>
+          </React.Fragment>
+        );
+      case GAME_STATES.IDLE:
+      case GAME_STATES.SEARCHING:
+        return (
+          <React.Fragment>
+            <div style={{ height: "320px" }}>
+              {showChallenges ? (
+                <ChallengesScreen
+                  style={{
+                    borderBottom: "none",
+                    borderBottomLeftRadius: "0px",
+                    borderButtomRightRadius: "0px",
+                  }}
+                ></ChallengesScreen>
+              ) : (
+                <StatusScreen
+                  gameState={gameState}
+                  prevGameFinished={prevGameFinished}
+                  user={user}
+                  opponent={opponent}
+                  playerStates={playerStates}
+                  resignGame={resignGame}
+                ></StatusScreen>
+              )}
+            </div>
+            <MenuToggle
+              onChallengeClick={() => setShowChallenges(true)}
+              onGameStatusClick={() => setShowChallenges(false)}
+              showChallenges={showChallenges}
+            ></MenuToggle>
+          </React.Fragment>
+        );
+      default:
+        return <div>Invalid state: {gameState}</div>;
+    }
+  };
 
   // The first game has started if startText is defined
   const gameStarted = !!startText;
@@ -89,20 +172,7 @@ export default function RightClient() {
               ></VimClient>
             )
           }
-          <Tooltip visible={gameState === GAME_STATES.PLAYING}>
-            Use <code>:E</code> to submit your entry!
-          </Tooltip>
-          {gameState === GAME_STATES.LOADING && (
-            <div>Waiting for players to load...</div>
-          )}
-          <StatusScreen
-            gameState={gameState}
-            prevGameFinished={prevGameFinished}
-            user={user}
-            opponent={opponent}
-            playerStates={playerStates}
-            resignGame={resignGame}
-          ></StatusScreen>
+          {renderGameMenu()}
         </React.Fragment>
       );
     } else {
@@ -113,7 +183,9 @@ export default function RightClient() {
             onCancel={cancelMatchmaking}
             gameState={gameState}
           ></SearchButton>
-          <ChallengesScreen></ChallengesScreen>
+          <div style={{ height: "320px", marginTop: "10px" }}>
+            <ChallengesScreen></ChallengesScreen>
+          </div>
         </React.Fragment>
       ) : (
         <div>Waiting for Vim terminal to download...</div>

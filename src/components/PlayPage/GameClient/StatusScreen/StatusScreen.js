@@ -13,10 +13,17 @@ const Wrapper = styled.div`
   background-color: #212121;
   border: solid 1px black;
   border-radius: 3px;
-  margin-top: 10px;
-  min-height: 280px;
-  width: 580px;
+  ${({ gameState }) =>
+    gameState === GAME_STATES.IDLE
+      ? `border-bottom: none;
+     border-bottom-left-radius: 0px;
+     border-bottom-right-radius: 0px;
+    `
+      : ""}
+  height: 100%;
+  width: 600px;
   padding: 10px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -64,8 +71,10 @@ export default function StatusScreen() {
     );
   };
 
+  console.log(gameState);
+
   return (
-    <Wrapper>
+    <Wrapper gameState={gameState}>
       <div>
         <Header>
           <Title>Players</Title>

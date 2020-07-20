@@ -86,17 +86,15 @@ class MatchmakingClient {
 
   playerIdActive(playerId) {
     let playerFinishedInGame = false;
-    const playerInGame = !!playerDict.getGame(playerId);
-    if (playerInGame) {
-      const game = this.playersInGame[playerId];
-      const { player1, player2 } = game.gameInfo;
+    const playerGame = !!playerDict.getGame(playerId);
+    if (playerGame) {
+      const { player1, player2 } = playerGame.gameInfo;
       const thePlayer = player1.id === playerId ? player1 : player2;
       playerFinishedInGame = thePlayer.finished;
     }
 
     return (
-      this.waitingQueue.playerInQueue() ||
-      (playerInGame && !playerFinishedInGame)
+      this.waitingQueue.playerInQueue() || (playerGame && !playerFinishedInGame)
     );
   }
 }

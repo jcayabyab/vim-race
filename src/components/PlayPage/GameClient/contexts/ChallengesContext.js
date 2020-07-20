@@ -5,6 +5,10 @@ export const ChallengesContext = createContext();
 export const ChallengesProvider = (props) => {
   const [receivedChallenges, setReceivedChallenges] = useState([]);
   const [sentChallenges, setSentChallenges] = useState([]);
+  const [
+    challengesSocketFunctionsInitialized,
+    setChallengesSocketFunctionsInitialized,
+  ] = useState(false);
 
   const addReceivedChallenge = useCallback(
     (newChallenge) => {
@@ -32,9 +36,7 @@ export const ChallengesProvider = (props) => {
   const removeSentChallenge = useCallback(
     (challenge) => {
       setSentChallenges((prevState) => {
-        return prevState.filter(
-          (ch) => ch.uuid !== challenge.uuid
-        );
+        return prevState.filter((ch) => ch.uuid !== challenge.uuid);
       });
     },
     [setSentChallenges]
@@ -45,6 +47,7 @@ export const ChallengesProvider = (props) => {
     receivedChallenges, sentChallenges,
     addReceivedChallenge, addSentChallenge,
     removeReceivedChallenge, removeSentChallenge,
+    challengesSocketFunctionsInitialized, setChallengesSocketFunctionsInitialized,
   };
 
   return (

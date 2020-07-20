@@ -44,7 +44,9 @@ class PlayerDict {
   }
 
   removePlayer(id) {
-    delete this.dict[id];
+    if (this.dict[id]) {
+      delete this.dict[id];
+    }
   }
 
   getSocket(id) {
@@ -56,7 +58,11 @@ class PlayerDict {
   }
 
   getGame(id) {
-    return this.dict[id].currentGame;
+    if (this.playerOnline(id)) {
+      return this.dict[id].currentGame;
+    } else {
+      throw "No key in this dictionary: " + id;
+    }
   }
 
   // called on connection
@@ -95,11 +101,15 @@ class PlayerDict {
   }
 
   setPlayerGame(id, gameHandler) {
-    this.dict[id].currentGame = gameHandler;
+    if (this.dict[id]) {
+      this.dict[id].currentGame = gameHandler;
+    }
   }
 
   removeGame(id) {
-    this.dict[id].currentGame = null;
+    if (this.dict[id]) {
+      this.dict[id].currentGame = null;
+    }
   }
 
   playerOnline(id) {

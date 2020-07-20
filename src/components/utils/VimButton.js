@@ -9,7 +9,8 @@ export default styled.button`
   font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
   cursor: pointer;
-  &:hover {
+
+  :hover {
     text-decoration: underline;
   }
 `;

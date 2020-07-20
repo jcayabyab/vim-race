@@ -56,6 +56,16 @@ class ChallengesClient {
       return;
     }
 
+    if (sender.id === receiver.id) {
+      this.debug(
+        `${sender.id} challenge to user ${receiverUsername} failed: Cannot send a challenge to yourself`
+      );
+      senderSocket.emit(ChallengesClient.commands.CANNOT_SEND, {
+        error: "Cannot send a challenge to yourself",
+      });
+      return;
+    }
+
     this.debug(`${sender.id} sent challenge to user ${receiver.id}`);
 
     const receiverSocket = playerDict.getSocket(receiver.id);
