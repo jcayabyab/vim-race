@@ -8,14 +8,20 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: stretch;
   flex: 1;
-  margin: 0px 5px 10px;
+  margin: 0px 5px;
   height: 100%;
+`;
+
+// height manually calculated :(
+const ListWrapper = styled.div`
+  position: relative;
+  flex: 1;
+  max-height: 158px;
 `;
 
 const List = styled(PerfectScrollbar)`
   border: solid 1px black;
   border-radius: 3px;
-  flex: 1;
 `;
 
 const Title = styled.h2`
@@ -46,9 +52,11 @@ export default function ChallengeList({
   return (
     <Wrapper>
       <Title>{title}</Title>
-      <List>
-        <div>{renderChallenges()}</div>
-      </List>
+      <ListWrapper>
+        <List>
+          <div>{renderChallenges()}</div>
+        </List>
+      </ListWrapper>
     </Wrapper>
   );
 }
