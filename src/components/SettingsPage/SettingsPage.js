@@ -45,11 +45,16 @@ const Center = styled.div`
   justify-content: center;
 `;
 
+const Message = styled.div`
+  height: 1em;
+`;
+
 export default function SettingsPage() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
   const [username, setUsername] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -57,12 +62,22 @@ export default function SettingsPage() {
     }
   }, [user]);
 
+  const flashMessage = (msg, ms) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(""), ms);
+  };
+
   return (
     <Wrapper>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          dispatch(await updateUserProfile(user, username));
+          try {
+            dispatch(await updateUserProfile(user, username));
+            flashMessage("Username updated", 3000);
+          } catch (e) {
+            flashMessage(e, 10000);
+          }
         }}
       >
         <FormLabel>Username</FormLabel>
@@ -76,6 +91,7 @@ export default function SettingsPage() {
           </InputWrapper>
           <VimButton type="submit">:save</VimButton>
         </Row>
+        <Message></Message>
         <Center>
           <ButtonWrapper>
             <Link to="/settings/vimrc">:edit .vimrc</Link>

@@ -17,11 +17,11 @@ module.exports = (sequelize) => {
       },
       usernameLastChanged: {
         type: DataTypes.DATE,
-        defaultValue: new Date(),
+        defaultValue: DataTypes.NOW,
       },
       lastSignInTime: {
         type: DataTypes.DATE,
-        defaultValue: new Date(),
+        defaultValue: DataTypes.NOW,
       },
       vimrcText: {
         type: DataTypes.TEXT,
