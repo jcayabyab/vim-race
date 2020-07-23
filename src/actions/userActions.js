@@ -17,6 +17,8 @@ export const updateUserProfile = async (user, username) => {
   if (res.status !== 200) {
     throw new Error(`Server error (${res.response}): ${res.data}`);
   }
+  // matches format from backend
+  newUser.usernameLastChanged = new Date().toISOString();
   return { type: UPDATE_USER, user: newUser };
 };
 

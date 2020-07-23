@@ -4,6 +4,13 @@ const db = require("../db/api");
 
 router.put("/api/user/profile", requireLogin, async (req, res) => {
   const { user } = req.body;
+  const usernameLastChanged = new Date(req.user.dataValues.usernameLastChanged);
+  const timeDifference = new Date().getTime() - usernameLastChanged.getTime();
+  // 30 days in ms
+  const minTimeDifference = 30 * 24 * 60 * 60 * 1000;
+  if (timeDifference < minTimeDifference) {
+    return res.status(500).send("Too soon to change username");
+  }
   try {
     await db.updateProfileInfo(user);
     res.status(200).send("User updated successfully.");

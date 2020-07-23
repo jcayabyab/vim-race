@@ -7,7 +7,7 @@ const InputStyled = styled.input`
   background-color: #151515;
   font-size: 18pt;
   padding: 7px;
-  color: white;
+  color: ${({ disabled }) => (disabled ? "gray" : "white")};
   font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
   width: 100%;

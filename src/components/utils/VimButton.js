@@ -8,9 +8,16 @@ export default styled.button`
   color: white;
   font-family: "Share Tech Mono", source-code-pro, Menlo, Monaco, Consolas,
     "Courier New", monospace;
+  ${({ disabled }) =>
+    !disabled
+      ? `
   cursor: pointer;
 
   :hover {
     text-decoration: underline;
   }
+  `
+      : `
+  color: gray;
+  `}
 `;
