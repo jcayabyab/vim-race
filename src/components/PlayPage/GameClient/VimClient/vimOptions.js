@@ -26,11 +26,11 @@ command E w | export
 // used to manually load material theme
 const fetchFiles = {
   "/usr/local/share/vim/autoload/airline/themes/material.vim":
-    "https://raw.githubusercontent.com/kaicataldo/material.vim/master/autoload/airline/themes/material.vim",
+    "https://raw.githubusercontent.com/kaicataldo/material.vim/main/autoload/airline/themes/material.vim",
   "/usr/local/share/vim/lightline/colorscheme/material_vim.vim":
-    "https://raw.githubusercontent.com/kaicataldo/material.vim/master/autoload/lightline/colorscheme/material_vim.vim",
+    "https://raw.githubusercontent.com/kaicataldo/material.vim/main/autoload/lightline/colorscheme/material_vim.vim",
   "/usr/local/share/vim/colors/material.vim":
-    "https://raw.githubusercontent.com/kaicataldo/material.vim/master/colors/material.vim",
+    "https://raw.githubusercontent.com/kaicataldo/material.vim/main/colors/material.vim",
 };
 
 // load vimrc
