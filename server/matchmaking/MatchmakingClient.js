@@ -86,7 +86,7 @@ class MatchmakingClient {
 
   playerIdActive(playerId) {
     let playerFinishedInGame = false;
-    const playerGame = !!playerDict.getGame(playerId);
+    const playerGame = playerDict.getGame(playerId);
     if (playerGame) {
       const { player1, player2 } = playerGame.gameInfo;
       const thePlayer = player1.id === playerId ? player1 : player2;

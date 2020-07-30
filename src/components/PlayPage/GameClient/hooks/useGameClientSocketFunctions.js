@@ -6,6 +6,10 @@ import { GameClientContext } from "../contexts/GameClientContext";
 const useGameClientSocketFunctions = (socket, user) => {
   const gameClientState = useContext(GameClientContext);
   const {
+    userInitialized,
+    opponentInitialized,
+    gameState,
+    setLoginDetected,
     setGameState,
     setStartText,
     setGoalText,
@@ -95,6 +99,15 @@ const useGameClientSocketFunctions = (socket, user) => {
     });
   }, [socket, setGameState]);
 
+  const handleAlreadyLoggedIn = useCallback(() => {
+    socket.on("login detected", () => {
+      console.log("login detected");
+      setLoginDetected(true);
+      // disconnect from socket
+      socket.disconnect();
+    });
+  }, [socket, setLoginDetected]);
+
   const handleTerminalsLoaded = useCallback(() => {
     socket.emit("loaded", { id: user.id });
   }, [user, socket]);
@@ -178,6 +191,17 @@ const useGameClientSocketFunctions = (socket, user) => {
   // established once
   const [functionsInitialized, setFunctionsInitialized] = useState(false);
 
+  // trigger game start when terminals are loaded
+  useEffect(() => {
+    if (
+      userInitialized &&
+      opponentInitialized &&
+      gameState === GAME_STATES.LOADING
+    ) {
+      handleTerminalsLoaded();
+    }
+  }, [userInitialized, opponentInitialized, handleTerminalsLoaded, gameState]);
+
   // setup to listen for start and finish
   useEffect(() => {
     if (socket && !functionsInitialized && user) {
@@ -187,6 +211,7 @@ const useGameClientSocketFunctions = (socket, user) => {
       handleGameStart();
       handleGameFinish();
       handleHandshake();
+      handleAlreadyLoggedIn();
       setFunctionsInitialized(true);
     }
   }, [
@@ -200,6 +225,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     handleGameStart,
     handleGameFinish,
     handleHandshake,
+    handleAlreadyLoggedIn,
   ]);
 
   return {

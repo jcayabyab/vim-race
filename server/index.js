@@ -47,18 +47,23 @@ io.on("connection", (socket) => {
   socket.on("handshake", (data) => {
     console.log("client connected: ", data.id);
     id = data.id;
-    playerDict.addPlayer(data.id, socket);
+    if (playerDict.playerOnline(id)) {
+      const otherSocket = playerDict.getSocket(id);
+      playerDict.addPlayer(id, socket);
+      otherSocket.emit("login detected");
+    } else {
+      playerDict.addPlayer(id, socket);
+    }
   });
 
   socket.on("disconnect", () => {
     console.log("client disconnected: " + id);
-    // should have them leave the game here
-    // also pop them off of waiting queue
     if (id) {
       matchmaker.waitingQueue.removePlayerFromQueue(id);
       const otherUsersAndChallenges = playerDict.handlePlayerDisconnect(id);
       challengesClient.notifyOnRemoveOtherChallenges(otherUsersAndChallenges);
     }
+    console.log(playerDict.dict);
   });
 
   // data: { id: String }

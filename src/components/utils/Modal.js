@@ -1,7 +1,7 @@
 import React from "react";
 import ReactModal from "react-modal";
 
-export default function Modal({ isOpen, onRequestClose, children }) {
+export default function Modal({ isOpen, children, ...rest }) {
   const style = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -14,16 +14,11 @@ export default function Modal({ isOpen, onRequestClose, children }) {
       backgroundColor: "#212121",
       border: "1px solid black",
       borderRadius: "3px",
-      minWidth: "600px"
+      minWidth: "600px",
     },
   };
   return (
-    <ReactModal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      ariaHideApp={false}
-      style={style}
-    >
+    <ReactModal isOpen={isOpen} ariaHideApp={false} style={style} {...rest}>
       {children}
     </ReactModal>
   );

@@ -9,7 +9,17 @@ class PlayerDict {
   handlePlayerDisconnect(id) {
     const otherUsersAndChallenges = this.getOtherUsersAndChallenges(id);
     this.removeUserChallenges(id);
-    this.removePlayer(id);
+    // if this disconnect was the result of another login being detected,
+    // keep this player in the dictionary - the removeUserChallenges will automatically
+    // reset the challenges
+    if (this.dict[id].otherLogin) {
+      // reset flag to show that login is no longer contested
+      this.dict[id].otherLogin = false;
+    } else {
+      // continue as usual
+      this.removePlayer(id);
+    }
+
     return otherUsersAndChallenges;
   }
 
@@ -20,18 +30,14 @@ class PlayerDict {
 
   removeUserSentChallenges(id) {
     const { sentChallenges } = this.dict[id];
-    for (const challenge of [
-      ...Object.values(sentChallenges),
-    ]) {
+    for (const challenge of [...Object.values(sentChallenges)]) {
       this.removeChallenge(challenge);
     }
   }
 
   removeUserReceivedChallenges(id) {
     const { receivedChallenges } = this.dict[id];
-    for (const challenge of [
-      ...Object.values(receivedChallenges),
-    ]) {
+    for (const challenge of [...Object.values(receivedChallenges)]) {
       this.removeChallenge(challenge);
     }
   }
@@ -97,13 +103,20 @@ class PlayerDict {
 
   // called on connection
   // challenge objects: { challengeUuid: challenge }
+  // if player is already online, modify flag and update socket
   addPlayer(id, socket) {
-    this.dict[id] = {
-      socket,
-      currentGame: null,
-      sentChallenges: {},
-      receivedChallenges: {},
-    };
+    if (this.playerOnline(id)) {
+      this.dict[id].otherLogin = true;
+      this.dict[id].socket = socket;
+    } else {
+      this.dict[id] = {
+        socket,
+        currentGame: null,
+        sentChallenges: {},
+        receivedChallenges: {},
+        otherLogin: false,
+      };
+    }
   }
 
   addChallenge(challenge) {

@@ -17,6 +17,7 @@ export const GameClientStateProvider = (props) => {
   const [prevGameFinished, setPrevGameFinished] = useState(false);
 
   const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
+  const [loginDetected, setLoginDetected] = useState(false);
 
   // prettier-ignore
   const gameStateObj = {
@@ -30,6 +31,7 @@ export const GameClientStateProvider = (props) => {
     lobbyTerminalLoaded, setLobbyTerminalLoaded,
     prevGameFinished, setPrevGameFinished,
     playerStates, setNewPlayers, setPlayerState,
+    loginDetected, setLoginDetected
   };
 
   return (
