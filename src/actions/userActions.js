@@ -12,13 +12,23 @@ export const fetchUser = async () => {
 };
 
 export const updateUserProfile = async (user, username) => {
-  const newUser = { ...user, username };
-  const res = await axios.put("/api/user/profile", { user: newUser });
-  if (res.status !== 200) {
-    throw new Error(`Server error (${res.response}): ${res.data}`);
+  // filter non-alphanumeric characters
+  const newUser = { ...user, username: username.replace(/\W/g, "") };
+  try {
+    const res = await axios.put("/api/user/profile", { user: newUser });
+    console.log({ status: res.status });
+    if (res.status !== 200) {
+      throw new Error(`Server error (${res.response}): ${res.data}`);
+    }
+  } catch (e) {
+    console.log(e.response);
+    throw new Error("Error: " + e.response.data + ".");
   }
-  // matches format from backend
-  newUser.usernameLastChanged = new Date().toISOString();
+  // only change if username truly changes
+  if (username !== user.username) {
+    // matches format from backend
+    newUser.usernameLastChanged = new Date().toISOString();
+  }
   return { type: UPDATE_USER, user: newUser };
 };
 

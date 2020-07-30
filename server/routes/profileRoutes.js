@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const requireLogin = require("../middlewares/requireLogin");
 const db = require("../db/api");
+const Filter = require("bad-words"),
+  filter = new Filter();
 
 router.put("/api/user/profile", requireLogin, async (req, res) => {
   const { user } = req.body;
@@ -9,14 +11,32 @@ router.put("/api/user/profile", requireLogin, async (req, res) => {
   // 30 days in ms
   const minTimeDifference = 30 * 24 * 60 * 60 * 1000;
   if (timeDifference < minTimeDifference) {
-    return res.status(500).send("Too soon to change username");
+    return res.status(425).send("Too soon to change username");
   }
+
+  // check for profanity
+  if (filter.isProfane(user.username)) {
+    return res.status(403).send("Username contents not allowed");
+  }
+
+  // filter non alphanumeric in username
+  user.username = user.username.replace(/\W/g, "");
+
   try {
-    await db.updateProfileInfo(user);
+    // only update in database if different fron previous value
+    if (user.username !== req.user.username) {
+      await db.updateProfileInfo(user);
+    }
     res.status(200).send("User updated successfully.");
   } catch (error) {
-    console.error("User profile update error occurred: ", error);
-    res.status(500).send("User profile update error occurred: " + error);
+    console.error("User profile update error occurred: ", error.errors);
+    if (error.errors[0].type === "unique violation") {
+      res.status(409).send("Username already taken");
+    } else {
+      res
+        .status(500)
+        .send("User profile update error occurred: " + error.errors);
+    }
   }
 });
 
@@ -24,10 +44,10 @@ router.put("/api/user/vimrc", requireLogin, async (req, res) => {
   const { userId, vimrcText } = req.body;
   try {
     await db.updateVimrc(userId, vimrcText);
-    res.send("User updated successfully.", 200);
+    res.status(200).send("User updated successfully.");
   } catch (error) {
-    console.error("User .vimrc update error occurred: ", error);
-    res.send("User .vimrc update error occurred: " + error, 500);
+    console.error("User .vimrc update error occurred: ", error.errors);
+    res.status(500).send("User .vimrc update error occurred: " + error.errors);
   }
 });
 

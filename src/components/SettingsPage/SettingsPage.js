@@ -87,10 +87,16 @@ export default function SettingsPage() {
   };
 
   const getTimeUntilUsernameEdit = () => {
-    console.log({ user });
     const timeUsernameEditable = new Date(user.usernameLastChanged);
     timeUsernameEditable.setDate(timeUsernameEditable.getDate() + 30);
     return moment(timeUsernameEditable).fromNow();
+  };
+
+  const handleInputChange = (e) => {
+    const username = e.target.value;
+    const filteredUsername = username.replace(/\W/g, "");
+
+    setUsername(filteredUsername);
   };
 
   return (
@@ -102,7 +108,7 @@ export default function SettingsPage() {
             dispatch(await updateUserProfile(user, username));
             flashMessage("Changes saved successfully.", 3000);
           } catch (e) {
-            flashMessage(e, 10000);
+            flashMessage(e.message, 10000);
           }
         }}
       >
@@ -110,7 +116,7 @@ export default function SettingsPage() {
         <Row>
           <InputWrapper>
             <Input
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleInputChange}
               value={username}
               placeholder={"username"}
               disabled={!usernameEditable}
