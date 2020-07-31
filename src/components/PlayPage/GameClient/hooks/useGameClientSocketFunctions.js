@@ -10,6 +10,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     opponentInitialized,
     gameState,
     setLoginDetected,
+    setServerDisconnected,
     setGameState,
     setStartText,
     setGoalText,
@@ -101,12 +102,17 @@ const useGameClientSocketFunctions = (socket, user) => {
 
   const handleAlreadyLoggedIn = useCallback(() => {
     socket.on("login detected", () => {
-      console.log("login detected");
       setLoginDetected(true);
       // disconnect from socket
       socket.disconnect();
     });
   }, [socket, setLoginDetected]);
+
+  const handleServerDisconnect = useCallback(() => {
+    socket.on("disconnect", () => {
+      setServerDisconnected(true);
+    });
+  }, [socket, setServerDisconnected]);
 
   const handleTerminalsLoaded = useCallback(() => {
     socket.emit("loaded", { id: user.id });
@@ -212,6 +218,7 @@ const useGameClientSocketFunctions = (socket, user) => {
       handleGameFinish();
       handleHandshake();
       handleAlreadyLoggedIn();
+      handleServerDisconnect();
       setFunctionsInitialized(true);
     }
   }, [
@@ -226,6 +233,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     handleGameFinish,
     handleHandshake,
     handleAlreadyLoggedIn,
+    handleServerDisconnect,
   ]);
 
   return {

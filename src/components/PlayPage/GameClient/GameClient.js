@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { GameClientContext } from "./contexts/GameClientContext";
 import { Prompt } from "react-router-dom";
 import LoggedInModal from "./LoggedInModal";
+import ServerDisconnectedModal from "./ServerDisconnectedModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,7 +16,9 @@ const Wrapper = styled.div`
 `;
 
 export default function GameClient() {
-  const { gameState, loginDetected } = useContext(GameClientContext);
+  const { gameState, loginDetected, serverDisconnected } = useContext(
+    GameClientContext
+  );
 
   useEffect(() => {
     const onBeforeUnload = (e) => {
@@ -44,6 +47,9 @@ export default function GameClient() {
       <LeftClient></LeftClient>
       <RightClient></RightClient>
       <LoggedInModal isOpen={loginDetected}></LoggedInModal>
+      <ServerDisconnectedModal
+        isOpen={serverDisconnected}
+      ></ServerDisconnectedModal>
     </Wrapper>
   );
 }

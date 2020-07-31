@@ -15,7 +15,7 @@ export default function LoggedInModal({ isOpen }) {
     return () => {
       setLoginDetected(false);
     };
-  }, []);
+  }, [setLoginDetected]);
 
   return (
     <Modal isOpen={isOpen}>
