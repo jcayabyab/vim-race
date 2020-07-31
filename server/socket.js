@@ -24,7 +24,6 @@ module.exports = (challengesClient, matchmaker) => {
         const otherUsersAndChallenges = playerDict.handlePlayerDisconnect(id);
         challengesClient.notifyOnRemoveOtherChallenges(otherUsersAndChallenges);
       }
-      console.log(playerDict.dict);
     });
 
     // data: { id: String }
