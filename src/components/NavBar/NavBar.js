@@ -13,8 +13,8 @@ const NavbarWrapper = styled.div`
 
 const LogoImage = styled.img`
   image-rendering: pixelated;
-  height: ${({isPlayPage}) => 31 * (isPlayPage ? 2 : 3)}px;
-  width: ${({isPlayPage}) => 85 * (isPlayPage ? 2 : 3)}px;
+  height: ${({isPlayPage}) => 31 * (isPlayPage ? 2 : 2)}px;
+  width: ${({isPlayPage}) => 85 * (isPlayPage ? 2 : 2)}px;
   cursor: pointer;
   padding: 10px;
 `;

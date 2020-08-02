@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import Modal from "../../utils/Modal";
 import SolidButton from "../../utils/SolidButton";
 import styled from "styled-components";
