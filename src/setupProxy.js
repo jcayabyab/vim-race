@@ -1,17 +1,18 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const { clientProxyTarget } = require("./config/keys");
 
 module.exports = function (app) {
   app.use(
     "/auth",
     createProxyMiddleware({
-      target: "http://10.0.0.24:4001",
+      target: clientProxyTarget,
       changeOrigin: true,
     })
   );
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://10.0.0.24:4001",
+      target: clientProxyTarget,
       changeOrigin: true,
     })
   );
