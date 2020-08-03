@@ -32,7 +32,7 @@ export default function VimClient({
     ...vimOptions,
   });
 
-  const [vimInitialized, onVimInit] = useVimInit(vim, handleClientInit);
+  const [vimInitialized] = useVimInit(vim, handleClientInit);
 
   const { handleKeystrokeEvent } = useListenerHandler(
     vim,
@@ -60,15 +60,13 @@ export default function VimClient({
   // add init and file export callbacks
   useEffect(() => {
     if (vim) {
-      vim.onVimInit = onVimInit;
       vim.onFileExport = validateSubmission;
     }
-  }, [vim, onVimInit, validateSubmission]);
+  }, [vim, validateSubmission]);
 
   // do unmount logic on terminal unmount - typically
   // setting initialization flags
   useEffect(() => {
-    console.log(handleUnmount)
     if (handleUnmount) {
       return handleUnmount;
     }

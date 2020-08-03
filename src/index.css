@@ -36,3 +36,7 @@ button {
 button:focus {
   outline: none;
 }
+
+a {
+  color: white;
+}

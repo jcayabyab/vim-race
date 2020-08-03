@@ -28,6 +28,7 @@ const useVimTextExtractor = (isUserClient, handleSubmission, user) => {
     [isUserClient, handleSubmission, user]
   );
 
+  // return the function for vim onExport
   return [validateSubmission];
 };
 

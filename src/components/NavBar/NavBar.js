@@ -3,6 +3,7 @@ import styled from "styled-components";
 import logo from "../../assets/vimrace-logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { VimButtonWrapper } from "../utils/VimButton";
 
 const NavbarWrapper = styled.div`
   display: flex;
@@ -13,8 +14,8 @@ const NavbarWrapper = styled.div`
 
 const LogoImage = styled.img`
   image-rendering: pixelated;
-  height: ${({isPlayPage}) => 31 * (isPlayPage ? 2 : 2)}px;
-  width: ${({isPlayPage}) => 85 * (isPlayPage ? 2 : 2)}px;
+  height: ${({ isPlayPage }) => 31 * (isPlayPage ? 2 : 2)}px;
+  width: ${({ isPlayPage }) => 85 * (isPlayPage ? 2 : 2)}px;
   cursor: pointer;
   padding: 10px;
 `;
@@ -35,23 +36,6 @@ const NavbarHeaderChild = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  font-family: "Share Tech Mono", Consolas, monospace;
-  font-size: 24pt;
-
-  & > * {
-    padding: 20px;
-    cursor: pointer;
-    color: white;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-    display: block;
-  }
-`;
-
 export default function NavBar() {
   const user = useSelector((state) => state.user);
   const location = useLocation();
@@ -64,22 +48,30 @@ export default function NavBar() {
         return <div>...</div>;
       case null:
         return (
-          <ButtonWrapper>
-            <a href="/auth/google">:login</a>
-          </ButtonWrapper>
+          <React.Fragment>
+            <VimButtonWrapper>
+              <Link to="/about">:about</Link>
+            </VimButtonWrapper>
+            <VimButtonWrapper>
+              <a href="/auth/google">:login</a>
+            </VimButtonWrapper>
+          </React.Fragment>
         );
       default:
         return (
           <React.Fragment>
-            <ButtonWrapper>
+            <VimButtonWrapper>
               <Link to="/play">:play</Link>
-            </ButtonWrapper>
-            <ButtonWrapper>
+            </VimButtonWrapper>
+            <VimButtonWrapper>
+              <Link to="/about">:about</Link>
+            </VimButtonWrapper>
+            <VimButtonWrapper>
               <Link to="/settings">:settings</Link>
-            </ButtonWrapper>
-            <ButtonWrapper>
+            </VimButtonWrapper>
+            <VimButtonWrapper>
               <a href="/api/logout">:logout</a>
-            </ButtonWrapper>
+            </VimButtonWrapper>
           </React.Fragment>
         );
     }
