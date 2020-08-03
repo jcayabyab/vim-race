@@ -22,7 +22,7 @@ export default function AboutPage() {
           <Link to="/vimtutor">:vimtutor</Link>
         </VimButtonWrapper>
         <VimButtonWrapper>
-          <a href="#">:github</a>
+          <a href="https://github.com/JCayabyab/vim-race">:github</a>
         </VimButtonWrapper>
         <VimButtonWrapper>
           <Link to="/about/changelog">:changelog</Link>
