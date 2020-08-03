@@ -1,4 +1,4 @@
-# VimRace
+# VimRace GitHub Repository
 
 This project was started in May 2020. You may try out the live version [here](http://www.vimrace.com).
 
