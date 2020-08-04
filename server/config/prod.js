@@ -6,4 +6,5 @@ module.exports = {
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
   cookieKey: process.env.COOKIE_KEY,
   callbackURL: process.env.CALLBACK_URL,
+  dbSchemaName: process.env.DB_SCHEMA_NAME,
 };

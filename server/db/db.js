@@ -3,7 +3,7 @@ const Sequelize = require("sequelize");
 
 // init database connection
 const sequelize = new Sequelize(keys.postgresURI, {
-  schema: "vimrace-dev",
+  schema: keys.dbSchemaName,
   logging: false,
 });
 
