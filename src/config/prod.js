@@ -1,5 +1,5 @@
 module.exports = {
   // unneeded in production environment
   clientProxyTarget: null,
-  socketIoEndpoint: window.location,
+  socketIoEndpoint: window.location.hostname,
 };
