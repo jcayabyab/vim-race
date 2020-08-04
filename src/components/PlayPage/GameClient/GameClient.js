@@ -47,9 +47,9 @@ export default function GameClient() {
       <LeftClient></LeftClient>
       <RightClient></RightClient>
       <LoggedInModal isOpen={loginDetected}></LoggedInModal>
-      <ServerDisconnectedModal
+      {/* <ServerDisconnectedModal
         isOpen={serverDisconnected}
-      ></ServerDisconnectedModal>
+      ></ServerDisconnectedModal> */}
     </Wrapper>
   );
 }
