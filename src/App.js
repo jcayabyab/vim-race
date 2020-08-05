@@ -18,10 +18,15 @@ const App = (props) => {
     dispatch(await fetchUser());
   }, [dispatch]);
 
-  // TODO: check if user is already logged in using a cookie or ls or something
   useEffect(() => {
     fetchUserOnLoad();
   }, [fetchUserOnLoad]);
+
+  if (window.SharedArrayBuffer) {
+    console.log("yes");
+  } else {
+    console.log("no");
+  }
 
   return (
     <div>

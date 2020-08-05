@@ -3,7 +3,7 @@ import { PLAYER_STATES } from "./states";
 import VimClient from "./VimClient/VimClient";
 import GoalDisplay from "./GoalDisplay";
 import styled from "styled-components";
-import { Vim } from "react-vim-wasm";
+import Vim from "../../utils/Vim";
 import vimOptions from "./VimClient/vimOptions";
 import PlayerStateIcon from "./PlayerStateIcon";
 import { useSelector } from "react-redux";

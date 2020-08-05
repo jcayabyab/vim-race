@@ -43,6 +43,7 @@ const canvasStyle = {
   height: "400px",
   border: "1px solid black",
   borderRadius: "2px",
+  backgroundColor: "#212121"
 };
 
 const inputStyle = {

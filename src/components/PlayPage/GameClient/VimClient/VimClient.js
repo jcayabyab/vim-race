@@ -4,12 +4,12 @@ import useVimTextExtractor from "./hooks/useVimTextExtractor";
 import useVimInit from "./hooks/useVimInit";
 import useListenerHandler from "./hooks/useListenerHandler";
 import useVimOptions from "./hooks/useVimOptions";
-import { useVim } from "react-vim-wasm";
+import { useVim, checkVimWasmIsAvailable } from "react-vim-wasm";
 import { GAME_STATES } from "../states";
 import opts from "./vimOptions";
 const { canvasStyle, inputStyle } = opts;
 
-export default function VimClient({
+function VimClient({
   user,
   isEditable,
   startText,
@@ -79,3 +79,12 @@ export default function VimClient({
     </React.Fragment>
   );
 }
+
+// wrap for VimWasm compatilibility check
+export default (props) => {
+  return !checkVimWasmIsAvailable() ? (
+    <VimClient {...props}></VimClient>
+  ) : (
+    <canvas style={canvasStyle}></canvas>
+  );
+};
