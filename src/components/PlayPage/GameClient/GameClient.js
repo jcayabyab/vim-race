@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { GameClientContext } from "./contexts/GameClientContext";
 import { Prompt } from "react-router-dom";
 import LoggedInModal from "./LoggedInModal";
+import ServerDisconnectedModal from "./ServerDisconnectedModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,9 +47,9 @@ export default function GameClient() {
       <LeftClient></LeftClient>
       <RightClient></RightClient>
       <LoggedInModal isOpen={loginDetected}></LoggedInModal>
-      {/* <ServerDisconnectedModal
+      <ServerDisconnectedModal
         isOpen={serverDisconnected}
-      ></ServerDisconnectedModal> */}
+      ></ServerDisconnectedModal>
     </Wrapper>
   );
 }
