@@ -13,7 +13,12 @@ const NavbarWrapper = styled.div`
 `;
 
 const LogoImage = styled.img`
-  image-rendering: pixelated;
+  @supports (image-rendering: pixelated) {
+    image-rendering: pixelated;
+  }
+  @supports not (image-rendering: pixelated) {
+    image-rendering: crisp-edges;
+  }
   height: ${({ isPlayPage }) => 31 * (isPlayPage ? 2 : 2)}px;
   width: ${({ isPlayPage }) => 85 * (isPlayPage ? 2 : 2)}px;
   cursor: pointer;

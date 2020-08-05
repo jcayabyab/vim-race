@@ -10,7 +10,12 @@ import acceptRect from "../../../assets/acceptrect.png";
 import wrongRect from "../../../assets/wrongrect.png";
 
 const LogoWrapper = styled.img`
-  image-rendering: pixelated;
+  @supports (image-rendering: pixelated) {
+    image-rendering: pixelated;
+  }
+  @supports not (image-rendering: pixelated) {
+    image-rendering: crisp-edges;
+  }
   height: ${31}px;
   width: ${31}px;
 `;

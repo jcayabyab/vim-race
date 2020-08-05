@@ -22,7 +22,12 @@ const UserRowWrapper = styled(RowWrapper)`
 `;
 
 const Trophy = styled.img`
-  image-rendering: pixelated;
+  @supports (image-rendering: pixelated) {
+    image-rendering: pixelated;
+  }
+  @supports not (image-rendering: pixelated) {
+    image-rendering: crisp-edges;
+  }
   width: ${17 * 2}px;
   height: ${20 * 2}px;
   margin-right: 7px;
