@@ -22,7 +22,13 @@ export default function AboutPage() {
           <Link to="/vimtutor">:vimtutor</Link>
         </VimButtonWrapper>
         <VimButtonWrapper>
-          <a href="https://github.com/JCayabyab/vim-race">:github</a>
+          <a
+            href="https://github.com/JCayabyab/vim-race"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            :github
+          </a>
         </VimButtonWrapper>
         <VimButtonWrapper>
           <Link to="/about/changelog">:changelog</Link>
@@ -48,13 +54,26 @@ export default function AboutPage() {
       <p>
         I built this site over the course of the COVID-19 pandemic! It borrows
         inspiration heavily from the{" "}
-        <a href="https://www.typeracer.com">typeracer.com</a> website. I hope
-        that this app will be a useful timesink for those of you still stuck at
-        home.
+        <a
+          href="https://www.typeracer.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          typeracer.com
+        </a>{" "}
+        website. I hope that this app will be a useful timesink for those of you
+        still stuck at home.
       </p>
       <p>
         You can learn more about me at my website{" "}
-        <a href="https://www.jcayabyab.com">here</a>.
+        <a
+          href="https://www.jcayabyab.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>
+        .
       </p>
     </Wrapper>
   );
