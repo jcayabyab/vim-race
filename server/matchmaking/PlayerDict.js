@@ -23,6 +23,11 @@ class PlayerDict {
     return otherUsersAndChallenges;
   }
 
+  // used for cancelled all challenges when user's challenge is accepted
+  getSentChallenges(id) {
+    return Object.values(this.dict[id].sentChallenges);
+  }
+
   removeUserChallenges(id) {
     this.removeUserSentChallenges(id);
     this.removeUserReceivedChallenges(id);
