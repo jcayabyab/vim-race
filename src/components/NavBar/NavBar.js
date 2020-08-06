@@ -1,15 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import logo from "../../assets/vimrace-logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { VimButtonWrapper } from "../utils/VimButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const NavbarWrapper = styled.div`
   display: flex;
   background-color: #212121;
   align-items: center;
   margin-bottom: 15px;
+`;
+
+const CloseWarningButton = styled.button`
+  border: none;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  font-size: 14pt;
+`;
+
+const Warning = styled.div`
+  display: flex;
+  background-color: #c21a1a;
+  padding: 5px 5px;
+  align-items: center;
+`;
+
+const WarningChild = styled.div`
+  display: flex;
+  justify-content: center;
+
+  &:first-child {
+    margin-right: auto;
+    justify-content: flex-start;
+  }
+
+  &:last-child {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
 `;
 
 const LogoImage = styled.img`
@@ -43,9 +75,19 @@ const NavbarHeaderChild = styled.div`
 
 export default function NavBar() {
   const user = useSelector((state) => state.user);
+  const [showUsernameWarning, setShowUsernameWarning] = useState(false);
   const location = useLocation();
 
   const isPlayPage = location.pathname.slice(0, "/play".length) === "/play";
+
+  useEffect(() => {
+    if (user && !user.username) {
+      setShowUsernameWarning(true);
+    }
+    if (isPlayPage) {
+      setShowUsernameWarning(true);
+    }
+  }, [user, setShowUsernameWarning, isPlayPage]);
 
   const renderNavbarButtons = () => {
     switch (user) {
@@ -83,12 +125,28 @@ export default function NavBar() {
   };
 
   return (
-    <NavbarWrapper>
-      <NavbarHeaderChild></NavbarHeaderChild>
-      <NavbarHeaderChild>
-        <LogoImage isPlayPage={isPlayPage} src={logo}></LogoImage>
-      </NavbarHeaderChild>
-      <NavbarHeaderChild>{renderNavbarButtons()}</NavbarHeaderChild>
-    </NavbarWrapper>
+    <React.Fragment>
+      {showUsernameWarning && (
+        <Warning>
+          <WarningChild></WarningChild>
+          <WarningChild>
+            New accounts must set a username. The Play page will be inaccessible
+            until a username is set.
+          </WarningChild>
+          <WarningChild>
+            <CloseWarningButton onClick={() => setShowUsernameWarning(false)}>
+              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
+            </CloseWarningButton>
+          </WarningChild>
+        </Warning>
+      )}
+      <NavbarWrapper>
+        <NavbarHeaderChild></NavbarHeaderChild>
+        <NavbarHeaderChild>
+          <LogoImage isPlayPage={isPlayPage} src={logo}></LogoImage>
+        </NavbarHeaderChild>
+        <NavbarHeaderChild>{renderNavbarButtons()}</NavbarHeaderChild>
+      </NavbarWrapper>
+    </React.Fragment>
   );
 }
