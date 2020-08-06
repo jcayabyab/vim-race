@@ -22,6 +22,11 @@ router.put("/api/user/profile", requireLogin, async (req, res) => {
   // filter non alphanumeric in username
   user.username = user.username.replace(/\W/g, "");
 
+  // check if too short
+  if (user.username.length < 3) {
+    return res.status(403).send("Username must be at least 3 characters long");
+  }
+
   try {
     // only update in database if different fron previous value
     if (user.username !== req.user.username) {
