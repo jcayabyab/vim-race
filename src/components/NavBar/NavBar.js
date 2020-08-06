@@ -50,8 +50,8 @@ export default function NavBar() {
   const isPlayPage = location.pathname.slice(0, "/play".length) === "/play";
 
   useEffect(() => {
-    if (user && !user.username) {
-      setShowUsernameWarning(true);
+    if (user) {
+      setShowUsernameWarning(!user.username);
     }
     if (isPlayPage) {
       setShowUsernameWarning(true);
