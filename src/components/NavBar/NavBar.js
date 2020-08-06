@@ -4,44 +4,13 @@ import logo from "../../assets/vimrace-logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { VimButtonWrapper } from "../utils/VimButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import Warning from "./Warning";
 
 const NavbarWrapper = styled.div`
   display: flex;
   background-color: #212121;
   align-items: center;
   margin-bottom: 15px;
-`;
-
-const CloseWarningButton = styled.button`
-  border: none;
-  background-color: transparent;
-  color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  font-size: 14pt;
-`;
-
-const Warning = styled.div`
-  display: flex;
-  background-color: #c21a1a;
-  padding: 5px 5px;
-  align-items: center;
-`;
-
-const WarningChild = styled.div`
-  display: flex;
-  justify-content: center;
-
-  &:first-child {
-    margin-right: auto;
-    justify-content: flex-start;
-  }
-
-  &:last-child {
-    margin-left: auto;
-    justify-content: flex-end;
-  }
 `;
 
 const LogoImage = styled.img`
@@ -126,20 +95,13 @@ export default function NavBar() {
 
   return (
     <React.Fragment>
-      {showUsernameWarning && (
-        <Warning>
-          <WarningChild></WarningChild>
-          <WarningChild>
-            New accounts must set a username. The Play page will be inaccessible
-            until a username is set.
-          </WarningChild>
-          <WarningChild>
-            <CloseWarningButton onClick={() => setShowUsernameWarning(false)}>
-              <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
-            </CloseWarningButton>
-          </WarningChild>
-        </Warning>
-      )}
+      <Warning
+        showWarning={showUsernameWarning}
+        onCloseClick={() => setShowUsernameWarning(false)}
+      >
+        New accounts must set a username. The Play page will be inaccessible
+        until a username is set.
+      </Warning>
       <NavbarWrapper>
         <NavbarHeaderChild></NavbarHeaderChild>
         <NavbarHeaderChild>
