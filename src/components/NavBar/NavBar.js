@@ -20,8 +20,8 @@ const LogoImage = styled.img`
   @supports not (image-rendering: pixelated) {
     image-rendering: crisp-edges;
   }
-  height: ${({ isPlayPage }) => 31 * (isPlayPage ? 2 : 2)}px;
-  width: ${({ isPlayPage }) => 85 * (isPlayPage ? 2 : 2)}px;
+  height: ${31 * 2}px;
+  width: ${85 * 2}px;
   cursor: pointer;
   padding: 10px;
 `;
@@ -47,16 +47,18 @@ export default function NavBar() {
   const [showUsernameWarning, setShowUsernameWarning] = useState(false);
   const location = useLocation();
 
-  const isPlayPage = location.pathname.slice(0, "/play".length) === "/play";
-
   useEffect(() => {
     if (user) {
       setShowUsernameWarning(!user.username);
+      // show warning again when user tries to access play page
+
+      const isPlayPage = location.pathname.slice(0, "/play".length) === "/play";
+
+      if (isPlayPage && !user.username) {
+        setShowUsernameWarning(true);
+      }
     }
-    if (isPlayPage) {
-      setShowUsernameWarning(true);
-    }
-  }, [user, setShowUsernameWarning, isPlayPage]);
+  }, [user, setShowUsernameWarning, location]);
 
   const renderNavbarButtons = () => {
     switch (user) {
@@ -105,7 +107,7 @@ export default function NavBar() {
       <NavbarWrapper>
         <NavbarHeaderChild></NavbarHeaderChild>
         <NavbarHeaderChild>
-          <LogoImage isPlayPage={isPlayPage} src={logo}></LogoImage>
+          <LogoImage src={logo}></LogoImage>
         </NavbarHeaderChild>
         <NavbarHeaderChild>{renderNavbarButtons()}</NavbarHeaderChild>
       </NavbarWrapper>
