@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback } from "react";
-import Navbar from "./components/NavBar/NavBar";
-import { fetchUser } from "./actions/userActions";
+import Navbar from "../NavBar/NavBar";
+import { fetchUser } from "../../actions/userActions";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-// import Modal from "./components/Modal/Modal";
+import BrowserIncompatibleModal from "./BrowserIncompatibleModal";
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,16 +22,11 @@ const App = (props) => {
     fetchUserOnLoad();
   }, [fetchUserOnLoad]);
 
-  if (window.SharedArrayBuffer) {
-    console.log("yes");
-  } else {
-    console.log("no");
-  }
-
   return (
     <div>
       <Navbar></Navbar>
       <Wrapper>{props.children}</Wrapper>
+      <BrowserIncompatibleModal></BrowserIncompatibleModal>
     </div>
   );
 };
