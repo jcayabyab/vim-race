@@ -33,7 +33,7 @@ export const GameClientStateProvider = (props) => {
     prevGameFinished, setPrevGameFinished,
     playerStates, setNewPlayers, setPlayerState,
     loginDetected, setLoginDetected,
-    serverDisconnected, setServerDisconnected
+    serverDisconnected, setServerDisconnected,
   };
 
   return (

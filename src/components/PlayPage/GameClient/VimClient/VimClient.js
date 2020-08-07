@@ -46,8 +46,8 @@ function VimClient({
   useVimTextInjector(
     vim,
     startText,
-    gameState === GAME_STATES.PLAYING,
-    handleKeystrokeEvent
+    handleKeystrokeEvent,
+    gameState
   );
 
   // focus on terminal upon game start

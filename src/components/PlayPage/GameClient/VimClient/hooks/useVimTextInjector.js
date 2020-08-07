@@ -1,4 +1,6 @@
-import { useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
+import setTimeoutPromise from "../../../../utils/setTimeoutPromise";
+import { GAME_STATES } from "../../states";
 
 /**
  * Handles text injection when game starts
@@ -10,8 +12,8 @@ import { useCallback, useEffect } from "react";
 const useVimTextInjector = (
   vim,
   startText,
-  gameStarted,
-  handleKeystrokeEvent
+  handleKeystrokeEvent,
+  gameState
 ) => {
   const writeToTerminal = useCallback(
     async (str) => {
@@ -44,11 +46,30 @@ const useVimTextInjector = (
     [vim]
   );
 
+  const [gameNo, setGameNo] = useState(0);
+
   useEffect(() => {
-    if (gameStarted) {
-      // load into vim client on startup
-      // set timeout - screen needs to appear before writing to buffer
-      setTimeout(() => {
+    if (setGameNo) {
+      if (gameState === GAME_STATES.IDLE) {
+        setGameNo((prevNo) => prevNo + 1);
+      }
+    }
+  }, [gameState, setGameNo]);
+
+  useEffect(() => {
+    const loadProblemOnStartup = async () => {
+      if (gameState === GAME_STATES.PLAYING) {
+        console.log(gameNo);
+        // load into vim client on startup
+        // if game was already played this session, discard buffer
+        // avoids multi-window bug
+        if (gameNo > 0) {
+          await setTimeoutPromise(100);
+          // on reset, send discard buffer command
+          vim.cmdline("e!");
+        }
+        // set timeout - screen needs to appear before writing to buffer
+        await setTimeoutPromise(100);
         writeToTerminal(startText);
         // send Esc to the terminal to reset cursor
         const escEvent = {
@@ -60,12 +81,21 @@ const useVimTextInjector = (
           metaKey: false,
           shiftKey: false,
         };
-        setTimeout(() => {
-          handleKeystrokeEvent(escEvent);
-        }, [100]);
-      }, 100);
-    }
-  }, [gameStarted, startText, writeToTerminal, handleKeystrokeEvent]);
+        // wait another 100 ms before resetting cursor
+        await setTimeoutPromise(100);
+        handleKeystrokeEvent(escEvent);
+      }
+    };
+
+    loadProblemOnStartup();
+  }, [
+    vim,
+    gameState,
+    gameNo,
+    startText,
+    writeToTerminal,
+    handleKeystrokeEvent,
+  ]);
 };
 
 export default useVimTextInjector;
