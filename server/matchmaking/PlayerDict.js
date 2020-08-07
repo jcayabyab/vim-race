@@ -109,6 +109,8 @@ class PlayerDict {
   // called on connection
   // challenge objects: { challengeUuid: challenge }
   // if player is already online, modify flag and update socket
+  // delayed so that previously logged in player can disconnect without
+  // removing the entry from PlayerDict for the new connection
   addPlayer(id, socket) {
     if (this.playerOnline(id)) {
       this.dict[id].otherLogin = true;

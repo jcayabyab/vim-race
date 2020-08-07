@@ -8,6 +8,7 @@ module.exports = (challengesClient, matchmaker) => {
     socket.on("handshake", (data) => {
       console.log("client connected: ", data.id);
       id = data.id;
+      // check to see if player is online - if so, kick
       if (playerDict.playerOnline(id)) {
         const otherSocket = playerDict.getSocket(id);
         playerDict.addPlayer(id, socket);
