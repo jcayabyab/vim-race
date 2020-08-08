@@ -7,6 +7,7 @@ import useVimOptions from "./hooks/useVimOptions";
 import { useVim, checkVimWasmIsAvailable } from "react-vim-wasm";
 import { GAME_STATES } from "../states";
 import opts from "./vimOptions";
+import VimPlaceholder from "../../../utils/VimPlaceholder";
 const { canvasStyle, inputStyle } = opts;
 
 function VimClient({
@@ -43,12 +44,7 @@ function VimClient({
     handleKeystrokeReceived,
     handleVimKeydown
   );
-  useVimTextInjector(
-    vim,
-    startText,
-    handleKeystrokeEvent,
-    gameState
-  );
+  useVimTextInjector(vim, startText, handleKeystrokeEvent, gameState);
 
   // focus on terminal upon game start
   useEffect(() => {
@@ -85,6 +81,6 @@ export default (props) => {
   return !checkVimWasmIsAvailable() ? (
     <VimClient {...props}></VimClient>
   ) : (
-    <canvas style={canvasStyle}></canvas>
+    <VimPlaceholder></VimPlaceholder>
   );
 };

@@ -7,12 +7,13 @@ const GoalBox = styled.div`
   background-color: #212121;
   border: 1px solid black;
   border-radius: 3px;
-  font-family: "Lucida Console", "Consolas", monospace;
+  font-family: "Consolas", monospace;
   white-space: pre-wrap;
   font-size: 9pt;
   height: 300px;
   width: 600px;
   padding: 3px;
+  user-select: none;
 `;
 
 const GoalHeader = styled.div`
