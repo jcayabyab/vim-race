@@ -107,7 +107,9 @@ export default function NavBar() {
       <NavbarWrapper>
         <NavbarHeaderChild></NavbarHeaderChild>
         <NavbarHeaderChild>
-          <LogoImage src={logo}></LogoImage>
+          <Link to="/">
+            <LogoImage src={logo}></LogoImage>
+          </Link>
         </NavbarHeaderChild>
         <NavbarHeaderChild>{renderNavbarButtons()}</NavbarHeaderChild>
       </NavbarWrapper>
