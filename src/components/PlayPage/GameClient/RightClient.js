@@ -108,7 +108,7 @@ export default function RightClient() {
                   style={{
                     borderBottom: "none",
                     borderBottomLeftRadius: "0px",
-                    borderButtomRightRadius: "0px",
+                    borderBottomRightRadius: "0px",
                   }}
                 ></ChallengesScreen>
               ) : (
