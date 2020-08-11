@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^5.6.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-regular-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
@@ -28,14 +29,14 @@
     "styled-components": "^5.1.1"
   },
   "scripts": {
-    "start": "node server/index.js",
+    "start": "craco start",
     "server": "nodemon server/index.js",
-    "dev": "concurrently \"react-scripts start\" \"npm run server\"",
+    "dev": "concurrently \"npm start\" \"npm run server\"",
     "build-sw": "node ./src/sw-build.js",
     "clean-cra-sw": "rm -f build/precache-manifest.*.js && rm -f build/service-worker.js",
-    "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
+    "build": "craco build && npm run build-sw && npm run clean-cra-sw",
     "heroku-postbuild": "npm run install && npm run build && npm install --prefix server",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(!?ui-core)/\" --env=jsdom",
+    "test": "craco test --transformIgnorePatterns \"node_modules/(!?ui-core)/\" --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

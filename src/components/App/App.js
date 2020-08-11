@@ -12,6 +12,8 @@ const Wrapper = styled.div`
 `;
 
 const App = (props) => {
+  console.log(window.crossOriginIsolated);
+
   const dispatch = useDispatch();
 
   const fetchUserOnLoad = useCallback(async () => {
