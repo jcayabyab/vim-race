@@ -26,7 +26,7 @@ const Wrapper = styled.div`
   border-top: none;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
-  width: 600px;
+  width: 598px;
 `;
 
 const Badge = styled.span`
