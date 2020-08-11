@@ -10,7 +10,6 @@ const useVimInit = (vim, handleClientInit, removeKeyListener = true) => {
 
   const onVimInit = useCallback(() => {
     if (removeKeyListener) {
-      console.log("remove");
       vim.screen.input.elem.removeEventListener(
         "keydown",
         vim.screen.input.onKeydown,

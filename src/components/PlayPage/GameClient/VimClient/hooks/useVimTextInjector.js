@@ -50,7 +50,7 @@ const useVimTextInjector = (
 
   useEffect(() => {
     if (setGameNo) {
-      if (gameState === GAME_STATES.IDLE) {
+      if (gameState === GAME_STATES.LOADING) {
         setGameNo((prevNo) => prevNo + 1);
       }
     }
@@ -63,7 +63,7 @@ const useVimTextInjector = (
         // load into vim client on startup
         // if game was already played this session, discard buffer
         // avoids multi-window bug
-        if (gameNo > 0) {
+        if (gameNo > 1) {
           await setTimeoutPromise(100);
           // on reset, send discard buffer command
           vim.cmdline("e!");
