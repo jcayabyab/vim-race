@@ -20,7 +20,7 @@
     "react-perfect-scrollbar": "^1.5.8",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.3.1",
+    "react-scripts": "^3.4.2",
     "react-vim-wasm": "^0.1.4",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
@@ -34,6 +34,7 @@
     "build-sw": "node ./src/sw-build.js",
     "clean-cra-sw": "rm -f build/precache-manifest.*.js && rm -f build/service-worker.js",
     "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
+    "postbuild": "react-snap",
     "heroku-postbuild": "npm run install && npm run build && npm install --prefix server",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(!?ui-core)/\" --env=jsdom",
     "eject": "react-scripts eject"
@@ -59,6 +60,7 @@
     "concurrently": "^5.2.0",
     "http-proxy-middleware": "^1.0.5",
     "nodemon": "^2.0.4",
+    "react-snap": "^1.23.0",
     "redux-freeze": "^0.1.7",
     "redux-logger": "^3.0.6"
   }
