@@ -33,20 +33,16 @@ const WarningChild = styled.div`
   }
 `;
 
-export default function Warning({ showWarning = true, onCloseClick, children }) {
-  return showWarning ? (
+export default function Warning({ onCloseClick, children }) {
+  return (
     <WarningWrapper>
       <WarningChild></WarningChild>
-      <WarningChild>
-        {children}
-      </WarningChild>
+      <WarningChild>{children}</WarningChild>
       <WarningChild>
         <CloseWarningButton onClick={onCloseClick}>
           <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
         </CloseWarningButton>
       </WarningChild>
     </WarningWrapper>
-  ) : (
-    <div></div>
   );
 }

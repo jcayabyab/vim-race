@@ -97,13 +97,12 @@ export default function NavBar() {
 
   return (
     <React.Fragment>
-      <Warning
-        showWarning={showUsernameWarning}
-        onCloseClick={() => setShowUsernameWarning(false)}
-      >
-        New accounts must set a username. The Play page will be inaccessible
-        until a username is set.
-      </Warning>
+      {showWarning && (
+        <Warning onCloseClick={() => setShowUsernameWarning(false)}>
+          New accounts must set a username. The Play page will be inaccessible
+          until a username is set.
+        </Warning>
+      )}
       <NavbarWrapper>
         <NavbarHeaderChild></NavbarHeaderChild>
         <NavbarHeaderChild>
