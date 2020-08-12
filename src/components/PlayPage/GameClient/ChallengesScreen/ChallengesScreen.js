@@ -43,8 +43,6 @@ export default function ChallengesScreen({ style }) {
 
   const { receivedChallenges, sentChallenges } = useContext(ChallengesContext);
 
-  console.log({ receivedChallenges, sentChallenges });
-
   const {
     handleChallengeAccept,
     handleChallengeSend,

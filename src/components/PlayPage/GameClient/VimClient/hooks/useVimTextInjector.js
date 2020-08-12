@@ -59,7 +59,6 @@ const useVimTextInjector = (
   useEffect(() => {
     const loadProblemOnStartup = async () => {
       if (gameState === GAME_STATES.PLAYING) {
-        console.log(gameNo);
         // load into vim client on startup
         // if game was already played this session, discard buffer
         // avoids multi-window bug

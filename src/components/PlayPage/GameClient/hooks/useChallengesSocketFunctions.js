@@ -15,7 +15,6 @@ const useChallengesSocketFunctions = (socket, user) => {
   const handleRemoveChallenge = useCallback(() => {
     socket.on("remove challenge", (data) => {
       const { challenge } = data;
-      console.log(challenge)
       if (user.id === challenge.senderId) {
         removeSentChallenge(challenge);
       }

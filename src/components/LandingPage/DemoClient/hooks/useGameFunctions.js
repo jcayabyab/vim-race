@@ -37,7 +37,6 @@ const useGameFunctions = (
   const handleVimKeydown = useCallback(
     handleTerminalKeyDown
       ? (e) => {
-          console.log(handleTerminalKeyDown);
           if (handleTerminalKeyDown) {
             handleTerminalKeyDown(e);
           }
