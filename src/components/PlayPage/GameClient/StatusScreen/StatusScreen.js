@@ -8,13 +8,15 @@ import PlayerInfo from "./PlayerInfo";
 import { useSelector } from "react-redux";
 import { GameClientContext } from "../contexts/GameClientContext";
 import { GameClientSocketFunctionsContext } from "../contexts/GameClientSocketFunctionsContext";
+import Row from "../../../utils/Row";
+import RematchButton from "./RematchButton";
 
 const Wrapper = styled.div`
   background-color: #212121;
   border: solid 1px black;
   border-radius: 3px;
   ${({ gameState }) =>
-    gameState === GAME_STATES.IDLE
+    gameState === GAME_STATES.IDLE || gameState === GAME_STATES.SEARCHING
       ? `border-bottom: none;
      border-bottom-left-radius: 0px;
      border-bottom-right-radius: 0px;
@@ -71,8 +73,6 @@ export default function StatusScreen() {
     );
   };
 
-  console.log(gameState);
-
   return (
     <Wrapper gameState={gameState}>
       <div>
@@ -92,11 +92,15 @@ export default function StatusScreen() {
       </div>
       {(gameState === GAME_STATES.IDLE ||
         gameState === GAME_STATES.SEARCHING) && (
-        <SearchButton
-          onSearch={sendSearchReqToSocket}
-          onCancel={cancelMatchmaking}
-          gameState={gameState}
-        ></SearchButton>
+        <Row>
+          <RematchButton></RematchButton>
+          <SearchButton
+            style={{ marginLeft: "5px" }}
+            onSearch={sendSearchReqToSocket}
+            onCancel={cancelMatchmaking}
+            gameState={gameState}
+          ></SearchButton>
+        </Row>
       )}
       {gameState === GAME_STATES.PLAYING && (
         <SolidButton onClick={resignGame}>

@@ -1,9 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import useChallengesSocketFunctions from "../hooks/useChallengesSocketFunctions";
+import { ChallengesSocketFunctionsContext } from "../contexts/ChallengesSocketFunctionsContext";
 import { ChallengesContext } from "../contexts/ChallengesContext";
-import { SocketContext } from "../contexts/SocketContext";
 import SolidButton from "../../../utils/SolidButton";
 import ChallengeModal from "./ChallengeModal";
 import ChallengeList from "./ChallengeList";
@@ -41,8 +39,6 @@ const Challenges = styled.div`
 `;
 
 export default function ChallengesScreen({ style }) {
-  const user = useSelector((state) => state.user);
-  const socket = useContext(SocketContext);
   const [showModal, setShowModal] = useState(false);
 
   const { receivedChallenges, sentChallenges } = useContext(ChallengesContext);
@@ -54,7 +50,7 @@ export default function ChallengesScreen({ style }) {
     handleChallengeSend,
     handleChallengeDecline,
     handleChallengeCancel,
-  } = useChallengesSocketFunctions(socket, user);
+  } = useContext(ChallengesSocketFunctionsContext);
 
   const openChallengesModal = () => setShowModal(true);
   const closeChallengesModal = () => setShowModal(false);

@@ -24,14 +24,14 @@ const ButtonChild = styled.span`
   }
 `;
 
-export default function SearchButton({ gameState, onSearch, onCancel }) {
+export default function SearchButton({ gameState, onSearch, onCancel, style }) {
   const handleClick = useCallback(
     () => (gameState === GAME_STATES.IDLE ? onSearch() : onCancel()),
     [gameState, onSearch, onCancel]
   );
 
   return (
-    <SolidButton onClick={handleClick}>
+    <SolidButton onClick={handleClick} style={style}>
       <ButtonChild>
         {gameState === GAME_STATES.SEARCHING && (
           <FontAwesomeIcon
@@ -41,9 +41,7 @@ export default function SearchButton({ gameState, onSearch, onCancel }) {
         )}
       </ButtonChild>
       <ButtonChild>
-        {gameState === GAME_STATES.IDLE
-          ? "Search for game"
-          : "Waiting for opponent..."}
+        {gameState === GAME_STATES.IDLE ? "Search for game" : "Searching..."}
       </ButtonChild>
       <ButtonChild>
         {gameState === GAME_STATES.SEARCHING && (

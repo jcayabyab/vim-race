@@ -7,6 +7,7 @@ import { GameClientSocketFunctionsProvider } from "./GameClient/contexts/GameCli
 import { ChallengesProvider } from "./GameClient/contexts/ChallengesContext";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { ChallengesSocketFunctionsProvider } from "./GameClient/contexts/ChallengesSocketFunctionsContext";
 
 const ClientComponent = styled.div`
   max-width: 1400px;
@@ -34,7 +35,9 @@ export default function Play() {
         <GameClientStateProvider>
           <ChallengesProvider>
             <GameClientSocketFunctionsProvider>
-              <GameClient></GameClient>
+              <ChallengesSocketFunctionsProvider>
+                <GameClient></GameClient>
+              </ChallengesSocketFunctionsProvider>
             </GameClientSocketFunctionsProvider>
           </ChallengesProvider>
         </GameClientStateProvider>
