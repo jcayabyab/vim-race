@@ -1,5 +1,5 @@
 import React from "react";
-import { hydrate, render } from "react-dom";
+import ReactDOM from "react-dom";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -15,12 +15,7 @@ const Index = () => (
   </Provider>
 );
 
-const rootElement = document.getElementById("root");
-if (rootElement.hasChildNodes()) {
-  hydrate(<Index></Index>, rootElement);
-} else {
-  render(<Index></Index>, rootElement);
-}
+ReactDOM.render(<Index></Index>, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
