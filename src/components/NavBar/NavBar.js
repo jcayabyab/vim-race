@@ -97,7 +97,7 @@ export default function NavBar() {
 
   return (
     <React.Fragment>
-      {showWarning && (
+      {showUsernameWarning && (
         <Warning onCloseClick={() => setShowUsernameWarning(false)}>
           New accounts must set a username. The Play page will be inaccessible
           until a username is set.
