@@ -85,11 +85,13 @@ class ChallengesClient {
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
 
-    this.debug(
-      `${challenge.receiverId} declined challenge from ${challenge.senderId}`
-    );
+    if (challenge) {
+      this.debug(
+        `${challenge.receiverId} declined challenge from ${challenge.senderId}`
+      );
 
-    this.removeChallenge(challenge);
+      this.removeChallenge(challenge);
+    }
   }
 
   onCancel(data) {
@@ -97,11 +99,14 @@ class ChallengesClient {
     const { id, challengeUuid } = data;
     const challenge = playerDict.getChallengeBySenderUuid(id, challengeUuid);
 
-    this.debug(
-      `${challenge.senderId} cancelled challenge to ${challenge.receiverId}`
-    );
+    // handle race condition where onAccept happens at same time as onCancel or onDecline
+    if (challenge) {
+      this.debug(
+        `${challenge.senderId} cancelled challenge to ${challenge.receiverId}`
+      );
 
-    this.removeChallenge(challenge);
+      this.removeChallenge(challenge);
+    }
   }
 
   async onAccept(data) {
@@ -110,28 +115,30 @@ class ChallengesClient {
 
     const challenge = playerDict.getChallengeByReceiverUuid(id, challengeUuid);
 
-    this.debug(
-      `${challenge.receiverId} accepted challenge from ${challenge.senderId}`
-    );
+    if (challenge) {
+      this.debug(
+        `${challenge.receiverId} accepted challenge from ${challenge.senderId}`
+      );
 
-    const senderSocket = playerDict.getSocket(challenge.senderId);
-    const receiverSocket = playerDict.getSocket(challenge.receiverId);
+      const senderSocket = playerDict.getSocket(challenge.senderId);
+      const receiverSocket = playerDict.getSocket(challenge.receiverId);
 
-    // notify users that all their sent challenges are cancelled
-    // get list of challenges, remove all challenges
-    [
-      ...playerDict.getSentChallenges(challenge.senderId),
-      ...playerDict.getSentChallenges(challenge.receiverId),
-    ].forEach((challenge) => {
-      this.removeChallenge(challenge);
-    });
+      // notify users that all their sent challenges are cancelled
+      // get list of challenges, remove all challenges
+      [
+        ...playerDict.getSentChallenges(challenge.senderId),
+        ...playerDict.getSentChallenges(challenge.receiverId),
+      ].forEach((challenge) => {
+        this.removeChallenge(challenge);
+      });
 
-    await this.matchmakingClient.createMatch(
-      challenge.senderId,
-      challenge.receiverId,
-      senderSocket,
-      receiverSocket
-    );
+      await this.matchmakingClient.createMatch(
+        challenge.senderId,
+        challenge.receiverId,
+        senderSocket,
+        receiverSocket
+      );
+    }
   }
 
   removeChallenge(challenge) {
