@@ -68,9 +68,6 @@
     "puppeteerArgs": [
       "--no-sandbox",
       "--disable-setuid-sandbox"
-    ],
-    "concurrency": 1,
-    "inlineCss": false,
-    "puppeteerExecutablePath": "/usr/bin/chromium-browser"
+    ]
   }
 }
