@@ -57,7 +57,7 @@ const GreenText = styled.span`
   background-color: rgba(50, 205, 50, 0.6);
 `;
 
-const GoalDisplay = ({ diff, goalText }) => {
+const GoalDisplay = ({ diff = [], goalText = "" }) => {
   const createDiffText = () => {
     return (
       <React.Fragment>
