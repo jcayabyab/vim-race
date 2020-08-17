@@ -40,9 +40,12 @@ app.use(profileRoutes);
 app.use(demoRoutes);
 
 const getSocketInitializer = require("./socket");
-const initializeSocket = getSocketInitializer(challengesClient, matchmaker);
+const initializeSocket = getSocketInitializer(challengesClient, matchmaker, io);
 
-io.on("connection", initializeSocket);
+io.on("connection", (socket) => {
+  initializeSocket(socket);
+  // send current user counter to all players
+});
 
 if (process.env.NODE_ENV === "production") {
   const path = require("path");

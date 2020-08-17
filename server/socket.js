@@ -1,6 +1,6 @@
 const { playerDict } = require("./matchmaking/PlayerDict");
 
-module.exports = (challengesClient, matchmaker) => {
+const socketInitializer = (challengesClient, matchmaker, io) => {
   return (socket) => {
     // username of player - variables on a per-socket basis
     let id = null;
@@ -15,6 +15,7 @@ module.exports = (challengesClient, matchmaker) => {
         otherSocket.emit("login detected");
       } else {
         playerDict.addPlayer(id, socket);
+        io.emit("users online", playerDict.numberOfUsersOnline());
       }
     });
 
@@ -24,6 +25,7 @@ module.exports = (challengesClient, matchmaker) => {
         matchmaker.waitingQueue.removePlayerFromQueue(id);
         const otherUsersAndChallenges = playerDict.handlePlayerDisconnect(id);
         challengesClient.notifyOnRemoveOtherChallenges(otherUsersAndChallenges);
+        io.emit("users online", playerDict.numberOfUsersOnline());
       }
     });
 
@@ -47,3 +49,5 @@ module.exports = (challengesClient, matchmaker) => {
     challengesClient.addSocketListeners(socket);
   };
 };
+
+module.exports = socketInitializer;

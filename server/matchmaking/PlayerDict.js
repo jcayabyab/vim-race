@@ -6,6 +6,10 @@ class PlayerDict {
     this.dict = {};
   }
 
+  numberOfUsersOnline() {
+    return Object.keys(this.dict).length;
+  }
+
   handlePlayerDisconnect(id) {
     const otherUsersAndChallenges = this.getOtherUsersAndChallenges(id);
     this.removeUserChallenges(id);

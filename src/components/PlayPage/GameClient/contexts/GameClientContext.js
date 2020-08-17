@@ -15,10 +15,10 @@ export const GameClientStateProvider = (props) => {
   const [lobbyTerminalLoaded, setLobbyTerminalLoaded] = useState(false);
   // used to stop timer once game is over
   const [prevGameFinished, setPrevGameFinished] = useState(false);
-
   const [playerStates, setNewPlayers, setPlayerState] = usePlayerStates();
   const [loginDetected, setLoginDetected] = useState(false);
   const [serverDisconnected, setServerDisconnected] = useState(false);
+  const [usersOnline, setUsersOnline] = useState(0);
 
   // prettier-ignore
   const gameStateObj = {
@@ -34,6 +34,7 @@ export const GameClientStateProvider = (props) => {
     playerStates, setNewPlayers, setPlayerState,
     loginDetected, setLoginDetected,
     serverDisconnected, setServerDisconnected,
+    usersOnline, setUsersOnline,
   };
 
   return (

@@ -19,6 +19,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     setPlayerState,
     setNewPlayers,
     setPrevGameFinished,
+    setUsersOnline,
   } = gameClientState;
 
   const handlePlayerFinish = useCallback(() => {
@@ -113,6 +114,12 @@ const useGameClientSocketFunctions = (socket, user) => {
       setServerDisconnected(true);
     });
   }, [socket, setServerDisconnected]);
+
+  const handleUpdateUsersOnline = useCallback(() => {
+    socket.on("users online", (usersOnline) => {
+      setUsersOnline(usersOnline);
+    });
+  }, [socket, setUsersOnline]);
 
   const handleTerminalsLoaded = useCallback(() => {
     socket.emit("loaded", { id: user.id });
@@ -219,6 +226,7 @@ const useGameClientSocketFunctions = (socket, user) => {
       handleHandshake();
       handleAlreadyLoggedIn();
       handleServerDisconnect();
+      handleUpdateUsersOnline();
       setFunctionsInitialized(true);
     }
   }, [
@@ -234,6 +242,7 @@ const useGameClientSocketFunctions = (socket, user) => {
     handleHandshake,
     handleAlreadyLoggedIn,
     handleServerDisconnect,
+    handleUpdateUsersOnline,
   ]);
 
   return {

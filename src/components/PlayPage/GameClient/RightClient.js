@@ -37,6 +37,7 @@ export default function RightClient() {
     playerStates,
     prevGameFinished,
     setOpponentInitialized,
+    usersOnline,
   } = useContext(GameClientContext);
 
   const {
@@ -127,6 +128,7 @@ export default function RightClient() {
               onGameStatusClick={() => setShowChallenges(false)}
               showChallenges={showChallenges}
             ></MenuToggle>
+            <div>Users online: {usersOnline}</div>
           </React.Fragment>
         );
       default:
@@ -183,9 +185,10 @@ export default function RightClient() {
             onCancel={cancelMatchmaking}
             gameState={gameState}
           ></SearchButton>
-          <div style={{ height: "320px", marginTop: "10px" }}>
+          <div style={{ height: "320px", margin: "10px 0px" }}>
             <ChallengesScreen></ChallengesScreen>
           </div>
+          <div>Users online: {usersOnline}</div>
         </React.Fragment>
       ) : (
         <div>Waiting for Vim terminal to download...</div>
