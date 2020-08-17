@@ -12,9 +12,12 @@ class ProblemGenerator {
     if (!dummyProblem) {
       this.readProblemsFromFiles();
     } else {
-      const startText = `Hello, universe!\r\r\nHello, universe!`;
+      const startText = `Hello, universe!`;
       const goalText = `Hello, world!`;
-      this.problems.push([this.preprocessText(startText), goalText]);
+      this.problems.push([
+        this.preprocessText(startText),
+        this.preprocessText(goalText),
+      ]);
     }
   }
 
