@@ -21,13 +21,13 @@ export default function ChangelogPage() {
         <li>Procedurally generated VimRace problems</li>
         <li>Rating system</li>
       </ul>
+      <h1>Changelog</h1>
       <h2>August 17th, 2020 - Closer to a working version!</h2>
       <ul>
         <li>Added a "Users online" counter</li>
         <li>Fixed a bug in the problem generator with problems with CRLF line endings</li>
         <li>Added a warning when incompatible browsers try to log onto the website</li>
       </ul>
-      <h1>Changelog</h1>
       <h2>August 5th, 2020 - First alpha release</h2>
       <ul>
         <li>Enjoy the game and please provide feedback!</li>
