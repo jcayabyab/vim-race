@@ -12,9 +12,9 @@ class ProblemGenerator {
     if (!dummyProblem) {
       this.readProblemsFromFiles();
     } else {
-      const startText = `Hello, universe!`;
+      const startText = `Hello, universe!\r\r\nHello, universe!`;
       const goalText = `Hello, world!`;
-      this.problems.push([startText, goalText]);
+      this.problems.push([this.preprocessText(startText), goalText]);
     }
   }
 
@@ -71,7 +71,7 @@ class ProblemGenerator {
   preprocessText(text) {
     text = this.replaceTabs(text);
     text = text.trim();
-    text = text.replace("\r", "");
+    text = text.replace(/\r/g, "");
     return text;
   }
 
