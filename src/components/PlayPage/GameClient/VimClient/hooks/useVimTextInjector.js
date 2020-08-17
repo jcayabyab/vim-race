@@ -16,7 +16,7 @@ const useVimTextInjector = (
   gameState
 ) => {
   const writeToTerminal = useCallback(
-    async (str) => {
+    async (str = "") => {
       const str2ab = (str) => {
         const buf = new ArrayBuffer(str.length + 1);
         const bufView = new Uint8Array(buf);
