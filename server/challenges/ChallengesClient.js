@@ -14,6 +14,8 @@ class ChallengesClient {
     this.onAccept = this.onAccept.bind(this);
 
     this.showDebug = showDebug;
+
+    matchmakingClient.setChallengesClient(this);
   }
 
   debug(msg) {
@@ -123,20 +125,12 @@ class ChallengesClient {
       const senderSocket = playerDict.getSocket(challenge.senderId);
       const receiverSocket = playerDict.getSocket(challenge.receiverId);
 
-      // notify users that all their sent challenges are cancelled
-      // get list of challenges, remove all challenges
-      [
-        ...playerDict.getSentChallenges(challenge.senderId),
-        ...playerDict.getSentChallenges(challenge.receiverId),
-      ].forEach((challenge) => {
-        this.removeChallenge(challenge);
-      });
-
       await this.matchmakingClient.createMatch(
         challenge.senderId,
         challenge.receiverId,
         senderSocket,
-        receiverSocket
+        receiverSocket,
+        this
       );
     }
   }

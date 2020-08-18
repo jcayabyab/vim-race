@@ -20,7 +20,15 @@ class MatchmakingClient {
     }
   }
 
-  handleRequest(id, socket) {
+  // code smelly :( need access to challenges client to
+  // cancel challenges on match, but can't do it in constructor
+  // (ChallengesClient needs MatchmakingClient to call createMatch)
+  // but this function is called in challengesClient's constructor
+  setChallengesClient(challengesClient) {
+    this.challengesClient = challengesClient;
+  }
+
+  handleRequest(id) {
     // store socket objects in queue for easy access
     this.waitingQueue.addPlayer(id);
 
@@ -57,6 +65,15 @@ class MatchmakingClient {
 
   async createMatch(id1, id2, socket1, socket2) {
     this.debug("creating match between users with ids " + id1 + " and " + id2);
+
+    // notify users that all their sent challenges are cancelled
+    // get list of challenges, remove all challenges
+    [
+      ...playerDict.getSentChallenges(id1),
+      ...playerDict.getSentChallenges(id2),
+    ].forEach((challenge) => {
+      this.challengesClient.removeChallenge(challenge);
+    });
 
     // get players from database
     const player1 = await db.findUserById(id1);

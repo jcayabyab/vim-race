@@ -57,3 +57,5 @@ if (process.env.NODE_ENV === "production") {
 }
 
 server.listen(port, () => console.log("Listening on port " + port));
+
+module.exports = "Hello";
