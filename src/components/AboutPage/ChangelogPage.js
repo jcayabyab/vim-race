@@ -22,6 +22,10 @@ export default function ChangelogPage() {
         <li>Rating system</li>
       </ul>
       <h1>Changelog</h1>
+      <h2>August 18th, 2020</h2>
+      <ul>
+        <li>Fixed a bug where a user's sent challenges weren't being cancelled when they enter a new match</li>
+      </ul>
       <h2>August 17th, 2020 - Closer to a working version!</h2>
       <ul>
         <li>Added a "Users online" counter</li>
