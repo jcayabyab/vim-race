@@ -68,10 +68,17 @@ function VimClient({
     }
   }, [handleUnmount]);
 
+  // input value and onChange set to readOnly to make pseudo readOnly
+  // -> prevents space bar from scrolling the page
   return (
     <React.Fragment>
       <canvas style={canvasStyle} ref={canvasRef}></canvas>
-      <input style={inputStyle} ref={inputRef} readOnly></input>
+      <input
+        style={inputStyle}
+        ref={inputRef}
+        value=""
+        onChange={() => {}}
+      ></input>
     </React.Fragment>
   );
 }
